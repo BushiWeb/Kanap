@@ -3,11 +3,11 @@ const path = require('path');
 module.exports = {
     mode: 'production',
     entry : {
-        script: './env-test/index.js'
+
     },
     output : {
         filename : '[name].js',
-        path : path.resolve(__dirname, 'dist')
+        path : path.resolve(__dirname, 'dist/js')
     },
     module : {
         rules : [
