@@ -4,7 +4,7 @@
 
 import '@testing-library/jest-dom';
 
-import { View } from "./view";
+import { View } from "./View";
 
 let testView;
 
