@@ -1,4 +1,4 @@
-export const CONFIG = {
+const CONFIG = {
     url: {
         protocol: "http",
         ip: "127.0.0.1",
