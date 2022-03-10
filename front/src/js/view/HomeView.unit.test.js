@@ -11,7 +11,7 @@ import { MOCKED_API_DATA } from "../api/mockedApiData";
 describe('HomeView Unit Test Suite', () => {
     const homeViewTest = new HomeView();
 
-    afterEach(() => {
+    beforeEach(() => {
         document.body.innerHTML = '';
     });
 

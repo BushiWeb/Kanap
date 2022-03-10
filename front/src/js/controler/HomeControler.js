@@ -5,9 +5,13 @@ import { ProductModel } from '../model/ProductModel';
  * Entry point for the Home page: manages the loading of the page by fetching the data from the model and asking the view to render them.
  */
 export class HomeControler {
-    constructor() {
+    /**
+     * Creates the view and the model
+     * @param {Object} config - Configuration object to use. Defaults to null.
+     */
+    constructor(config = null) {
         this.view = new HomeView();
-        this.model = new ProductModel();
+        this.model = new ProductModel(config);
     }
 
     /**
