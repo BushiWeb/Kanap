@@ -18,14 +18,22 @@ describe('HomeView Unit Test Suite', () => {
     describe('render() Method Test Suite', () => {
         it('should create one product card with the right structure when passed one product', () => {
             homeViewTest.render([MOCKED_API_DATA[0]], 'body');
+
             const nameElement = document.getElementsByClassName('productName');
             const descriptionElement = document.getElementsByClassName('productDescription');
             const linkWrapperElement = document.getElementsByTagName('a');
+            const imageElement = document.getElementsByTagName('img');
+
             expect(document.body).toContainElement(linkWrapperElement[0]);
             expect(linkWrapperElement[0]).toContainElement(nameElement[0]);
             expect(linkWrapperElement[0]).toContainElement(descriptionElement[0]);
-            expect(nameElement[0]).not.toBeEmptyDOMElement();
-            expect(descriptionElement[0]).not.toBeEmptyDOMElement();
+            expect(linkWrapperElement[0]).toContainElement(imageElement[0]);
+
+            expect(nameElement[0]).toHaveTextContent(MOCKED_API_DATA[0].name);
+            expect(descriptionElement[0]).toHaveTextContent(MOCKED_API_DATA[0].description);
+            expect(linkWrapperElement[0]).toHaveAttribute('href', './product.html?id=' + MOCKED_API_DATA[0]._id);
+            expect(imageElement[0]).toHaveAttribute('src', MOCKED_API_DATA[0].imageUrl);
+            expect(imageElement[0]).toHaveAttribute('alt', MOCKED_API_DATA[0].altTxt);
         });
 
 

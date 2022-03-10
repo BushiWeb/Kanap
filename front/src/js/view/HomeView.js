@@ -27,7 +27,7 @@ export class HomeView extends View {
             });
             let articleElement = this.createElement('article');
             let imageElement = this.createElement('img', {
-                src: `${products[i].imageURL}`,
+                src: `${products[i].imageUrl}`,
                 alt : `${products[i].altTxt}`
             });
             let nameElement = this.createElement('h3', {
