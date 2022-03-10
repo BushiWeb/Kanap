@@ -2,7 +2,7 @@ import { ConfigManager } from "./ConfigManager";
 import { CONFIG_TEST, TEST_URL } from "./mocked-configuration";
 
 describe('Config class Unit Test Suite', () => {
-    it('should contain JSON data whenn passed JSON data', () => {
+    it('should contain JSON data when passed JSON data', () => {
         expect(new ConfigManager(CONFIG_TEST).data).toBeInstanceOf(Object);
     });
 
