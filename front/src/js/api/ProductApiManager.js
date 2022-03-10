@@ -21,7 +21,7 @@ export class ProductApiManager {
 
     /**
      * Fetch all products from the API
-     * @return {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
+     * @returns {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
      * @throws Error if the request fails
      */
     async getAllProducts() {

@@ -14,7 +14,7 @@ export class View {
      * Create a DOM Element with attributes.
      * @param {string} element - Element tag to create
      * @param {Object} attributes - Element attributes to add to the new element
-     * @return {HTMLElement} Element object that has been created
+     * @returns {HTMLElement} Element object that has been created
      */
     createElement(element, attributes) {
         let createdElement = document.createElement(element);
@@ -27,7 +27,7 @@ export class View {
     /**
      * Fetch elements from the DOM using their id, class or a CSS selector.
      * @param {string} selector - Selector of the elements to query
-     * @return {HTMLElement[]} Array of HTMLElement
+     * @returns {HTMLElement[]} Array of HTMLElement
      */
     getElements(selector) {
         let elements = [];

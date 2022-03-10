@@ -14,7 +14,7 @@ export class ProductModel {
 
     /**
      * Fetch all products using the ProductApiManager
-     * @return {Array} Array containing all the products. If no data is returned, return an empty array.
+     * @returns {Array} Array containing all the products. If no data is returned, return an empty array.
      */
     async getAllProducts() {
         return await this.apiManager.getAllProducts();
