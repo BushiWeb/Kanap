@@ -45,7 +45,7 @@ export class ProductApiManager {
     /**
      * Fetch one product from the API, given it's Id
      * @param {string} productId - Id of the product
-     * @returns {Object} Return an object containing the data of the products
+     * @returns {Object} Return an object containing the data of the product
      * @throws Error if the request fails
      */
     async getProduct(productId) {

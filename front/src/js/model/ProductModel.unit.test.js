@@ -24,4 +24,17 @@ describe('ProductModel Unit Test Suite', () => {
             expect(Array.isArray(data)).toBeTruthy();
         });
     });
+
+
+    describe('getProduct() Method Test Suite', () => {
+        const apiManagerGetProductMock = jest.spyOn(ProductApiManager.prototype, 'getProduct');
+
+        it('should return the data of the product', async () => {
+            apiManagerGetProductMock.mockResolvedValueOnce(MOCKED_API_DATA[0]);
+
+            const productModel = new ProductModel(CONFIG_TEST);
+            const data = await productModel.getProduct(MOCKED_API_DATA[0]._id);
+            expect(data).toEqual(MOCKED_API_DATA[0]);
+        });
+    });
 });
