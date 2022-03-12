@@ -13,11 +13,9 @@ describe('HomeControler Functionnal Test Suite', () => {
 
     describe('initialize() Method Test Suite', () => {
         global.fetch = jest.fn().mockImplementation();
-        const consoleMock = jest.spyOn(global.console, 'error');
 
         beforeEach(() => {
             global.fetch.mockReset();
-            consoleMock.mockReset();
             document.body.innerHTML = '';
         })
 
