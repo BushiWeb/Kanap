@@ -17,18 +17,18 @@ describe('HomeControler Functionnal Test Suite', () => {
         beforeEach(() => {
             global.fetch.mockReset();
             document.body.innerHTML = '';
+            const container = document.createElement('section');
+            container.id = 'items';
+            document.body.appendChild(container);
         })
 
 
-        it('should display the list of products', async () => {
+        it('should display the list of products if no error occurs while fetching', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok : true
             });
 
-            const container = document.createElement('section');
-            container.id = 'items';
-            document.body.appendChild(container);
             await controlerTest.initialize();
 
             const productsCardElements = document.getElementsByTagName('a');
@@ -46,6 +46,22 @@ describe('HomeControler Functionnal Test Suite', () => {
             expect(productsCardElements[0]).toHaveAttribute('href', './product.html?id=' + MOCKED_API_DATA[0]._id);
             expect(imageElement).toHaveAttribute('src', MOCKED_API_DATA[0].imageUrl);
             expect(imageElement).toHaveAttribute('alt', MOCKED_API_DATA[0].altTxt);
+        });
+
+        it('should alert and print an error if an error occurs while fetching the data', async () => {
+            const consoleMock = jest.spyOn(global.console, 'error');
+            const alertMock = jest.spyOn(window, 'alert');
+            consoleMock.mockReset();
+            alertMock.mockReset();
+
+            const error = new Error('Error while fetching');
+            global.fetch.mockRejectedValue(error);
+
+            await controlerTest.initialize();
+
+            expect(consoleMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalled();
+
         });
     });
 });

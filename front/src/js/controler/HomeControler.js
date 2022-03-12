@@ -16,9 +16,15 @@ export class HomeControler {
 
     /**
      * Activates when the Home page loads. Fetches the data and display them.
+     * If an error occurs while fetching the data, alerts an error.
      */
     async initialize() {
-        let productsData = await this.model.getAllProducts();
-        this.view.render(productsData);
+        try {
+            let productsData = await this.model.getAllProducts();
+            this.view.render(productsData);
+        } catch (error) {
+            console.error(error);
+            this.view.alert('Un problème a eu lieu lors de la récupération des produits, nous ne pouvons pas afficher le catalogue. Veuillez nous excuser pour le dérangement.');
+        }
     }
 }

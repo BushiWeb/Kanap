@@ -26,19 +26,15 @@ export class ProductApiManager {
      * @throws Error if the request fails
      */
     async getAllProducts() {
-        try {
-            let response = await fetch(this.apiUrl);
-            if (!response.ok) {
-                throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
-            }
-            let data = await response.json();
-            if (!data) {
-                data = [];
-            }
-            return data;
-        } catch (error) {
-            console.error(error);
+        let response = await fetch(this.apiUrl);
+        if (!response.ok) {
+            throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
         }
+        let data = await response.json();
+        if (!data) {
+            data = [];
+        }
+        return data;
     }
 
 
