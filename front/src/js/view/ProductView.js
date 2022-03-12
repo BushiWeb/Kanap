@@ -65,4 +65,14 @@ export class ProductView extends View {
 
         return result;
     }
+
+
+    /**
+     * Creates an event listener for the "add to cart" button
+     * @param {Function} callback - Function to call when the event fires
+     */
+    addAddToCartEventListener(callback) {
+        const addToCartButton = document.getElementById('addToCart');
+        addToCartButton.addEventListener('click', callback);
+    }
 }

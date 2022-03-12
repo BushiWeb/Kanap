@@ -3,12 +3,13 @@
  */
 
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 
 import { ProductView } from './ProductView';
 import { MOCKED_API_DATA } from "../api/mockedApiData";
 
 
-describe('ProduttView Unit Test Suite', () => {
+describe('ProductView Unit Test Suite', () => {
     const productViewTest = new ProductView();
 
     beforeEach(() => {
@@ -31,6 +32,9 @@ describe('ProduttView Unit Test Suite', () => {
         selectElt.id = 'colors';
         const optionElt = document.createElement('option');
 
+        const addToCartButton = document.createElement('button');
+        addToCartButton.id = 'addToCart';
+
         document.body.appendChild(imageContainerElt);
         document.body.appendChild(titleElt);
         priceContainerElt.appendChild(priceElt);
@@ -38,6 +42,7 @@ describe('ProduttView Unit Test Suite', () => {
         document.body.appendChild(descriptionElt);
         selectElt.appendChild(optionElt);
         document.body.appendChild(selectElt);
+        document.body.appendChild(addToCartButton);
     });
 
     describe('render() Method Test Suite', () => {
@@ -74,6 +79,20 @@ describe('ProduttView Unit Test Suite', () => {
             const renderResult = productViewTest.render(MOCKED_API_DATA[0]);
             expect(renderResult).toBe(-1);
             expect(consoleMock).toHaveBeenCalled();
+        });
+    });
+
+
+    describe('addAddToCartEventListener() Method Test Suite', () => {
+        it('should execute the callback function when the button is clicked', () => {
+            let clickResult = false;
+            productViewTest.addAddToCartEventListener(() => {
+                clickResult = true;
+            });
+
+            const buttonElt = document.getElementById('addToCart');
+            userEvent.click(buttonElt);
+            expect(clickResult).toBeTruthy();
         });
     });
 });
