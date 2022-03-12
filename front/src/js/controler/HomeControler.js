@@ -7,9 +7,9 @@ import { ProductModel } from '../model/ProductModel';
 export class HomeControler {
     /**
      * Creates the view and the model
-     * @param {Object} config - Configuration object to use. Defaults to null.
+     * @param {Object | string} config - Configuration object or string to use.
      */
-    constructor(config = null) {
+    constructor(config) {
         this.view = new HomeView();
         this.model = new ProductModel(config);
     }

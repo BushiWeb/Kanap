@@ -4,9 +4,9 @@
 export class ConfigManager {
     /**
      * Get data from the given JSON Object and store those data in the data property.
-     * @param {mixed} data - Configuration object. Can also be a stringifyed version of the object. The default value is the default configuration object.
+     * @param {Object | string} data - Configuration object. Can also be a stringifyed version of the object.
      */
-    constructor(data = CONFIG) {
+    constructor(data) {
         this.data = (typeof data === "string")? JSON.parse(data) : data;
     }
 

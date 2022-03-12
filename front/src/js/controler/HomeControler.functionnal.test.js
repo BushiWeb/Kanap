@@ -5,11 +5,11 @@
 import '@testing-library/jest-dom';
 
 import { HomeControler } from './HomeControler';
-import { CONFIG_TEST } from '../config/mocked-configuration';
+import { CONFIG } from '../config/config';
 import { MOCKED_API_DATA } from '../api/mockedApiData';
 
 describe('HomeControler Functionnal Test Suite', () => {
-    const controlerTest = new HomeControler(CONFIG_TEST);
+    const controlerTest = new HomeControler(CONFIG);
 
     describe('initialize() Method Test Suite', () => {
         global.fetch = jest.fn().mockImplementation();

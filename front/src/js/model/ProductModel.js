@@ -6,9 +6,9 @@ import { ProductApiManager } from "../api/ProductApiManager";
 export class ProductModel {
     /**
      * Create an instance of the ProductApiManager
-     * @param {Object} config - Configuration object, passed to the ProductApiManager. Optionnal
+     * @param {Object | string} config - Configuration object o string, passed to the ProductApiManager.
      */
-    constructor(config = null) {
+    constructor(config) {
         this.apiManager = new ProductApiManager(config);
     }
 
