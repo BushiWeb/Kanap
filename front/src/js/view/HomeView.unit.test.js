@@ -13,11 +13,14 @@ describe('HomeView Unit Test Suite', () => {
 
     beforeEach(() => {
         document.body.innerHTML = '';
+        let sectionElt = document.createElement('section');
+        sectionElt.id = 'items';
+        document.body.appendChild(sectionElt);
     });
 
     describe('render() Method Test Suite', () => {
         it('should create one product card with the right structure when passed one product', () => {
-            homeViewTest.render([MOCKED_API_DATA[0]], 'body');
+            homeViewTest.render([MOCKED_API_DATA[0]]);
 
             const nameElement = document.getElementsByClassName('productName');
             const descriptionElement = document.getElementsByClassName('productDescription');
@@ -37,28 +40,17 @@ describe('HomeView Unit Test Suite', () => {
         });
 
 
-        it('should create a list of product cards when passed multiple products and return the number of elements created', () => {
-            const renderResult = homeViewTest.render(MOCKED_API_DATA, 'body');
+        it('should create a list of product cards when passed multiple products', () => {
+            homeViewTest.render(MOCKED_API_DATA);
             const productsCardElement = document.getElementsByTagName('a');
-            expect(renderResult).toBe(MOCKED_API_DATA.length);
             expect(productsCardElement.length).toBe(MOCKED_API_DATA.length);
         });
 
 
-        it('should create nothing when passed no product and return 0', () => {
-            const renderResult = homeViewTest.render([], 'body');
+        it('should create nothing when passed no product', () => {
+            homeViewTest.render([]);
             const productsCardElement = document.getElementsByTagName('a');
-            expect(renderResult).toBe(0);
             expect(productsCardElement.length).toBe(0);
-        });
-
-
-        it('should return -1 and print an error if the container does not exist', () => {
-            const consoleMock = jest.spyOn(global.console, 'error').mockImplementationOnce();
-            consoleMock.mockReset();
-            let renderResult = homeViewTest.render([], 'false');
-            expect(renderResult).toBe(-1);
-            expect(consoleMock).toHaveBeenCalled();
         });
     });
 });
