@@ -53,7 +53,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             global.fetch.mockReset();
         });
 
-        it('should display the product\'s infos', async () => {
+        it('should display the product\'s infos if no error occurs while fetching', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true
@@ -79,6 +79,21 @@ describe('ProductControler Functionnal Test Suite', () => {
                 expect(optionElts[i]).toHaveAttribute('value', MOCKED_API_DATA[0].colors[i - 1]);
                 expect(optionElts[i]).toHaveTextContent(MOCKED_API_DATA[0].colors[i - 1]);
             }
+        });
+
+        it('should alert and print an error if an error occurs while fetching the data', async () => {
+            const consoleMock = jest.spyOn(global.console, 'error');
+            const alertMock = jest.spyOn(window, 'alert');
+            consoleMock.mockReset();
+            alertMock.mockReset();
+
+            const error = new Error('Error while fetching');
+            global.fetch.mockRejectedValue(error);
+
+            await controlerTest.initialize();
+
+            expect(consoleMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalled();
         });
     });
 });

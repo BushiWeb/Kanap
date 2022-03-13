@@ -45,15 +45,11 @@ export class ProductApiManager {
         }
         fetchUrl += productId;
 
-        try {
-            let response = await fetch(fetchUrl);
-            if (!response.ok) {
-                throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
-            }
-            let data = await response.json();
-            return data;
-        } catch (error) {
-            console.error(error);
+        let response = await fetch(fetchUrl);
+        if (!response.ok) {
+            throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
         }
+        let data = await response.json();
+        return data;
     }
 }

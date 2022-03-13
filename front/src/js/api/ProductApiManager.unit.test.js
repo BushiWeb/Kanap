@@ -95,22 +95,23 @@ describe('ProductApiManager Unit Test Suite', () => {
             expect(data).toEqual(MOCKED_API_DATA[0]);
         });
 
-        it('should print an error on the console if the status is not ok', async () => {
+        it('should throw an error if the status is not ok', async () => {
             global.fetch.mockResolvedValueOnce({
                 ok : false,
                 status : 404,
                 statusText : 'Error'
             });
-            await testApiManager.getProduct();
-            expect(consoleMock).toHaveBeenCalled();
+            await expect(async () => {
+                await testApiManager.getProduct(MOCKED_API_DATA[0]._id);
+            }).rejects.toThrow();
         });
 
-        it('should print an error on the console if the request fails', async () => {
+        it('should throw an error if the request fails', async () => {
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
-            await testApiManager.getProduct();
-            expect(consoleMock).toHaveBeenCalled();
-            expect(consoleMock).toHaveBeenCalledWith(error);
+            await expect(async () => {
+                await testApiManager.getProduct(MOCKED_API_DATA[0]._id);
+            }).rejects.toThrow();
         });
     });
 })
