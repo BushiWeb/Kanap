@@ -46,8 +46,8 @@ describe('ProductView Unit Test Suite', () => {
     });
 
     describe('render() Method Test Suite', () => {
-        it('should insert the product and return 0 when passed one product', () => {
-            const renderResult = productViewTest.render(MOCKED_API_DATA[0]);
+        it('should insert the product', () => {
+            productViewTest.render(MOCKED_API_DATA[0]);
 
             const imageElt = document.querySelector('.item__img img');
             const titleElt = document.getElementById('title');
@@ -67,18 +67,6 @@ describe('ProductView Unit Test Suite', () => {
                 expect(optionElts[i]).toHaveAttribute('value', MOCKED_API_DATA[0].colors[i - 1]);
                 expect(optionElts[i]).toHaveTextContent(MOCKED_API_DATA[0].colors[i - 1]);
             }
-            expect(renderResult).toBe(0);
-        });
-
-
-        it('should return -1 and print an error if at least one container does not exist', () => {
-            const consoleMock = jest.spyOn(global.console, 'error').mockImplementationOnce();
-            consoleMock.mockReset();
-            let descriptionElt = document.getElementById('description');
-            document.body.removeChild(description);
-            const renderResult = productViewTest.render(MOCKED_API_DATA[0]);
-            expect(renderResult).toBe(-1);
-            expect(consoleMock).toHaveBeenCalled();
         });
     });
 
