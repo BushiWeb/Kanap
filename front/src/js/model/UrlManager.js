@@ -38,11 +38,12 @@ export class UrlManager {
     /**
      * Fetch parameter from the URL
      * @param {string} parameterName - Name of the parameter to fetch
-     * @returns {string | number} Return the value of the parameter or -1 if the parameter doesn't exist
+     * @returns {string | number} Return the value of the parameter
+     * @throws Error if the parameter doesn't exist
      */
     getParameter(parameterName) {
         if (!this.url.searchParams.has(parameterName)) {
-            return -1;
+            throw new Error(`The parameter ${parameterName} doesn't exist`)
         }
 
         return this.url.searchParams.get(parameterName);

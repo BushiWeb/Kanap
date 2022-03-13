@@ -64,10 +64,11 @@ describe('UrlManager Unit Test Suite', () => {
         });
 
 
-        it('should return -1 if the parameter doesn\'t exist', () => {
+        it('should throw an error if the parameter doesn\'t exist', () => {
             const urlManagerTest = new UrlManager(testUrl);
-            const parameterValue = urlManagerTest.getParameter('test');
-            expect(parameterValue).toBe(-1);
+            expect(() => {
+                urlManagerTest.getParameter('test');
+            }).toThrow();
         });
     });
 });
