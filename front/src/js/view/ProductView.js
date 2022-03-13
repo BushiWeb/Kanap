@@ -45,4 +45,22 @@ export class ProductView extends View {
         const addToCartButton = document.getElementById('addToCart');
         addToCartButton.addEventListener('click', callback);
     }
+
+
+    /**
+     * Send the color selection element back
+     * @returns {HTMLElement} Color select element
+     */
+    getColor() {
+        return this.getElements('#colors')[0];
+    }
+
+
+    /**
+     * Send the quantity selector back
+     * @returns {HTMLElement} Quantity input element
+     */
+    getQuantity() {
+        return this.getElements('#quantity')[0];
+    }
 }

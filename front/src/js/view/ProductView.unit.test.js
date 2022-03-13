@@ -4,6 +4,7 @@
 
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import { getByRole, getByText } from '@testing-library/dom';
 
 import { ProductView } from './ProductView';
 import { MOCKED_API_DATA } from "../api/mockedApiData";
@@ -32,6 +33,10 @@ describe('ProductView Unit Test Suite', () => {
         selectElt.id = 'colors';
         const optionElt = document.createElement('option');
 
+        const quantityElt = document.createElement('input');
+        quantityElt.type = 'number';
+        quantityElt.id = 'quantity';
+
         const addToCartButton = document.createElement('button');
         addToCartButton.id = 'addToCart';
 
@@ -42,6 +47,7 @@ describe('ProductView Unit Test Suite', () => {
         document.body.appendChild(descriptionElt);
         selectElt.appendChild(optionElt);
         document.body.appendChild(selectElt);
+        document.body.appendChild(quantityElt);
         document.body.appendChild(addToCartButton);
     });
 
@@ -81,6 +87,44 @@ describe('ProductView Unit Test Suite', () => {
             const buttonElt = document.getElementById('addToCart');
             userEvent.click(buttonElt);
             expect(clickResult).toBeTruthy();
+        });
+    });
+
+
+    describe('getColor() Method Test Suite', () => {
+        it('should return the select color element', () => {
+            productViewTest.render(MOCKED_API_DATA[0]);
+
+            const selectElement = getByRole(document.body, 'combobox');
+
+            const selectedColor = productViewTest.getColor();
+
+            expect(selectedColor).toBe(selectElement);
+        });
+
+        it('should return the select color element with the right value', () => {
+            productViewTest.render(MOCKED_API_DATA[0]);
+
+            const selectElement = getByRole(document.body, 'combobox');
+            const optionElt = getByText(selectElement, MOCKED_API_DATA[0].colors[0]);
+            userEvent.selectOptions(selectElement, optionElt);
+
+            const selectedColor = productViewTest.getColor();
+
+            expect(selectedColor.value).toBe(MOCKED_API_DATA[0].colors[0]);
+        });
+    });
+
+
+    describe('getQuantity() Method Test Suite', () => {
+        it('should return the selected quantity input element', () => {
+            productViewTest.render(MOCKED_API_DATA[0]);
+
+            const quantityElement = getByRole(document.body, 'spinbutton');
+
+            const selectedQuantity = productViewTest.getQuantity();
+
+            expect(selectedQuantity).toBe(quantityElement);
         });
     });
 });
