@@ -11,10 +11,10 @@ import { UrlManager } from '../model/UrlManager';
 export class ProductControler {
     /**
      * Creates the view and the model
-     * @param {Object} config - Configuration object to use. Defaults to null.
+     * @param {Object | string} config - Configuration object or string to use.
      * @param {string} url - Optionnal parameter, URL of the page.
      */
-    constructor(config = null, url = window.location.href) {
+    constructor(config, url = window.location.href) {
         this.view = new ProductView();
         this.model = new ProductModel(config);
         this.urlManager = new UrlManager(url);

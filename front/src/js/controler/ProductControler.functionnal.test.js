@@ -5,12 +5,12 @@
 import '@testing-library/jest-dom';
 
 import { ProductControler } from './ProductControler';
-import { CONFIG_TEST } from '../config/mocked-configuration';
+import { CONFIG } from '../config/config';
 import { MOCKED_API_DATA } from '../api/mockedApiData';
 
 describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
-    const controlerTest = new ProductControler(CONFIG_TEST);
+    const controlerTest = new ProductControler(CONFIG, testUrl);
 
     beforeEach(() => {
         document.body.innerHTML = '';
@@ -48,9 +48,13 @@ describe('ProductControler Functionnal Test Suite', () => {
 
     describe('initialize() Method Test Suite', () => {
         global.fetch = jest.fn().mockImplementation();
+        const consoleMock = jest.spyOn(global.console, 'error');
+        const alertMock = jest.spyOn(window, 'alert');
 
         beforeEach(() => {
             global.fetch.mockReset();
+            consoleMock.mockReset();
+            alertMock.mockReset();
         });
 
         it('should display the product\'s infos if no error occurs while fetching', async () => {
@@ -82,11 +86,6 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it('should alert and print an error if an error occurs while fetching the data', async () => {
-            const consoleMock = jest.spyOn(global.console, 'error');
-            const alertMock = jest.spyOn(window, 'alert');
-            consoleMock.mockReset();
-            alertMock.mockReset();
-
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
 
@@ -95,5 +94,19 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(consoleMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalled();
         });
+
+        it('should alert and print an error if there is no product id in the url', async () => {
+            const controlerTestUrlError = new ProductControler(CONFIG, testUrl.replace(/\?id=.*$/, ''));
+            global.fetch.mockResolvedValue({
+                json: () => Promise.resolve(MOCKED_API_DATA[0]),
+                ok: true
+            })
+
+            await controlerTestUrlError.initialize();
+
+            expect(consoleMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalled();
+
+        })
     });
 });
