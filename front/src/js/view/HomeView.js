@@ -1,12 +1,14 @@
 import { View } from "./View";
 
 /**
- * Class managing rendering and intarctions with the content of the Home page
+ * Class managing the rendering and the interactions with the content of the home page.
+ * @extends View
  */
 export class HomeView extends View {
     /**
-     * Renders the dynamic content of the home page: create the products cards and appends them to their container.
-     * @param {Array} products - Object containing a list of products to display.
+     * Render the dynamic content of the home page.
+     * Add the product list to the content.
+     * @param {Array} products - An object containing a list of products to display.
      */
     render(products) {
         let containerElement = this.getElements('#items')[0];

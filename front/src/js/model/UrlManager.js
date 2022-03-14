@@ -1,11 +1,11 @@
 /**
- * Mediator to allow easy interaction between the script and the URL API
+ * Class allowing easy interactions with the URL.
  */
 export class UrlManager {
     /**
-     * Creates a new URL object and sets it up
-     * @param {string} url - URL to give to the URL Object
-     * @param {Object.<name:string, value:string} parameters - URL parameters to add to the URL
+     * Create a new URL object and set it up
+     * @param {string} url - The URL to give to the URL Object.
+     * @param {{name:string, value:string}[]} parameters - The URL parameters to add to the URL.
      */
     constructor(url = window.location.href, parameters) {
         this.url = new URL(url);
@@ -17,8 +17,8 @@ export class UrlManager {
 
 
     /**
-     * Changes the URL of the URL object
-     * @param {string} newUrl - New URL to give to the object
+     * Change the URL of the URL object.
+     * @param {string} newUrl - The new URL to give to the object.
      */
     setUrl(newUrl) {
         this.url.href = newUrl;
@@ -26,9 +26,9 @@ export class UrlManager {
 
 
     /**
-     * Adds parameter to the URL
-     * @param {string} parameterName - Parameter name
-     * @param {string} parameterValue - Parameter value
+     * Add a parameter to the URL.
+     * @param {string} parameterName - The parameter name.
+     * @param {string} parameterValue - The parameter value.
      */
     addParameter(parameterName, parameterValue) {
         this.url.searchParams.append(parameterName, parameterValue);
@@ -36,10 +36,10 @@ export class UrlManager {
 
 
     /**
-     * Fetch parameter from the URL
-     * @param {string} parameterName - Name of the parameter to fetch
-     * @returns {string | number} Return the value of the parameter
-     * @throws Error if the parameter doesn't exist
+     * Get a parameter from the URL.
+     * @param {string} parameterName - The name of the parameter.
+     * @returns {string | number} Return the value of the parameter.
+     * @throws Throw an error if the parameter doesn't exist.
      */
     getParameter(parameterName) {
         if (!this.url.searchParams.has(parameterName)) {

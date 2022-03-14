@@ -5,8 +5,8 @@ import { ConfigManager } from "../config/ConfigManager";
  */
 export class ProductApiManager {
     /**
-     * Constructor, get API URL from the configuration file
-     * @param {Object | string} config - Configuration object or string
+     * Get API URL from the configuration file.
+     * @param {Object | string} config - The configuration object or string.
      */
     constructor(config) {
         const configuration = new ConfigManager(config);
@@ -15,9 +15,9 @@ export class ProductApiManager {
 
 
     /**
-     * Fetch all products from the API
-     * @returns {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
-     * @throws Error if the request fails or if the status is not ok
+     * Fetch all products from the API.
+     * @return {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
+     * @throws Throw an error if the request fails or if the status is not ok.
      */
     async getAllProducts() {
         let response = await fetch(this.apiUrl);
@@ -33,10 +33,10 @@ export class ProductApiManager {
 
 
     /**
-     * Fetch one product from the API, given it's Id
-     * @param {string} productId - Id of the product
-     * @returns {Object} Return an object containing the data of the product
-     * @throws Error if the request fails
+     * Fetch one product from the API.
+     * @param {string} productId - The id of the product.
+     * @returns {Object} Return an object containing the data of the product.
+     * @throws Throw an error if the request failsor if the status is not ok.
      */
     async getProduct(productId) {
         let fetchUrl = this.apiUrl;

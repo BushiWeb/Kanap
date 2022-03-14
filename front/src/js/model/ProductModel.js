@@ -1,12 +1,12 @@
 import { ProductApiManager } from "../api/ProductApiManager";
 
 /**
- * Class managing products data
+ * Class managing products data.
  */
 export class ProductModel {
     /**
-     * Create an instance of the ProductApiManager
-     * @param {Object | string} config - Configuration object o string, passed to the ProductApiManager.
+     * Create an instance of the ProductApiManager.
+     * @param {Object | string} config - The configuration object or string, passed to the ProductApiManager.
      */
     constructor(config) {
         this.apiManager = new ProductApiManager(config);
@@ -14,8 +14,8 @@ export class ProductModel {
 
 
     /**
-     * Fetch all products using the ProductApiManager
-     * @returns {Array} Array containing all the products. If no data is returned, return an empty array.
+     * Fetch all the products.
+     * @return {Array} An array containing all the products. If no data is returned, return an empty array.
      */
     async getAllProducts() {
         return await this.apiManager.getAllProducts();
@@ -23,9 +23,9 @@ export class ProductModel {
 
 
     /**
-     * Fetch the product with a given id using the ProductApiManager
-     * @param {string} productId - Id of the product to fetch
-     * @returns {Object} Object containing the data of the product
+     * Fetch one product.
+     * @param {string} productId - The id of the product to fetch.
+     * @returns {Object} Return an object containing the product's data.
      */
     async getProduct(productId) {
         return await this.apiManager.getProduct(productId);

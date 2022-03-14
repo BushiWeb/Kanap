@@ -5,14 +5,13 @@ import { CartModel } from '../model/CartModel';
 import { FormValidator } from '../form/FormValidator';
 
 /**
- * Entry point for the Product page:
- *  Manages the loading of the page by fetching the data from the model and asking the view to render them.
- *  Adds the event listeners.
- *  Handles the fired events.
+ * Class representing the entry point of the home page.
+ * Serve as a mediator between the data and the rendering.
+ * Manage the events fired from the page by providing the event handlers.
  */
 export class ProductControler {
     /**
-     * Creates the view and the model
+     * Create the view and the model
      * @param {Object | string} config - Configuration object or string to use.
      * @param {string} url - Optionnal parameter, URL of the page.
      */
@@ -23,7 +22,10 @@ export class ProductControler {
     }
 
     /**
-     * Activates when the Product page loads. Fetches the data and display them, then adds the event listeners.
+     * Activate when the Home page loads.
+     * Fetch the data and display them.
+     * If an error occurs while fetching the data, display the error in a modal box (alert).
+     * Add the event listeners on the page.
      */
     async initialize() {
         try {
@@ -39,7 +41,8 @@ export class ProductControler {
 
 
     /**
-     * Event handler: add to cart. Récupère les informations, les valide et les ajoute au panier si elles sont valides.
+     * Event handler for the "Add to cart event".
+     * Get the product informations from the page, validate those data and add them to the cart.
      * @param {Event} event - The event object
      */
     addToCartEventHandler(event) {
@@ -78,8 +81,8 @@ export class ProductControler {
 
 
     /**
-     * Adds a product to the cart.
-     * @param {{id:string, color: string, quantity: number}} productObject - An object containing the informations about the product
+     * Add a product to the cart.
+     * @param {{id:string, color: string, quantity: number}} productObject - The object containing the informations about the product
      */
     addProductToCart(productObject) {
         if (!this.cartModel) {

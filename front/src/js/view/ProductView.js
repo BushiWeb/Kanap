@@ -1,12 +1,15 @@
 import { View } from "./View";
 
 /**
- * Class managing rendering and intarctions with the content of the Product page
+ * Class managing the rendering and the interactions with the content of the product page.
+ * @extends View
  */
 export class ProductView extends View {
     /**
-     * Renders the dynamic content of the product page: insert the elements in the right containers.
-     * @param {Object} product - Object containing the data of the product
+     * Render the dynamic content of the product page.
+     * Insert the products informations in the page.
+     * Add the event listeners.
+     * @param {Object} product - The object containing the product's data.
      */
     render(product) {
         const imageContainerElement = this.getElements('.item__img')[0];
@@ -38,8 +41,8 @@ export class ProductView extends View {
 
 
     /**
-     * Creates an event listener for the "add to cart" button
-     * @param {Function} callback - Function to call when the event fires
+     * Create an event listener for the "add to cart" button.
+     * @param {Function} callback - The function to call when the event fires.
      */
     addAddToCartEventListener(callback) {
         const addToCartButton = document.getElementById('addToCart');
@@ -48,8 +51,8 @@ export class ProductView extends View {
 
 
     /**
-     * Send the color selection element back
-     * @returns {HTMLElement} Color select element
+     * Send the color selection element back.
+     * @return{HTMLSelectElement} Return the color select element.
      */
     getColor() {
         return this.getElements('#colors')[0];
@@ -57,8 +60,8 @@ export class ProductView extends View {
 
 
     /**
-     * Send the quantity selector back
-     * @returns {HTMLElement} Quantity input element
+     * Send the quantity selector back.
+     * @return {HTMLInputElement} Return the quantity input element.
      */
     getQuantity() {
         return this.getElements('#quantity')[0];

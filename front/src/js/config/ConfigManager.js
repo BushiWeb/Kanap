@@ -12,7 +12,7 @@ export class ConfigManager {
 
     /**
      * Build API URL from config data.
-     * @returns {string} API URL
+     * @return {string} Return the API URL.
      */
     getApiUrl() {
         let url = '';

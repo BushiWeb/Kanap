@@ -3,8 +3,8 @@
  */
 export class View {
     /**
-     * Calls the window.alert() method.
-     * @param {string} message - Message to display in the alert
+     * Call the window.alert() method.
+     * @param {string} message - The message to display in the alert.
      */
     alert(message) {
         window.alert(message);
@@ -12,9 +12,9 @@ export class View {
 
     /**
      * Create a DOM Element with attributes.
-     * @param {string} element - Element tag to create
-     * @param {Object} attributes - Element attributes to add to the new element
-     * @returns {HTMLElement} Element object that has been created
+     * @param {string} element - The element tag to create.
+     * @param {Object} attributes - The attributes to add to the new element.
+     * @return {HTMLElement} Return the element object that has been created.
      */
     createElement(element, attributes) {
         let createdElement = document.createElement(element);
@@ -25,9 +25,9 @@ export class View {
     }
 
     /**
-     * Fetch elements from the DOM using their id, class or a CSS selector.
-     * @param {string} selector - Selector of the elements to query
-     * @returns {HTMLElement[]} Array of HTMLElement
+     * Get a list of elements from the DOM.
+     * @param {string} selector - The selector of the elements to query.
+     * @returns {HTMLElement[]} Return an array of elements.
      */
     getElements(selector) {
         let elements = [];

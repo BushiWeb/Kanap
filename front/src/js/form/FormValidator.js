@@ -1,18 +1,11 @@
 /**
- * Utility class allowing for form validation.
- * Allows to test:
- *  Entire forms or arrays of form fields
- *  Input elements
- *  Select elements
- *  Number input elements
- *  Check requirement
- *  Check boundaries
+ * Class containing methods to validate forms.
  */
 export class FormValidator {
     /**
-     * Validates a entire form or an array of inputs.
-     * @param {HTMLElement | Array[HTMLElement]} formFields - HTML Form element or Array of form fields element to validate
-     * @returns {Array[Object:<formField:HTMLElement,valid:boolean,message:string>]} Return an array of objects containing the element object, a boolean indicating it's validity and an optionnal message to display.
+     * Validate an entire form or a list of inputs.
+     * @param {HTMLElement | HTMLElement[]} formFields - The HTML Form element or an array of form inputs elements to validate.
+     * @return {{formField:HTMLElement,valid:boolean,message:string}[]} Return an array of objects containing the element object, a boolean indicating its validity and an optionnal message to display.
      */
     static validateForm(formFields) {
         let formFieldsCollection = formFields;
@@ -37,10 +30,11 @@ export class FormValidator {
 
 
     /**
-     * Validates a form field. Checks the type of input and call the appropriate method to validate it.
-     * @param {HTMLElement} formField - Form field to validate
-     * @param {Object} options - Object containing validations options like requirement, boundaries, text lengths... Applies event if the element doesn't have the corresponding attributes. Override the value of the attributes.
-     * @returns {boolean | string} True if the field is valid, a string containing the problem otherwise.
+     * Validate a form field.
+     * Check the type of input and call the appropriate method to validate it.
+     * @param {HTMLElement} formField - Form field to validate.
+     * @param {Object} options - An object containing validations options like requirement, boundaries, text lengths... Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
+     * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
      */
     static validateFormField(formField, options = null) {
         if (formField.tagName === 'SELECT') {
@@ -56,14 +50,14 @@ export class FormValidator {
 
 
     /**
-     * Validates an input element.
+     * Validate an input element.
      * The function doesn't check that the element is an input element.
-     * Validation checks (in order):
-     *  Required
-     *  Validates input type
-     * @param {HTMLInputElement} formField - Input field to validate
-     * @param {Object} Options - Object containing validations options like requirement, boundaries, text lengths... Applies event if the element doesn't have the corresponding attributes. Override the value of the attributes.
-     * @returns {boolean | string} True if field is valid, a string containing the problem otherwise
+     * Verifications done (in order):
+     *  Required;
+     *  Validates input type.
+     * @param {HTMLInputElement} formField - The input field to validate.
+     * @param {Object} Options - An object containing validations options like requirement, boundaries, text lengths... Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateInput(formField, options = {
         required: null,
@@ -89,13 +83,13 @@ export class FormValidator {
 
 
     /**
-     * Validates a select element.
+     * Validate a select element.
      * The function doesn't check that the element is a select element.
-     * Validation checks (in order):
-     *  Required
-     * @param {HTMLSelectElement} formField - Select field to validate
-     * @param {Object:<required:boolean>} Options - Object containing validations options like requirement. Applies event if the element doesn't have the corresponding attributes. Override the value of the attributes.
-     * @returns {boolean | string} True if field is valid, a string containing the problem otherwise
+     * Verifications done (in order):
+     *  Required.
+     * @param {HTMLSelectElement} formField - The select field to validate.
+     * @param {{required:boolean}} Options - An object containing validations options like requirement. Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateSelect(formField, options = {
         required: false
@@ -112,13 +106,13 @@ export class FormValidator {
 
 
     /**
-     * Validates a number input element.
+     * Validate a number input element.
      * The function doesn't check that the element is a number input element.
-     * Validation checks (in order):
-     *  Min and max
-     * @param {HTMLInputElement} formField - Select field to validate
-     * @param {Object:<min:number, max:number>} options - Object containing validations options like requirement, min and max. Applies event if the element doesn't have the corresponding attributes. Override the value of the attributes.
-     * @returns {boolean | string} True if field is valid, a string containing the problem otherwise
+     * Verifications done (in order):
+     *  Min and max.
+     * @param {HTMLInputElement} formField - The input field to validate.
+     * @param {{min:number, max:number}} options - An object containing validations options like min and max. Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateNumber(formField, options = {
         min: null,
@@ -153,13 +147,13 @@ export class FormValidator {
 
 
     /**
-     * Checks that a field possesses a value different than:
+     * Check that a field possesses a value different than:
      *  null
      *  undefined
      *  empty string.
      * Doesn't check for the required attribute.
-     * @param {HTMLElement} formField - Field to validate against requirement
-     * @returns {boolean | string} True if field is valid against requirement, a string containing the problem otherwise
+     * @param {HTMLElement} formField - The field to validate against requirement.
+     * @return {boolean | string} Return true if the field is valid against requirement, a string containing the problem otherwise.
      */
     static validateRequired(formField) {
         return (formField.value)? true : 'Ce champ doit être complété.';
@@ -167,12 +161,12 @@ export class FormValidator {
 
 
     /**
-     * Validates that the value of an input number is between the boundaries.
+     * Validate that the value of an input number is inside of the boundaries.
      * The function doesn't check that the element is a number input, nor that it possesses the min / max attributes.
-     * @param {HTMLInputElement} formField - Number input field to validate
-     * @param {number} min - Indicates the lower boundary of the value. Defaults to null.
-     * @param {number} max - Indicates the upper boundary of the value. Defaults to null.
-     * @returns {boolean | string} True if field is valid, a string containing the problem otherwise
+     * @param {HTMLInputElement} formField - The number input field to validate.
+     * @param {number} min - The lower boundary of the value. Defaults to null.
+     * @param {number} max - The upper boundary of the value. Defaults to null.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateBoundaries(formField, min = null, max = null) {
         const parsedValue = parseFloat(formField.value);

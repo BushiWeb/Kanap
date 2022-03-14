@@ -2,12 +2,13 @@ import { HomeView } from '../view/HomeView';
 import { ProductModel } from '../model/ProductModel';
 
 /**
- * Entry point for the Home page: manages the loading of the page by fetching the data from the model and asking the view to render them.
+ * Class representing the entry point of the home page.
+ * Serve as a mediator between the data and the rendering.
  */
 export class HomeControler {
     /**
-     * Creates the view and the model
-     * @param {Object | string} config - Configuration object or string to use.
+     * Create the view and the model.
+     * @param {Object | string} config - The configuration object or string to use.
      */
     constructor(config) {
         this.view = new HomeView();
@@ -15,8 +16,9 @@ export class HomeControler {
     }
 
     /**
-     * Activates when the Home page loads. Fetches the data and display them.
-     * If an error occurs while fetching the data, alerts an error.
+     * Activate when the Home page loads.
+     * Fetch the data and display them.
+     * If an error occurs while fetching the data, display the error in a modal box (alert).
      */
     async initialize() {
         try {
