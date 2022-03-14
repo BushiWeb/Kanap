@@ -173,6 +173,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
             expect(alertMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalledWith('Merci de choisir une couleur avant d\'ajouter votre produit au panier.');
         });
 
         it('should alert an error if the quantity is invalid', () => {
@@ -180,6 +181,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             userEvent.type(getByLabelText(document.body, 'Quantity'), '-3');
             userEvent.click(getByText(document.body, 'Add to cart'));
             expect(alertMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalledWith('Merci de choisir une quantité de produit valide.');
         });
 
         it('should add a new product to the cart by calling the local storage set item method with the previous cart containing the new item', () => {
@@ -195,6 +197,8 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             expect(localStorageSetItemMock).toHaveBeenCalled();
             expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+            expect(alertMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
         });
 
         it('should add some quantity to the same product in the cart and call the local storage set item method', () => {
@@ -217,6 +221,8 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             expect(localStorageSetItemMock).toHaveBeenCalled();
             expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+            expect(alertMock).toHaveBeenCalled();
+            expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
         });
     });
 });

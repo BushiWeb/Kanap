@@ -72,6 +72,8 @@ export class ProductControler {
             color: colorElement.value,
             quantity: parseInt(quantityElement.value)
         });
+
+        this.view.alert('Le produit a bien été ajouté au panier.')
     }
 
 

@@ -20,8 +20,6 @@ export class CartModel {
             return [];
         }
 
-        console.log(cartObject);
-
         return JSON.parse(cartObject);
     }
 
