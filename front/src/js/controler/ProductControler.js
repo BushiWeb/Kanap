@@ -1,6 +1,8 @@
 import { ProductView } from '../view/ProductView';
 import { ProductModel } from '../model/ProductModel';
 import { UrlManager } from '../model/UrlManager';
+import { CartModel } from '../model/CartModel';
+import { FormValidator } from '../form/FormValidator';
 
 /**
  * Entry point for the Product page:
@@ -16,7 +18,7 @@ export class ProductControler {
      */
     constructor(config, url = window.location.href) {
         this.view = new ProductView();
-        this.model = new ProductModel(config);
+        this.productModel = new ProductModel(config);
         this.urlManager = new UrlManager(url);
     }
 
@@ -25,12 +27,63 @@ export class ProductControler {
      */
     async initialize() {
         try {
-            const productId = this.urlManager.getParameter('id');
-            const productData = await this.model.getProduct(productId);
+            this.productId = this.urlManager.getParameter('id');
+            const productData = await this.productModel.getProduct(this.productId);
             this.view.render(productData);
+            this.view.addAddToCartEventListener(this.addToCartEventHandler.bind(this));
         } catch (error) {
             console.error(error);
             this.view.alert('Un problème a eu lieu lors de la récupération des informations sur le produit. Veuillez nous excuser pour le dérangement.');
         }
+    }
+
+
+    /**
+     * Event handler: add to cart. Récupère les informations, les valide et les ajoute au panier si elles sont valides.
+     * @param {Event} event - The event object
+     */
+    addToCartEventHandler(event) {
+        let colorElement = this.view.getColor();
+        let quantityElement = this.view.getQuantity();
+        let errorMessage = '';
+
+        if (typeof FormValidator.validateFormField(colorElement, {
+            required: true
+        }) === 'string') {
+            errorMessage = 'Merci de choisir une couleur avant d\'ajouter votre produit au panier.';
+        }
+
+        if (typeof FormValidator.validateFormField(quantityElement, {
+            required: true
+        }) === 'string') {
+            if (errorMessage) {
+                errorMessage += '\n';
+            }
+            errorMessage += 'Merci de choisir une quantité de produit valide.'
+        }
+
+        if (errorMessage) {
+            this.view.alert(errorMessage);
+            return;
+        }
+
+        this.addProductToCart({
+            id: this.productId,
+            color: colorElement.value,
+            quantity: parseInt(quantityElement.value)
+        });
+    }
+
+
+    /**
+     * Adds a product to the cart.
+     * @param {{id:string, color: string, quantity: number}} productObject - An object containing the informations about the product
+     */
+    addProductToCart(productObject) {
+        if (!this.cartModel) {
+            this.cartModel = new CartModel();
+        }
+
+        this.cartModel.addProduct(productObject);
     }
 }

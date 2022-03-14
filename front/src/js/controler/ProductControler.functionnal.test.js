@@ -3,6 +3,8 @@
  */
 
 import '@testing-library/jest-dom';
+import { getByLabelText, getByText, queries } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
 
 import { ProductControler } from './ProductControler';
 import { CONFIG } from '../config/config';
@@ -28,11 +30,25 @@ describe('ProductControler Functionnal Test Suite', () => {
         const descriptionElt = document.createElement('p');
         descriptionElt.id = 'description';
 
+        const quantityInputElt = document.createElement('input');
+        quantityInputElt.type = 'number';
+        quantityInputElt.id = 'quantity';
+        quantityInputElt.min = 1;
+        quantityInputElt.max = 100;
+        quantityInputElt.value = 0;
+        const quantityLabel = document.createElement('label');
+        quantityLabel.textContent = 'Quantity';
+        quantityLabel.setAttribute('for', 'quantity');
+
         const selectElt = document.createElement('select');
         selectElt.id = 'colors';
         const optionElt = document.createElement('option');
+        const colorLabel = document.createElement('label');
+        colorLabel.textContent = 'Color';
+        colorLabel.setAttribute('for', 'colors');
 
         const addToCartButton = document.createElement('button');
+        addToCartButton.textContent = 'Add to cart';
         addToCartButton.id = 'addToCart';
 
         document.body.appendChild(imageContainerElt);
@@ -40,6 +56,9 @@ describe('ProductControler Functionnal Test Suite', () => {
         priceContainerElt.appendChild(priceElt);
         document.body.appendChild(priceContainerElt);
         document.body.appendChild(descriptionElt);
+        document.body.appendChild(quantityLabel);
+        document.body.appendChild(quantityInputElt);
+        document.body.appendChild(colorLabel);
         selectElt.appendChild(optionElt);
         document.body.appendChild(selectElt);
         document.body.appendChild(addToCartButton);
@@ -107,6 +126,97 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(consoleMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalled();
 
-        })
+        });
+    });
+
+
+    describe('Add to cart Event Test Suite', () => {
+        global.fetch = jest.fn().mockImplementation();
+        const alertMock = jest.spyOn(window, 'alert').mockImplementation();
+        const localStorageGetItemMock = jest.spyOn(Storage.prototype, 'getItem');
+        const localStorageSetItemMock = jest.spyOn(Storage.prototype, 'setItem');
+        const cartExample = [
+            {
+                id: '1',
+                color: 'blue',
+                quantity: 3
+            },
+            {
+                id: '2',
+                color: 'pink',
+                quantity: 6
+            },
+            {
+                id: '3',
+                color: 'red',
+                quantity: 2
+            }
+        ];
+
+        beforeEach(async () => {
+            global.fetch.mockReset();
+            alertMock.mockReset();
+            localStorageGetItemMock.mockReset();
+            localStorageSetItemMock.mockReset();
+            localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
+
+            global.fetch.mockResolvedValue({
+                json: () => Promise.resolve(MOCKED_API_DATA[0]),
+                ok: true
+            })
+
+            await controlerTest.initialize();
+        });
+
+
+        it('should alert an error if the color is not selected', () => {
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
+            userEvent.click(getByText(document.body, 'Add to cart'));
+            expect(alertMock).toHaveBeenCalled();
+        });
+
+        it('should alert an error if the quantity is invalid', () => {
+            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '-3');
+            userEvent.click(getByText(document.body, 'Add to cart'));
+            expect(alertMock).toHaveBeenCalled();
+        });
+
+        it('should add a new product to the cart by calling the local storage set item method with the previous cart containing the new item', () => {
+            const returnCart = cartExample.concat({
+                id: MOCKED_API_DATA[0]._id,
+                color: MOCKED_API_DATA[0].colors[0],
+                quantity: 10
+            });
+
+            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
+            userEvent.click(getByText(document.body, 'Add to cart'));
+
+            expect(localStorageSetItemMock).toHaveBeenCalled();
+            expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+        });
+
+        it('should add some quantity to the same product in the cart and call the local storage set item method', () => {
+            const doubleProductCartValue = cartExample.concat({
+                id: MOCKED_API_DATA[0]._id,
+                color: MOCKED_API_DATA[0].colors[0],
+                quantity: 2
+            });
+            localStorageGetItemMock.mockReturnValue(JSON.stringify(doubleProductCartValue));
+
+            const returnCart = cartExample.concat({
+                id: MOCKED_API_DATA[0]._id,
+                color: MOCKED_API_DATA[0].colors[0],
+                quantity: 12
+            });
+
+            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
+            userEvent.click(getByText(document.body, 'Add to cart'));
+
+            expect(localStorageSetItemMock).toHaveBeenCalled();
+            expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+        });
     });
 });
