@@ -169,8 +169,46 @@ export class FormValidator {
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateBoundaries(formField, min = null, max = null) {
+        let minValidation = (min !== null)? this.validateMin(formField, min) : true;
+        let maxValidation = (max !== null)? this.validateMax(formField, max) : true;
+        let errorMessage = ''
+
+        if (typeof minValidation === 'string') {
+            errorMessage = minValidation;
+        }
+
+        if (typeof maxValidation === 'string') {
+            errorMessage = (errorMessage)? `La valeur doit être comprise entre ${min} et ${max}` : maxValidation;
+        }
+
+        return (errorMessage)? errorMessage : true;
+    }
+
+
+
+    /**
+     * Validate that the value of an input if above a lower boundary.
+     * @param {HTMLInputElement} formField - The field element to validate.
+     * @param {number} min - The lower boundary value.
+     * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
+     */
+    static validateMin(formField, min) {
         const parsedValue = parseFloat(formField.value);
 
-        return ((min !== null && parsedValue < min) || (max !== null && parsedValue > max))? `La valeur doit être comprise entre ${min} et ${max}.` : true;
+        return (parsedValue >= min)? true : `La valeur doit être supérieure à ${min}`;
+    }
+
+
+
+    /**
+     * Validate that the value of an input if bellow an upper boundary.
+     * @param {HTMLInputElement} formField - The field element to validate.
+     * @param {number} max - The upper boundary value.
+     * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
+     */
+    static validateMax(formField, max) {
+        const parsedValue = parseFloat(formField.value);
+
+        return (parsedValue <= max)? true : `La valeur doit être supérieure à ${max}`;
     }
 }
