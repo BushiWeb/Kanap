@@ -23,7 +23,18 @@ describe('HomeControler Functionnal Test Suite', () => {
         })
 
 
-        it('should display the list of products if no error occurs while fetching', async () => {
+        it('should display the list of products, with the right number of cards', async () => {
+            global.fetch.mockResolvedValue({
+                json: () => Promise.resolve(MOCKED_API_DATA),
+                ok : true
+            });
+
+            await controlerTest.initialize();
+            const productsCardElements = document.getElementsByTagName('a');
+            expect(productsCardElements.length).toBe(MOCKED_API_DATA.length);
+        });
+
+        it('should display the right produt\'s informations', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok : true
@@ -36,7 +47,6 @@ describe('HomeControler Functionnal Test Suite', () => {
             const descriptionElement = document.getElementsByClassName('productDescription')[0];
             const imageElement = document.getElementsByTagName('img')[0];
 
-            expect(productsCardElements.length).toBe(MOCKED_API_DATA.length);
             expect(productsCardElements[0]).toContainElement(nameElement);
             expect(productsCardElements[0]).toContainElement(descriptionElement);
             expect(productsCardElements[0]).toContainElement(imageElement);

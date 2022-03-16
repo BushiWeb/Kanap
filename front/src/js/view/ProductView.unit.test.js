@@ -94,11 +94,8 @@ describe('ProductView Unit Test Suite', () => {
     describe('getColor() Method Test Suite', () => {
         it('should return the select color element', () => {
             productViewTest.render(MOCKED_API_DATA[0]);
-
             const selectElement = getByRole(document.body, 'combobox');
-
             const selectedColor = productViewTest.getColor();
-
             expect(selectedColor).toBe(selectElement);
         });
 
@@ -110,20 +107,16 @@ describe('ProductView Unit Test Suite', () => {
             userEvent.selectOptions(selectElement, optionElt);
 
             const selectedColor = productViewTest.getColor();
-
             expect(selectedColor.value).toBe(MOCKED_API_DATA[0].colors[0]);
         });
     });
 
 
     describe('getQuantity() Method Test Suite', () => {
-        it('should return the selected quantity input element', () => {
+        it('should return the quantity input element', () => {
             productViewTest.render(MOCKED_API_DATA[0]);
-
             const quantityElement = getByRole(document.body, 'spinbutton');
-
             const selectedQuantity = productViewTest.getQuantity();
-
             expect(selectedQuantity).toBe(quantityElement);
         });
     });

@@ -14,7 +14,15 @@ describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
     const controlerTest = new ProductControler(CONFIG, testUrl);
 
+    global.fetch = jest.fn().mockImplementation();
+    const consoleMock = jest.spyOn(global.console, 'error');
+    const alertMock = jest.spyOn(window, 'alert');
+
     beforeEach(() => {
+        global.fetch.mockReset();
+        consoleMock.mockReset();
+        alertMock.mockReset();
+
         document.body.innerHTML = '';
 
         const imageContainerElt = document.createElement('div');
@@ -66,17 +74,7 @@ describe('ProductControler Functionnal Test Suite', () => {
 
 
     describe('initialize() Method Test Suite', () => {
-        global.fetch = jest.fn().mockImplementation();
-        const consoleMock = jest.spyOn(global.console, 'error');
-        const alertMock = jest.spyOn(window, 'alert');
-
-        beforeEach(() => {
-            global.fetch.mockReset();
-            consoleMock.mockReset();
-            alertMock.mockReset();
-        });
-
-        it('should display the product\'s infos if no error occurs while fetching', async () => {
+        it('should display the product\'s informations', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true
@@ -131,8 +129,6 @@ describe('ProductControler Functionnal Test Suite', () => {
 
 
     describe('Add to cart Event Test Suite', () => {
-        global.fetch = jest.fn().mockImplementation();
-        const alertMock = jest.spyOn(window, 'alert').mockImplementation();
         const localStorageGetItemMock = jest.spyOn(Storage.prototype, 'getItem');
         const localStorageSetItemMock = jest.spyOn(Storage.prototype, 'setItem');
         const cartExample = [
@@ -154,8 +150,6 @@ describe('ProductControler Functionnal Test Suite', () => {
         ];
 
         beforeEach(async () => {
-            global.fetch.mockReset();
-            alertMock.mockReset();
             localStorageGetItemMock.mockReset();
             localStorageSetItemMock.mockReset();
             localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
@@ -184,7 +178,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(alertMock).toHaveBeenCalledWith('Merci de choisir une quantité de produit valide.');
         });
 
-        it('should add a new product to the cart by calling the local storage set item method with the previous cart containing the new item', () => {
+        it('should add a new product to the cart by calling the localStorage.setItem() method with the previous cart containing the new item', () => {
             const returnCart = cartExample.concat({
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
@@ -201,7 +195,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
         });
 
-        it('should add some quantity to the same product in the cart and call the local storage set item method', () => {
+        it('should change the quantity of the same product in the cart and call the localStorage.setItem() method', () => {
             const doubleProductCartValue = cartExample.concat({
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],

@@ -5,22 +5,22 @@
 import { ProductApiManager } from "./ProductApiManager";
 import { MOCKED_API_DATA } from "./mockedApiData";
 import { CONFIG_TEST, TEST_URL } from "../config/mocked-configuration";
-
-
-let testApiManager = new ProductApiManager(CONFIG_TEST);
+import { ConfigManager } from '../config/ConfigManager';
 
 
 describe('ProductApiManager Unit Test Suite', () => {
     global.fetch = jest.fn().mockImplementation();
-    const consoleMock = jest.spyOn(global.console, 'error');
+    const getApiUrlMock = jest.spyOn(ConfigManager.prototype, 'getApiUrl');
+    getApiUrlMock.mockReturnValue(TEST_URL);
+    const testApiManager = new ProductApiManager(CONFIG_TEST);
 
     beforeEach(() => {
         global.fetch.mockReset();
-        consoleMock.mockReset();
+        getApiUrlMock.mockReset();
     })
 
 
-    describe('ProductApiManager Constructor Test Suite', () => {
+    describe('Constructor Test Suite', () => {
         it('should contain the right API URL', () => {
             expect(testApiManager.apiUrl).toBe(TEST_URL);
         });
@@ -77,13 +77,27 @@ describe('ProductApiManager Unit Test Suite', () => {
 
 
     describe('getProduct() Method Test Suite', () => {
-        it('should call the fetch() function', async () => {
+        it('should call the fetch() function with the completed URL', async () => {
+            const completedUrl = TEST_URL + MOCKED_API_DATA[0]._id;
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(['test']),
                 ok : true
             });
-            const data = await testApiManager.getProduct();
+            const data = await testApiManager.getProduct(MOCKED_API_DATA[0]._id);
             expect(global.fetch).toHaveBeenCalled();
+            expect(global.fetch).toHaveBeenCalledWith(completedUrl);
+        });
+
+        it('should call the fetch() function with the completed URL if the apiUrl does\'t contain a slash at the end', async () => {
+            testApiManager.apiUrl = testApiManager.apiUrl.substring(0, testApiManager.apiUrl.length - 1);
+            const completedUrl = TEST_URL + MOCKED_API_DATA[0]._id;
+            global.fetch.mockResolvedValueOnce({
+                json: () => Promise.resolve(['test']),
+                ok : true
+            });
+            const data = await testApiManager.getProduct(MOCKED_API_DATA[0]._id);
+            expect(global.fetch).toHaveBeenCalled();
+            expect(global.fetch).toHaveBeenCalledWith(completedUrl);
         });
 
         it('should return the data from the API', async () => {
