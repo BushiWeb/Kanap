@@ -12,13 +12,17 @@ import { MOCKED_API_DATA } from '../api/mockedApiData';
 
 describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
-    const controlerTest = new ProductControler(CONFIG, testUrl);
+    delete window.location;
+    window.location = new URL(testUrl);
+    const controlerTest = new ProductControler(CONFIG);
 
     global.fetch = jest.fn().mockImplementation();
     const consoleMock = jest.spyOn(global.console, 'error');
     const alertMock = jest.spyOn(window, 'alert');
 
     beforeEach(() => {
+        window.location.href = testUrl;
+
         global.fetch.mockReset();
         consoleMock.mockReset();
         alertMock.mockReset();
@@ -113,7 +117,8 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it('should alert and print an error if there is no product id in the url', async () => {
-            const controlerTestUrlError = new ProductControler(CONFIG, testUrl.replace(/\?id=.*$/, ''));
+            window.location.href = testUrl.replace(/\?id=.*$/, '');
+            const controlerTestUrlError = new ProductControler(CONFIG);
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true

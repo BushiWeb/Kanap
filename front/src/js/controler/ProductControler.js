@@ -13,12 +13,11 @@ export class ProductControler {
     /**
      * Create the view and the model
      * @param {Object | string} config - Configuration object or string to use.
-     * @param {string} url - Optionnal parameter, URL of the page.
      */
-    constructor(config, url = window.location.href) {
+    constructor(config) {
         this.view = new ProductView();
         this.productModel = new ProductModel(config);
-        this.urlManager = new UrlManager(url);
+        this.urlManager = new UrlManager();
     }
 
     /**
