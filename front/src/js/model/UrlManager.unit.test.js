@@ -13,52 +13,77 @@ describe('UrlManager Unit Test Suite', () => {
         name2: 'value'
     }
 
+    const urlSearchParamsAppendMock = jest.spyOn(URLSearchParams.prototype, 'append');
+    const urlSearchParamsGetMock = jest.spyOn(URLSearchParams.prototype, 'get');
+    const urlSearchParamsHasMock = jest.spyOn(URLSearchParams.prototype, 'has');
+    const urlHrefMock = jest.spyOn(URL.prototype, 'href', 'set');
+
+    beforeEach(() => {
+        urlSearchParamsAppendMock.mockReset();
+        urlSearchParamsGetMock.mockReset();
+        urlSearchParamsHasMock.mockReset();
+        urlHrefMock.mockReset();
+    })
+
+
     describe('constructor() Test Suite', () => {
-        it('should create a URL object with the current page URL', () => {
-            const urlManagerTest = new UrlManager();
-            expect(urlManagerTest.url.href).toBe(window.location.href);
+        const urlConstructorMock = jest.spyOn(global, 'URL');
+        const urlManagerAddParameter = jest.spyOn(UrlManager.prototype, 'addParameter');
+
+        beforeEach(() => {
+            urlConstructorMock.mockReset();
+            urlManagerAddParameter.mockReset();
         });
 
-        it('should create a URL object with the specified URL', () => {
+        afterAll(() => {
+            urlConstructorMock.mockRestore();
+            urlManagerAddParameter.mockRestore();
+        });
+
+        it('should call the URL constructor with the current page\'s URL', () => {
+            const urlManagerTest = new UrlManager();
+            expect(urlConstructorMock).toHaveBeenCalled();
+            expect(urlConstructorMock).toHaveBeenCalledWith(window.location.href);
+        });
+
+        it('should call the URL constructor with the specified URL', () => {
             const urlManagerTest = new UrlManager(testUrl);
-            expect(urlManagerTest.url.href).toBe(testUrl);
+            expect(urlConstructorMock).toHaveBeenCalled();
+            expect(urlConstructorMock).toHaveBeenCalledWith(testUrl);
         });
 
         it('should create a URL with the right parameters', () => {
             const urlManagerTest = new UrlManager(testUrl, testParameterObject);
-            const urlSearchParams = urlManagerTest.url.searchParams;
-
-            for (const parameter in testParameterObject) {
-                expect(urlSearchParams.has(parameter)).toBeTruthy();
-                expect(urlSearchParams.get(parameter)).toBe(testParameterObject[parameter]);
-            }
+            expect(urlManagerAddParameter).toHaveBeenCalledTimes(Object.keys(testParameterObject).length);
         });
     });
 
 
     describe('setUrl() Method Test Suite', () => {
-        it('should change the URL of the URL object', () => {
+        it('should call the URL.href setter', () => {
             const urlManagerTest = new UrlManager();
             urlManagerTest.setUrl(testUrl);
-            expect(urlManagerTest.url.href).toBe(testUrl);
+            expect(urlHrefMock).toHaveBeenCalled();
+            expect(urlHrefMock).toHaveBeenCalledWith(testUrl);
         });
     });
 
 
     describe('addParameter() Method Test Suite', () => {
-        it('should add a new parameter to the URL with the right value', () => {
+        it('should call the URL.serachParams.append() method with the right parameters', () => {
             const urlManagerTest = new UrlManager(testUrl);
             urlManagerTest.addParameter(testParameterName, testParameterValue);
-            expect(urlManagerTest.url.searchParams.has(testParameterName)).toBeTruthy();
-            expect(urlManagerTest.url.searchParams.get(testParameterName)).toBe(testParameterValue);
+            expect(urlSearchParamsAppendMock).toHaveBeenCalled();
+            expect(urlSearchParamsAppendMock).toHaveBeenCalledWith(testParameterName, testParameterValue);
         });
     });
 
 
     describe('getParameter() Method Test Suite', () => {
-        it('should return the value of the parameter', () => {
+        it('should return the value of the parameter if the parameter exists', () => {
             const urlManagerTest = new UrlManager(testUrl);
-            urlManagerTest.addParameter(testParameterName, testParameterValue);
+            urlSearchParamsGetMock.mockReturnValue(testParameterValue);
+            urlSearchParamsHasMock.mockReturnValue(true);
             const parameterValue = urlManagerTest.getParameter(testParameterName);
             expect(parameterValue).toBe(testParameterValue);
         });
@@ -66,6 +91,7 @@ describe('UrlManager Unit Test Suite', () => {
 
         it('should throw an error if the parameter doesn\'t exist', () => {
             const urlManagerTest = new UrlManager(testUrl);
+            urlSearchParamsHasMock.mockReturnValue(false);
             expect(() => {
                 urlManagerTest.getParameter('test');
             }).toThrow();
