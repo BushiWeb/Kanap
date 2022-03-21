@@ -139,13 +139,6 @@ describe('FormValidator Unit Test Suite', () => {
             const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1, inputValue - 1);
             expect(typeof boundariesValidarionResult).toBe('string');
         });
-
-        it('should return an error message if both the min and the max validations fail', () => {
-            validateMinMock.mockReturnValue('error');
-            validateMaxMock.mockReturnValue('error');
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1, inputValue - 1);
-            expect(typeof boundariesValidarionResult).toBe('string');
-        });
     });
 
 
