@@ -1,15 +1,15 @@
-import { ProductApiManager } from "../api/ProductApiManager";
+import { ProductApiDao } from "../dao/ProductApiDao";
 
 /**
  * Class managing products data.
  */
 export class ProductModel {
     /**
-     * Create an instance of the ProductApiManager.
-     * @param {Object | string} config - The configuration object or string, passed to the ProductApiManager.
+     * Create an instance of the ProductApiDao.
+     * @param {Object | string} config - The configuration object or string, passed to the ProductApiDao.
      */
     constructor(config) {
-        this.apiManager = new ProductApiManager(config);
+        this.apiManager = new ProductApiDao(config);
     }
 
 

@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 
 import { ProductControler } from './ProductControler';
 import { CONFIG } from '../config/config';
-import { MOCKED_API_DATA } from '../api/mockedApiData';
+import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;

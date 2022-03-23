@@ -3,7 +3,7 @@ import { ConfigManager } from "../config/ConfigManager";
 /**
  * Class managing communication with the API
  */
-export class ProductApiManager {
+export class ProductApiDao {
     /**
      * Get API URL from the configuration file.
      * @param {Object | string} config - The configuration object or string.
@@ -15,16 +15,29 @@ export class ProductApiManager {
 
 
     /**
-     * Fetch all products from the API.
-     * @return {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
-     * @throws Throw an error if the request fails or if the status is not ok.
+     * Send a request to the API.
+     * @param {string} apiRoute - request's route to append to the URL. Defaults to no route.
+     * @return {Object} Return the request response data, in JSON format.
+     * @throws Throw an arror if the request fails or if the status is not ok.
      */
-    async getAllProducts() {
-        let response = await fetch(this.apiUrl);
+    async sendRequest(apiRoute = '') {
+        const requestUrl = (/.+\/$/.test(this.apiUrl))? this.apiUrl + apiRoute : this.apiUrl + '/' + apiRoute;
+
+        let response = await fetch(requestUrl);
         if (!response.ok) {
             throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
         }
-        let data = await response.json();
+
+        return await response.json();
+    }
+
+
+    /**
+     * Fetch all products from the API.
+     * @return {Array} Return an array containing the data. If no data is returned from the API, return an empty array.
+     */
+    async getAllProducts() {
+        let data = await this.sendRequest();
         if (!data) {
             data = [];
         }
@@ -36,20 +49,9 @@ export class ProductApiManager {
      * Fetch one product from the API.
      * @param {string} productId - The id of the product.
      * @returns {Object} Return an object containing the data of the product.
-     * @throws Throw an error if the request failsor if the status is not ok.
      */
     async getProduct(productId) {
-        let fetchUrl = this.apiUrl;
-        if (!/.+\/$/.test(fetchUrl)) {
-            fetchUrl += '/';
-        }
-        fetchUrl += productId;
-
-        let response = await fetch(fetchUrl);
-        if (!response.ok) {
-            throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
-        }
-        let data = await response.json();
+        let data = await this.sendRequest(productId);
         return data;
     }
 }

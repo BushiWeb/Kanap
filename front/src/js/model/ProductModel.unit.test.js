@@ -1,6 +1,6 @@
-import { ProductApiManager } from "../api/ProductApiManager";
+import { ProductApiDao } from "../dao/ProductApiDao";
 import { ProductModel } from "./ProductModel";
-import { MOCKED_API_DATA } from "../api/mockedApiData";
+import { MOCKED_API_DATA } from "../dao/mockedApiData";
 import { CONFIG_TEST } from "../config/mocked-configuration";
 
 describe('ProductModel Unit Test Suite', () => {
@@ -8,13 +8,13 @@ describe('ProductModel Unit Test Suite', () => {
 
 
     describe('getAllProducts() Method Test Suite', () => {
-        const apiManagerGetAllProductsMock = jest.spyOn(ProductApiManager.prototype, 'getAllProducts');
+        const apiManagerGetAllProductsMock = jest.spyOn(ProductApiDao.prototype, 'getAllProducts');
 
         beforeEach(() => {
             apiManagerGetAllProductsMock.mockReset();
         });
 
-        it('should call the ProductApiManager.getAllProducts() method', async () => {
+        it('should call the ProductApiDao.getAllProducts() method', async () => {
             apiManagerGetAllProductsMock.mockResolvedValueOnce(MOCKED_API_DATA);
 
             await productModel.getAllProducts();
@@ -38,9 +38,9 @@ describe('ProductModel Unit Test Suite', () => {
 
 
     describe('getProduct() Method Test Suite', () => {
-        const apiManagerGetProductMock = jest.spyOn(ProductApiManager.prototype, 'getProduct');
+        const apiManagerGetProductMock = jest.spyOn(ProductApiDao.prototype, 'getProduct');
 
-        it('should call the ProductApiManager.getProduct() method with the product id as a parameter', async () => {
+        it('should call the ProductApiDao.getProduct() method with the product id as a parameter', async () => {
             apiManagerGetProductMock.mockResolvedValueOnce(MOCKED_API_DATA[0]);
 
             await productModel.getProduct(MOCKED_API_DATA[0]._id);

@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import { getByRole, getByText } from '@testing-library/dom';
 
 import { ProductView } from './ProductView';
-import { MOCKED_API_DATA } from "../api/mockedApiData";
+import { MOCKED_API_DATA } from "../dao/mockedApiData";
 
 
 describe('ProductView Unit Test Suite', () => {

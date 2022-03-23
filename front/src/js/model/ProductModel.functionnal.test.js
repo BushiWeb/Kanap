@@ -1,6 +1,6 @@
-import { ProductApiManager } from "../api/ProductApiManager";
+import { ProductApiDao } from "../dao/ProductApiDao";
 import { ProductModel } from "./ProductModel";
-import { MOCKED_API_DATA } from "../api/mockedApiData";
+import { MOCKED_API_DATA } from "../dao/mockedApiData";
 import { CONFIG_TEST } from "../config/mocked-configuration";
 
 describe('ProductModel Unit Test Suite', () => {

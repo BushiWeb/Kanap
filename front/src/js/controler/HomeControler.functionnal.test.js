@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 
 import { HomeControler } from './HomeControler';
 import { CONFIG } from '../config/config';
-import { MOCKED_API_DATA } from '../api/mockedApiData';
+import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('HomeControler Functionnal Test Suite', () => {
     const controlerTest = new HomeControler(CONFIG);

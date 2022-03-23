@@ -5,7 +5,7 @@
 import '@testing-library/jest-dom';
 
 import { HomeView } from "./HomeView";
-import { MOCKED_API_DATA } from "../api/mockedApiData";
+import { MOCKED_API_DATA } from "../dao/mockedApiData";
 
 
 describe('HomeView Unit Test Suite', () => {
