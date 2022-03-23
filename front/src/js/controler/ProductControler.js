@@ -1,5 +1,5 @@
 import { ProductView } from '../view/ProductView';
-import { ProductManager } from '../model/ProductManager';
+import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { UrlManager } from '../model/UrlManager';
 import { CartModel } from '../model/CartModel';
 import { FormValidator } from '../form/FormValidator';
@@ -16,7 +16,7 @@ export class ProductControler {
      */
     constructor(config) {
         this.view = new ProductView();
-        this.productManager = new ProductManager(config);
+        this.productManager = ProductManagerFactory.createProductManager(config);
         this.urlManager = new UrlManager();
     }
 

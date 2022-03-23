@@ -1,5 +1,5 @@
 import { HomeView } from '../view/HomeView';
-import { ProductManager } from '../model/ProductManager';
+import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 
 /**
  * Class representing the entry point of the home page.
@@ -12,7 +12,7 @@ export class HomeControler {
      */
     constructor(config) {
         this.view = new HomeView();
-        this.productManager = new ProductManager(config);
+        this.productManager = ProductManagerFactory.createProductManager(config);
     }
 
     /**
