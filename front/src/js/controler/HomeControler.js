@@ -1,5 +1,5 @@
 import { HomeView } from '../view/HomeView';
-import { ProductModel } from '../model/ProductModel';
+import { ProductManager } from '../model/ProductManager';
 
 /**
  * Class representing the entry point of the home page.
@@ -12,7 +12,7 @@ export class HomeControler {
      */
     constructor(config) {
         this.view = new HomeView();
-        this.model = new ProductModel(config);
+        this.model = new ProductManager(config);
     }
 
     /**

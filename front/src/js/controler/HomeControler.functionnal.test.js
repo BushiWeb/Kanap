@@ -28,6 +28,8 @@ describe('HomeControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok : true
             });
+            controlerTest.model.productsListComplete = false;
+            controlerTest.model.products = [];
 
             await controlerTest.initialize();
             const productsCardElements = document.getElementsByTagName('a');
@@ -39,6 +41,8 @@ describe('HomeControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok : true
             });
+            controlerTest.model.productsListComplete = false;
+            controlerTest.model.products = [];
 
             await controlerTest.initialize();
 
@@ -58,6 +62,19 @@ describe('HomeControler Functionnal Test Suite', () => {
             expect(imageElement).toHaveAttribute('alt', MOCKED_API_DATA[0].altTxt);
         });
 
+        it('should save the date in the manager', async () => {
+            global.fetch.mockResolvedValue({
+                json: () => Promise.resolve(MOCKED_API_DATA),
+                ok : true
+            });
+            controlerTest.model.productsListComplete = false;
+            controlerTest.model.products = [];
+
+            await controlerTest.initialize();
+            expect(controlerTest.model.products).toBe(MOCKED_API_DATA);
+            expect(controlerTest.model.productsListComplete).toBeTruthy();
+        });
+
         it('should alert and print an error if an error occurs while fetching the data', async () => {
             const consoleMock = jest.spyOn(global.console, 'error');
             const alertMock = jest.spyOn(window, 'alert');
@@ -66,6 +83,8 @@ describe('HomeControler Functionnal Test Suite', () => {
 
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
+            controlerTest.model.productsListComplete = false;
+            controlerTest.model.products = [];
 
             await controlerTest.initialize();
 

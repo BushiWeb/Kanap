@@ -1,5 +1,5 @@
 import { ProductView } from '../view/ProductView';
-import { ProductModel } from '../model/ProductModel';
+import { ProductManager } from '../model/ProductManager';
 import { UrlManager } from '../model/UrlManager';
 import { CartModel } from '../model/CartModel';
 import { FormValidator } from '../form/FormValidator';
@@ -16,7 +16,7 @@ export class ProductControler {
      */
     constructor(config) {
         this.view = new ProductView();
-        this.productModel = new ProductModel(config);
+        this.productManager = new ProductManager(config);
         this.urlManager = new UrlManager();
     }
 
@@ -29,7 +29,7 @@ export class ProductControler {
     async initialize() {
         try {
             this.productId = this.urlManager.getParameter('id');
-            const productData = await this.productModel.getProduct(this.productId);
+            const productData = await this.productManager.getProduct(this.productId);
             this.view.render(productData);
             this.view.addAddToCartEventListener(this.addToCartEventHandler.bind(this));
         } catch (error) {

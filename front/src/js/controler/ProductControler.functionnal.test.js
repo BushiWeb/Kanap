@@ -83,6 +83,8 @@ describe('ProductControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true
             })
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -106,9 +108,24 @@ describe('ProductControler Functionnal Test Suite', () => {
             }
         });
 
+        it('should save the data to the manager', async () => {
+            global.fetch.mockResolvedValue({
+                json: () => Promise.resolve(MOCKED_API_DATA[0]),
+                ok: true
+            })
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
+
+            await controlerTest.initialize();
+
+            expect(controlerTest.productManager.products).toContainEqual(MOCKED_API_DATA[0]);
+        });
+
         it('should alert and print an error if an error occurs while fetching the data', async () => {
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -123,6 +140,8 @@ describe('ProductControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true
             })
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
 
             await controlerTestUrlError.initialize();
 
