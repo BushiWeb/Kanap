@@ -16,7 +16,7 @@ export class ProductControler {
      */
     constructor(config) {
         this.view = new ProductView();
-        this.productManager = ProductManagerFactory.createProductManager(config);
+        this.productManager = ProductManagerFactory.createProductManager('KanapApi', config);
         this.urlManager = new UrlManager();
     }
 

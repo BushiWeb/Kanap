@@ -12,7 +12,7 @@ export class HomeControler {
      */
     constructor(config) {
         this.view = new HomeView();
-        this.productManager = ProductManagerFactory.createProductManager(config);
+        this.productManager = ProductManagerFactory.createProductManager('KanapApi', config);
     }
 
     /**

@@ -1,4 +1,4 @@
-import { ProductManager } from '../model/ProductManager';
+import { ProductManagerKanapApi } from '../model/ProductManagerKanapApi';
 
 /**
  * Class managing the instanciation of ProductManager. Allows for easy modification of the model.
@@ -6,10 +6,21 @@ import { ProductManager } from '../model/ProductManager';
 export class ProductManagerFactory {
     /**
      * Create an instance of product manager.
+     * @param {string} dao - Data Access Object name to use.
      * @param {string | Object} config - The configuration object or string, passed to the Data Access Object.
      * @returns Return an instance of the right ProductManager.
      */
-    static createProductManager(config) {
-        return new ProductManager(config);
+    static createProductManager(dao, config) {
+        return this["createProductManager" + dao](config);
+    }
+
+
+    /**
+     * Create an instance of ProductManagerKanapApi.
+     * @param {string | Object} config - The configuration object or string, passed to the Data Access Object.
+     * @returns Return an instance of ProductManagerKanapApi.
+     */
+    static createProductManagerKanapApi(config) {
+        return new ProductManagerKanapApi(config);
     }
 }

@@ -1,10 +1,10 @@
 import { ProductApiDao } from "../dao/ProductApiDao";
-import { ProductManager } from "./ProductManager";
+import { ProductManagerKanapApi } from "./ProductManagerKanapApi";
 import { MOCKED_API_DATA } from "../dao/mockedApiData";
 import { CONFIG_TEST } from "../config/mocked-configuration";
 
-describe('ProductManager Unit Test Suite', () => {
-    const productManager = new ProductManager(CONFIG_TEST);
+describe('ProductManagerKanapApi Unit Test Suite', () => {
+    const productManager = new ProductManagerKanapApi(CONFIG_TEST);
 
 
     describe('getAllProducts() Method Test Suite', () => {

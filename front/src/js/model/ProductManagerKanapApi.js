@@ -3,7 +3,7 @@ import { ProductApiDao } from "../dao/ProductApiDao";
 /**
  * Class managing products data.
  */
-export class ProductManager {
+export class ProductManagerKanapApi {
     /**
      * Create an instance of the ProductApiDao. Create an empty array for the Product entities. Create the produtsListComplete property that indicates if all the products have already been fetched.
      * @param {Object | string} config - The configuration object or string, passed to the ProductApiDao.
