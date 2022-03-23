@@ -12,7 +12,7 @@ export class HomeControler {
      */
     constructor(config) {
         this.view = new HomeView();
-        this.model = new ProductManager(config);
+        this.productManager = new ProductManager(config);
     }
 
     /**
@@ -22,7 +22,7 @@ export class HomeControler {
      */
     async initialize() {
         try {
-            let productsData = await this.model.getAllProducts();
+            let productsData = await this.productManager.getAllProducts();
             this.view.render(productsData);
         } catch (error) {
             console.error(error);
