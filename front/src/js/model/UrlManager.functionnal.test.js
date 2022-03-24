@@ -4,7 +4,7 @@
 
 import { UrlManager } from "./UrlManager";
 
-describe('UrlManager Unit Test Suite', () => {
+describe('UrlManager Functionnal Test Suite', () => {
     const testUrl = 'http://test.com/';
     const testParameterName = 'testName';
     const testParameterValue = 'testValue';

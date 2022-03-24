@@ -5,7 +5,7 @@
 import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
 
 
-describe('CartModel Unit Test Suite', () => {
+describe('CartModel Functionnal Test Suite', () => {
     let cartExample;
 
     const cartManager = new CartManagerLocalStorage();

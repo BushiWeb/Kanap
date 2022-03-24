@@ -4,7 +4,7 @@ import { MOCKED_API_DATA } from "../dao/mockedApiData";
 import { MOCKED_PRODUCT_ENTITY_DATA } from './mockedProductEntityData';
 import { CONFIG_TEST } from "../config/mocked-configuration";
 
-describe('ProductManagerKanapApi Unit Test Suite', () => {
+describe('ProductManagerKanapApi Functionnal Test Suite', () => {
     const productManager = new ProductManagerKanapApi(CONFIG_TEST);
 
     global.fetch = jest.fn();

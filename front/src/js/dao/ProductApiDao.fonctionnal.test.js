@@ -8,7 +8,7 @@ import { CONFIG_TEST, TEST_URL } from "../config/mocked-configuration";
 import { ConfigManager } from '../config/ConfigManager';
 
 
-describe('ProductApiDao Unit Test Suite', () => {
+describe('ProductApiDao Functionnal Test Suite', () => {
     global.fetch = jest.fn().mockImplementation();
     const getApiUrlMock = jest.spyOn(ConfigManager.prototype, 'getApiUrl');
     getApiUrlMock.mockReturnValue(TEST_URL);

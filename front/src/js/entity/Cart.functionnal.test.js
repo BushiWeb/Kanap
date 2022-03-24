@@ -2,7 +2,7 @@ import { Cart } from "./Cart";
 import { CartProduct } from "./CartProduct";
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
-describe('Cart Unit Test Suite', () => {
+describe('Cart Functionnal Test Suite', () => {
     const testProducts = [
         {
             _id: MOCKED_API_DATA[0]._id,
