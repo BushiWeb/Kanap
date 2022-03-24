@@ -1,7 +1,7 @@
 /**
  * Class managing the cart, stored in the local storage.
  */
-export class CartModel {
+export class CartManagerLocalStorage {
     /**
      * Set up the key of the cart in the localStorage.
      */

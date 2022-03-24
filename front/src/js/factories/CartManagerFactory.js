@@ -1,4 +1,4 @@
-import { CartModel } from '../model/CartModel';
+import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
 
 /**
  * Class managing the instanciation of ProductManager. Allows for easy modification of the model.
@@ -19,6 +19,6 @@ export class CartManagerFactory {
      * @returns Return an instance of CartManagerLocalStorage.
      */
     static createCartManagerLocalStorage() {
-        return new CartModel();
+        return new CartManagerLocalStorage();
     }
 }

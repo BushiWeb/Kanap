@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { CartModel } from "./CartModel";
+import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
 
 
 describe('CartModel Unit Test Suite', () => {
@@ -10,7 +10,7 @@ describe('CartModel Unit Test Suite', () => {
     const localStorageSetItemMock = jest.spyOn(Storage.prototype, 'setItem');
     let cartExample;
 
-    const testCartModel = new CartModel();
+    const cartManager = new CartManagerLocalStorage();
 
     beforeEach(() => {
         localStorageGetItemMock.mockReset();
@@ -38,20 +38,20 @@ describe('CartModel Unit Test Suite', () => {
     describe('getCart() Method Test Suite', () => {
         it('should call the localStorage.getItem() method', () => {
             localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
-            testCartModel.getCart();
+            cartManager.getCart();
             expect(localStorageGetItemMock).toHaveBeenCalled();
-            expect(localStorageGetItemMock).toHaveBeenCalledWith(testCartModel.storageName);
+            expect(localStorageGetItemMock).toHaveBeenCalledWith(cartManager.storageName);
         });
 
         it('should return the parsed cart object if there is a cart object in the localStorage', () => {
             localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
-            const cartContent = testCartModel.getCart();
+            const cartContent = cartManager.getCart();
             expect(cartContent).toEqual(cartExample);
         });
 
         it('should return an empty array if there is no cart object in the localStorage', () => {
             localStorageGetItemMock.mockReturnValue(undefined);
-            const cartContent = testCartModel.getCart();
+            const cartContent = cartManager.getCart();
             expect(cartContent).toEqual([]);
         });
     });
@@ -59,16 +59,16 @@ describe('CartModel Unit Test Suite', () => {
 
     describe('postCart() Method Test Suite', () => {
         it('should call the localStorage.setItem() method with the right key and the serialized cart object', () => {
-            testCartModel.postCart(cartExample);
+            cartManager.postCart(cartExample);
             expect(localStorageSetItemMock).toHaveBeenCalled();
-            expect(localStorageSetItemMock).toHaveBeenCalledWith(testCartModel.storageName, JSON.stringify(cartExample));
+            expect(localStorageSetItemMock).toHaveBeenCalledWith(cartManager.storageName, JSON.stringify(cartExample));
         });
     });
 
 
     describe('addProduct() Method Test Suite', () => {
-        const getCartMock = jest.spyOn(testCartModel, 'getCart');
-        const postCartMock = jest.spyOn(testCartModel, 'postCart');
+        const getCartMock = jest.spyOn(cartManager, 'getCart');
+        const postCartMock = jest.spyOn(cartManager, 'postCart');
 
         beforeEach(() => {
             getCartMock.mockReset();
@@ -77,7 +77,7 @@ describe('CartModel Unit Test Suite', () => {
         });
 
         it('should call the getCart() method from the cart model', () => {
-            testCartModel.addProduct({ id: 'test' });
+            cartManager.addProduct({ id: 'test' });
             expect(getCartMock).toHaveBeenCalled();
         });
 
@@ -89,7 +89,7 @@ describe('CartModel Unit Test Suite', () => {
             };
             const newCart = cartExample.concat(testProduct);
 
-            testCartModel.addProduct(testProduct);
+            cartManager.addProduct(testProduct);
             expect(postCartMock).toHaveBeenCalled();
             expect(postCartMock).toHaveBeenCalledWith(newCart);
         });
@@ -100,7 +100,7 @@ describe('CartModel Unit Test Suite', () => {
             testProduct.quantity = 2;
             const newCart = cartExample.concat(testProduct);
 
-            testCartModel.addProduct(testProduct);
+            cartManager.addProduct(testProduct);
             expect(postCartMock).toHaveBeenCalled();
             expect(postCartMock).toHaveBeenCalledWith(newCart);
         });
@@ -111,7 +111,7 @@ describe('CartModel Unit Test Suite', () => {
             const newCart = JSON.parse(JSON.stringify(cartExample));
             newCart[0].quantity += testProduct.quantity;
 
-            testCartModel.addProduct(testProduct);
+            cartManager.addProduct(testProduct);
             expect(postCartMock).toHaveBeenCalled();
             expect(postCartMock).toHaveBeenCalledWith(newCart);
         });
