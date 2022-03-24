@@ -3,6 +3,7 @@ import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { UrlManager } from '../model/UrlManager';
 import { CartModel } from '../model/CartModel';
 import { FormValidator } from '../form/FormValidator';
+import { CartManagerFactory } from '../factories/CartManagerFactory';
 
 /**
  * Class representing the entry point of the home page.
@@ -85,7 +86,7 @@ export class ProductControler {
      */
     addProductToCart(productObject) {
         if (!this.cartModel) {
-            this.cartModel = new CartModel();
+            this.cartModel = CartManagerFactory.createCartManager('LocalStorage');
         }
 
         this.cartModel.addProduct(productObject);
