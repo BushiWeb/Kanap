@@ -1,25 +1,6 @@
 import { Cart } from "./Cart";
-import { CartProduct } from './CartProduct';
+import { CartProduct } from "./CartProduct";
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
-
-const mockAddToQuantity = jest.fn();
-jest.mock('./CartProduct', () => {
-    return {
-        CartProduct: jest.fn().mockImplementation((id, color, quantity) => {
-            return {
-                id: id,
-                color: color,
-                quantity: quantity,
-                addToQuantity: mockAddToQuantity
-            };
-        })
-    }
-});
-
-beforeEach(() => {
-    mockAddToQuantity.mockClear();
-    CartProduct.mockClear();
-})
 
 describe('Cart Unit Test Suite', () => {
     const testProducts = [
@@ -36,33 +17,17 @@ describe('Cart Unit Test Suite', () => {
     ];
 
     describe('Constructor Test Suite', () => {
-        const productsSetterMock = jest.spyOn(Cart.prototype, 'products', 'set');
-
-        beforeEach(() => {
-            productsSetterMock.mockReset();
-        });
-
-        afterAll(() => {
-            productsSetterMock.mockRestore();
-        });
-
-        it('should call the products setter', () => {
-
-
+        it('should create an instance of Cart with the right products', () => {
             const cartProductEntity = new Cart(testProducts);
 
-            expect(productsSetterMock).toHaveBeenCalled();
-            expect(productsSetterMock).toHaveBeenCalledWith(testProducts);
+            for (let i = 0 ; i < testProducts.length ; i++) {
+                expect(cartProductEntity._products).toContainEqual(new CartProduct(testProducts[i]._id, testProducts[i].color, testProducts[i].quantity));
+            }
         });
-    });
 
-
-    describe('Getters Test Suite', () => {
-        const cartEntity = new Cart();
-
-        it('should return the value of Cart._products', () => {
-            cartEntity._products = testProducts[0];
-            expect(cartEntity.products).toBe(cartEntity._products);
+        it('should create an instance of Cart without any product', () => {
+            const cartEntity = new Cart();
+            expect(cartEntity._products.length).toBe(0);
         });
     });
 
@@ -70,10 +35,10 @@ describe('Cart Unit Test Suite', () => {
     describe('Setters Test Suite', () => {
         const cartEntity = new Cart();
 
-        it('should set the value of Cart._products by calling the CartProduct constructor', () => {
-            cartEntity.products = testProducts;
-
-            expect(CartProduct).toHaveBeenCalledTimes(testProducts.length);
+        it('should set the value of Cart._products', () => {
+            const newProducts = [new CartProduct(testProducts[0]._id, testProducts[0].color, testProducts[0].quantity)]
+            cartEntity.products = [testProducts[0]];
+            expect(cartEntity._products).toEqual(newProducts);
         });
     });
 
@@ -81,29 +46,18 @@ describe('Cart Unit Test Suite', () => {
     describe('addProduct() Test Suite', () => {
         const cartEntity = new Cart();
 
-        const searchProductMock = jest.spyOn(Cart.prototype, 'searchProduct');
-
-        beforeEach(() => {
-            searchProductMock.mockReset();
-        });
-
-        afterAll(() => {
-            searchProductMock.mockRestore();
-        });
-
         it('should change the product\'s quantity if it is already in the cart', () => {
-            searchProductMock.mockReturnValue(0);
-            cartEntity._products = [new CartProduct()];
+            const testProductEntity = new CartProduct(testProducts[0]._id, testProducts[0].color, testProducts[0].quantity);
+            cartEntity._products = [testProductEntity];
             cartEntity.addProduct(testProducts[0]);
-            expect(mockAddToQuantity).toHaveBeenCalled();
+            expect(cartEntity._products[0].quantity).toBe(2 * testProducts[0].quantity);
         });
 
         it('should add the product to the cart', () => {
-            const pushMock = jest.spyOn(Array.prototype, 'push');
-            searchProductMock.mockReturnValue(false);
+            cartEntity._products = [];
+            const testProductEntity = new CartProduct(testProducts[0]._id, testProducts[0].color, testProducts[0].quantity);
             cartEntity.addProduct(testProducts[0]);
-            expect(pushMock).toHaveBeenCalled();
-            pushMock.mockRestore();
+            expect(cartEntity._products[0]).toEqual(testProductEntity);
         });
     });
 

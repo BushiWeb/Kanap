@@ -9,10 +9,7 @@ export class Cart {
      * @param {{_id: string, color: string, quantity: number}[]} products - Products in the cart.
      */
     constructor(products = []) {
-        this._products = [];
-        for (let i = 0 ; i < products.length ; i++) {
-            this._products.push(new CartProduct(products[i]._id, products[i].color, products[i].quantity));
-        }
+        this.products = products;
     }
 
 
@@ -66,9 +63,12 @@ export class Cart {
      ********************************************/
     /**
      * Set the cart content
-     * @param {CartProduct[]} products - Products to add to the cart.
+     * @param {{_id: string, color: string, quantity: number}[]} products - Products in the cart.
      */
      set products(products) {
-        this._products = products;
+        this._products = [];
+        for (let i = 0 ; i < products.length ; i++) {
+            this._products.push(new CartProduct(products[i]._id, products[i].color, products[i].quantity));
+        }
     }
 }
