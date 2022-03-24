@@ -7,6 +7,7 @@ import '@testing-library/jest-dom';
 import { HomeControler } from './HomeControler';
 import { CONFIG } from '../config/config';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 
 describe('HomeControler Functionnal Test Suite', () => {
     const controlerTest = new HomeControler(CONFIG);
@@ -71,7 +72,7 @@ describe('HomeControler Functionnal Test Suite', () => {
             controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
-            expect(controlerTest.productManager.products).toBe(MOCKED_API_DATA);
+            expect(controlerTest.productManager.products).toEqual(MOCKED_PRODUCT_ENTITY_DATA);
             expect(controlerTest.productManager.productsListComplete).toBeTruthy();
         });
 

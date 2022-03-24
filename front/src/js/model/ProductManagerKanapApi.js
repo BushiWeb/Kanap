@@ -1,4 +1,5 @@
 import { ProductApiDao } from "../dao/ProductApiDao";
+import { Product } from "../entity/Product";
 
 /**
  * Class managing products data.
@@ -23,8 +24,7 @@ export class ProductManagerKanapApi {
      */
     async getAllProducts() {
         if (!this.productsListComplete) {
-            this.products = await this.dao.getAllProducts();
-            this.productsListComplete = true;
+            this.saveProducts(await this.dao.getAllProducts(), true);
         }
 
         return this.products;
@@ -41,19 +41,18 @@ export class ProductManagerKanapApi {
      * @throws Throw an error if the product is not in the products property but all the products have already been fetched.
      */
     async getProduct(productId) {
-        const productIndex = this.checkProduct(productId);
+        let productIndex = this.checkProduct(productId);
         if (productIndex === false) {
             if (this.productsListComplete) {
                 throw new Error('Erreur : le produit demandé n\'existe pas');
             }
 
             const productData = await this.dao.getProduct(productId);
-            this.products.push(productData);
-            return productData;
+            let productSave = this.saveProducts([productData]);
+            productIndex = productSave[0];
 
-        } else {
-            return this.products[productIndex];
         }
+        return this.products[productIndex];
     }
 
 
@@ -64,11 +63,48 @@ export class ProductManagerKanapApi {
      */
     checkProduct(productId) {
         for (let i = 0 ; i < this.products.length ; i++) {
-            if (this.products[i]._id === productId) {
+            if (this.products[i].id === productId) {
                 return i;
             }
         }
 
         return false;
+    }
+
+
+    /**
+     * Save products to the products property.
+     * Checks that the product is not already saved.
+     * @param {Object[]} productsList - List of products to save to the products property
+     * @param {boolean} allProducts - Indicates if all the products off the API are given. If true, replace the product property, if false, simply push each product.
+     * @returns {number[]} Return an array containing the index of the added products in the property.
+     */
+    saveProducts(productsList, allProducts = false) {
+        const returnIndexList = [];
+
+        if (allProducts) {
+            this.products = [];
+            this.productsListComplete = true;
+        }
+
+        for (let i = 0 ; i < productsList.length ; i++) {
+            const productCheck = this.checkProduct(productsList[i]._id)
+            if (productCheck === false) {
+                this.products.push(new Product(
+                    productsList[i]._id,
+                    productsList[i].name,
+                    productsList[i].price,
+                    productsList[i].description,
+                    productsList[i].imageUrl,
+                    productsList[i].altTxt,
+                    productsList[i].colors
+                    ));
+                returnIndexList.push(this.products.length - 1);
+            } else {
+                returnIndexList.push(productCheck);
+            }
+        }
+
+        return returnIndexList;
     }
 }

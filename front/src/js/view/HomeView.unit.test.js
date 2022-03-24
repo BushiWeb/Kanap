@@ -5,7 +5,7 @@
 import '@testing-library/jest-dom';
 
 import { HomeView } from "./HomeView";
-import { MOCKED_API_DATA } from "../dao/mockedApiData";
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 
 
 describe('HomeView Unit Test Suite', () => {
@@ -20,7 +20,7 @@ describe('HomeView Unit Test Suite', () => {
 
     describe('render() Method Test Suite', () => {
         it('should create one product card with the right structure when passed one product', () => {
-            homeViewTest.render([MOCKED_API_DATA[0]]);
+            homeViewTest.render([MOCKED_PRODUCT_ENTITY_DATA[0]]);
 
             const nameElement = document.getElementsByClassName('productName');
             const descriptionElement = document.getElementsByClassName('productDescription');
@@ -32,18 +32,18 @@ describe('HomeView Unit Test Suite', () => {
             expect(linkWrapperElement[0]).toContainElement(descriptionElement[0]);
             expect(linkWrapperElement[0]).toContainElement(imageElement[0]);
 
-            expect(nameElement[0]).toHaveTextContent(MOCKED_API_DATA[0].name);
-            expect(descriptionElement[0]).toHaveTextContent(MOCKED_API_DATA[0].description);
-            expect(linkWrapperElement[0]).toHaveAttribute('href', './product.html?id=' + MOCKED_API_DATA[0]._id);
-            expect(imageElement[0]).toHaveAttribute('src', MOCKED_API_DATA[0].imageUrl);
-            expect(imageElement[0]).toHaveAttribute('alt', MOCKED_API_DATA[0].altTxt);
+            expect(nameElement[0]).toHaveTextContent(MOCKED_PRODUCT_ENTITY_DATA[0].name);
+            expect(descriptionElement[0]).toHaveTextContent(MOCKED_PRODUCT_ENTITY_DATA[0].description);
+            expect(linkWrapperElement[0]).toHaveAttribute('href', './product.html?id=' + MOCKED_PRODUCT_ENTITY_DATA[0].id);
+            expect(imageElement[0]).toHaveAttribute('src', MOCKED_PRODUCT_ENTITY_DATA[0].imageSource);
+            expect(imageElement[0]).toHaveAttribute('alt', MOCKED_PRODUCT_ENTITY_DATA[0].imageAltText);
         });
 
 
         it('should create a list of product cards when passed multiple products', () => {
-            homeViewTest.render(MOCKED_API_DATA);
+            homeViewTest.render(MOCKED_PRODUCT_ENTITY_DATA);
             const productsCardElement = document.getElementsByTagName('a');
-            expect(productsCardElement.length).toBe(MOCKED_API_DATA.length);
+            expect(productsCardElement.length).toBe(MOCKED_PRODUCT_ENTITY_DATA.length);
         });
 
 

@@ -1,6 +1,7 @@
 import { ProductApiDao } from "../dao/ProductApiDao";
 import { ProductManagerKanapApi } from "./ProductManagerKanapApi";
 import { MOCKED_API_DATA } from "../dao/mockedApiData";
+import { MOCKED_PRODUCT_ENTITY_DATA } from './mockedProductEntityData';
 import { CONFIG_TEST } from "../config/mocked-configuration";
 
 describe('ProductManagerKanapApi Unit Test Suite', () => {
@@ -16,9 +17,9 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
     describe('getAllProducts() Method Test Suite', () => {
         it('should return the data if all the products are in the manager', async () => {
             productManager.productsListComplete = true;
-            productManager.products = MOCKED_API_DATA;
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
             const data = await productManager.getAllProducts();
-            expect(data).toEqual(MOCKED_API_DATA);
+            expect(data).toEqual(MOCKED_PRODUCT_ENTITY_DATA);
         });
 
         it('should return an empty array if all the products are in the manager but there are no products', async () => {
@@ -36,7 +37,7 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
                 ok : true
             });
             const data = await productManager.getAllProducts();
-            expect(data).toEqual(MOCKED_API_DATA);
+            expect(data).toEqual(MOCKED_PRODUCT_ENTITY_DATA);
         });
 
         it('should update the products property if not all the products are in the manager', async () => {
@@ -47,7 +48,7 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
                 ok : true
             });
             const data = await productManager.getAllProducts();
-            expect(productManager.products).toEqual(MOCKED_API_DATA);
+            expect(productManager.products).toEqual(MOCKED_PRODUCT_ENTITY_DATA);
             expect(productManager.productsListComplete).toBeTruthy();
         });
 
@@ -102,14 +103,14 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
     describe('getProduct() Method Test Suite', () => {
         it('should return the data if the product is in the manager', async () => {
             productManager.productsListComplete = false;
-            productManager.products = MOCKED_API_DATA;
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
             const data = await productManager.getProduct(MOCKED_API_DATA[0]._id);
-            expect(data).toEqual(MOCKED_API_DATA[0]);
+            expect(data).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
         });
 
         it('should throw an error if all the products are in the manager but the requested product is not', async () => {
             productManager.productsListComplete = true;
-            productManager.products = MOCKED_API_DATA.slice(1);
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA.slice(1);
             await expect(async () => {
                 await productManager.getProduct(MOCKED_API_DATA[0]._id);
             }).rejects.toThrow();
@@ -117,24 +118,24 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
 
         it('should return the data from the API if the product is not in the manager', async () => {
             productManager.productsListComplete = false;
-            productManager.products = MOCKED_API_DATA.slice(1);
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA.slice(1);
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok : true
             });
             const data = await productManager.getProduct(MOCKED_API_DATA[0]._id);
-            expect(data).toEqual(MOCKED_API_DATA[0]);
+            expect(data).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
         });
 
         it('should update the products property if the product is not in the manager', async () => {
             productManager.productsListComplete = false;
-            productManager.products = MOCKED_API_DATA.slice(1);
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA.slice(1);
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok : true
             });
             await productManager.getProduct(MOCKED_API_DATA[0]._id);
-            expect(productManager.products).toContainEqual(MOCKED_API_DATA[0]);
+            expect(productManager.products).toContainEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
         });
 
         it('should throw an error if the status is not ok', async () => {

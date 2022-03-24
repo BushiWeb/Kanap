@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { ProductControler } from './ProductControler';
 import { CONFIG } from '../config/config';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 
 describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
@@ -118,7 +119,7 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             await controlerTest.initialize();
 
-            expect(controlerTest.productManager.products).toContainEqual(MOCKED_API_DATA[0]);
+            expect(controlerTest.productManager.products).toContainEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
         });
 
         it('should alert and print an error if an error occurs while fetching the data', async () => {

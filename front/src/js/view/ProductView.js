@@ -9,7 +9,7 @@ export class ProductView extends View {
      * Render the dynamic content of the product page.
      * Insert the products informations in the page.
      * Add the event listeners.
-     * @param {Object} product - The object containing the product's data.
+     * @param {Product[]} product - The object containing the product's data.
      */
     render(product) {
         const imageContainerElement = this.getElements('.item__img')[0];
@@ -19,8 +19,8 @@ export class ProductView extends View {
         const selectColorsElement = this.getElements('#colors')[0];
 
         const imageElement = this.createElement('img', {
-            src: product.imageUrl,
-            alt: product.altTxt
+            src: product.imageSource,
+            alt: product.imageAltText
         });
         imageContainerElement.appendChild(imageElement);
 
