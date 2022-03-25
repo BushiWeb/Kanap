@@ -24,6 +24,19 @@
     }
 
 
+    /**
+     * Create a litteral object of the instance.
+     * @return {{id: string, color: string, quantity: number}} Litteral object representing the instance.
+     */
+    getData() {
+        return {
+            id: this._id,
+            color: this._color,
+            quantity: this._quantity
+        }
+    }
+
+
     /********************************************
      * GETTERS
      ********************************************/

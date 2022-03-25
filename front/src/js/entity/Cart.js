@@ -6,7 +6,7 @@ import { CartProduct } from "./CartProduct";
 export class Cart {
     /**
      * Construct the cart.
-     * @param {{_id: string, color: string, quantity: number}[]} products - Products in the cart.
+     * @param {{id: string, color: string, quantity: number}[]} products - Products in the cart.
      */
     constructor(products = []) {
         this.products = products;
@@ -16,10 +16,10 @@ export class Cart {
     /**
      * Add a product to the cart.
      * If the product is already in the cart (same id and same color), updates the quantity of the product.
-     * @param {{_id: string, color: string, quantity: number}} product - Product to add to the cart.
+     * @param {{id: string, color: string, quantity: number}} product - Product to add to the cart.
      */
     addProduct(product) {
-        const cartProduct = new CartProduct(product._id, product.color, product.quantity);
+        const cartProduct = new CartProduct(product.id, product.color, product.quantity);
         const productIndex = this.searchProduct(cartProduct);
 
         if (productIndex === false) {
@@ -46,6 +46,19 @@ export class Cart {
     }
 
 
+    /**
+     * Create an array of litteral objects of the products.
+     * @return {{id: string, color: string, quantity: number}[]} Array containing the objects representing the products
+     */
+    getData() {
+        const dataResult = [];
+        for (const cartProduct of this._products) {
+            dataResult.push(cartProduct.getData());
+        }
+        return dataResult;
+    }
+
+
     /********************************************
      * GETTERS
      ********************************************/
@@ -63,12 +76,12 @@ export class Cart {
      ********************************************/
     /**
      * Set the cart content
-     * @param {{_id: string, color: string, quantity: number}[]} products - Products in the cart.
+     * @param {{id: string, color: string, quantity: number}[]} products - Products in the cart.
      */
      set products(products) {
         this._products = [];
         for (let i = 0 ; i < products.length ; i++) {
-            this._products.push(new CartProduct(products[i]._id, products[i].color, products[i].quantity));
+            this._products.push(new CartProduct(products[i].id, products[i].color, products[i].quantity));
         }
     }
 }

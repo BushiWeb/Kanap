@@ -3,16 +3,16 @@ import { CartProduct } from "./CartProduct";
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('CartProduct Unit Test Suite', () => {
+    const testProduct = {
+        id: MOCKED_API_DATA[0]._id,
+        color: MOCKED_API_DATA[0].colors[0],
+        quantity: 4
+    }
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of CartProduct with the right informations', () => {
-            const testProduct = {
-                _id: MOCKED_API_DATA[0]._id,
-                color: MOCKED_API_DATA[0].colors[0],
-                quantity: 4
-            }
-            const cartProductEntity = new CartProduct(testProduct._id, testProduct.color, testProduct.quantity);
-            expect(cartProductEntity._id).toBe(testProduct._id);
+            const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+            expect(cartProductEntity._id).toBe(testProduct.id);
             expect(cartProductEntity._color).toBe(testProduct.color);
             expect(cartProductEntity._quantity).toBe(testProduct.quantity);
         });
@@ -20,12 +20,7 @@ describe('CartProduct Unit Test Suite', () => {
 
 
     describe('Getters Test Suite', () => {
-        const testProduct = {
-            _id: MOCKED_API_DATA[0]._id,
-            color: MOCKED_API_DATA[0].colors[0],
-            quantity: 4
-        }
-        const cartProductEntity = new CartProduct(testProduct._id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
 
         it('should return the value of CartProduct._id', () => {
             expect(cartProductEntity.id).toBe(cartProductEntity._id);
@@ -42,12 +37,7 @@ describe('CartProduct Unit Test Suite', () => {
 
 
     describe('Setters Test Suite', () => {
-        const testProduct = {
-            _id: MOCKED_API_DATA[0]._id,
-            color: MOCKED_API_DATA[0].colors[0],
-            quantity: 4
-        }
-        const cartProductEntity = new CartProduct(testProduct._id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
 
         it('should set the value of CartProduct._quantity', () => {
             const newQuantity = 8;
@@ -59,16 +49,19 @@ describe('CartProduct Unit Test Suite', () => {
 
     describe('addToQuantity() Method Test Suite', () => {
         const testQuantity = 4;
-        const testProduct = {
-            _id: MOCKED_API_DATA[0]._id,
-            color: MOCKED_API_DATA[0].colors[0],
-            quantity: testQuantity
-        }
-        const cartProductEntity = new CartProduct(testProduct._id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
 
         it('should add the test quantity to the current quantity', () => {
             cartProductEntity.addToQuantity(testQuantity);
             expect(cartProductEntity._quantity).toBe(testProduct.quantity + testQuantity);
+        });
+    });
+
+
+    describe('getData() Method Test Suite', () => {
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+        it('should return an object containing the entity data', () => {
+            expect(cartProductEntity.getData()).toEqual(testProduct);
         });
     });
 });

@@ -3,6 +3,7 @@ import { CartProduct } from './CartProduct';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 const mockAddToQuantity = jest.fn();
+const mockGetData = jest.fn();
 jest.mock('./CartProduct', () => {
     return {
         CartProduct: jest.fn().mockImplementation((id, color, quantity) => {
@@ -10,7 +11,8 @@ jest.mock('./CartProduct', () => {
                 id: id,
                 color: color,
                 quantity: quantity,
-                addToQuantity: mockAddToQuantity
+                addToQuantity: mockAddToQuantity,
+                getData: mockGetData
             };
         })
     }
@@ -18,18 +20,19 @@ jest.mock('./CartProduct', () => {
 
 beforeEach(() => {
     mockAddToQuantity.mockClear();
+    mockGetData.mockClear();
     CartProduct.mockClear();
 })
 
 describe('Cart Unit Test Suite', () => {
     const testProducts = [
         {
-            _id: MOCKED_API_DATA[0]._id,
+            id: MOCKED_API_DATA[0]._id,
             color: MOCKED_API_DATA[0].colors[0],
             quantity: 4
         },
         {
-            _id: MOCKED_API_DATA[1]._id,
+            id: MOCKED_API_DATA[1]._id,
             color: MOCKED_API_DATA[1].colors[0],
             quantity: 4
         }
@@ -139,6 +142,23 @@ describe('Cart Unit Test Suite', () => {
             cartEntity._products = [testProductToPopulate];
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(false);
+        });
+    });
+
+
+    describe('getData() Method Test Suite', () => {
+        const cartEntity = new Cart();
+        cartEntity._products = [new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity), new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity)];
+
+        it('should call the CartProduct.getData() method as many times as the number of products', () => {
+            cartEntity.getData();
+            expect(mockGetData).toHaveBeenCalledTimes(cartEntity._products.length);
+        });
+
+        it('should return an array of cart products object data', () => {
+            mockGetData.mockReturnValueOnce(testProducts[0]).mockReturnValueOnce(testProducts[1]);
+            const data = cartEntity.getData();
+            expect(data).toEqual(testProducts);
         });
     });
 });
