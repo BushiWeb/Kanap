@@ -9,6 +9,7 @@ export class UrlManager {
      */
     constructor(url = window.location.href, parameters) {
         this.url = new URL(url);
+        this.parameters = [];
 
         for (const parameterName in parameters) {
             this.addParameter(parameterName, parameters[parameterName]);
@@ -32,6 +33,7 @@ export class UrlManager {
      */
     addParameter(parameterName, parameterValue) {
         this.url.searchParams.append(parameterName, parameterValue);
+        this.parameters[parameterName] = parameterValue;
     }
 
 
@@ -42,10 +44,13 @@ export class UrlManager {
      * @throws Throw an error if the parameter doesn't exist.
      */
     getParameter(parameterName) {
-        if (!this.url.searchParams.has(parameterName)) {
-            throw new Error(`The parameter ${parameterName} doesn't exist`)
+        if(this.parameters[parameterName] === undefined) {
+            if (!this.url.searchParams.has(parameterName)) {
+                throw new Error(`The parameter ${parameterName} doesn't exist`)
+            }
+            this.parameters[parameterName] = this.url.searchParams.get(parameterName);
         }
 
-        return this.url.searchParams.get(parameterName);
+        return this.parameters[parameterName];
     }
 }

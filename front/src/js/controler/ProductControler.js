@@ -1,6 +1,6 @@
 import { ProductView } from '../view/ProductView';
 import { ProductManagerFactory } from '../factories/ProductManagerFactory';
-import { UrlManager } from '../model/UrlManager';
+import { UrlManager } from '../routing/UrlManager';
 import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
 import { FormValidator } from '../form/FormValidator';
 import { CartManagerFactory } from '../factories/CartManagerFactory';

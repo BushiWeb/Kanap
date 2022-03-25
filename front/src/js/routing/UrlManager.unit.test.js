@@ -76,16 +76,37 @@ describe('UrlManager Unit Test Suite', () => {
             expect(urlSearchParamsAppendMock).toHaveBeenCalled();
             expect(urlSearchParamsAppendMock).toHaveBeenCalledWith(testParameterName, testParameterValue);
         });
+
+        it('should add the parameter to UrlManager.parameters', () => {
+            const urlManagerTest = new UrlManager(testUrl);
+            urlManagerTest.addParameter(testParameterName, testParameterValue);
+            expect(urlManagerTest.parameters[testParameterName]).toBeDefined();
+        });
     });
 
 
     describe('getParameter() Method Test Suite', () => {
-        it('should return the value of the parameter if the parameter exists', () => {
+        it('should return the value of the parameter if the parameter is in the manager', () => {
+            const urlManagerTest = new UrlManager(testUrl);
+            urlManagerTest.parameters[testParameterName] = testParameterValue;
+            const parameterValue = urlManagerTest.getParameter(testParameterName);
+            expect(parameterValue).toBe(testParameterValue);
+        });
+
+        it('should return the value of the parameter if the parameter is not in the manager but exists', () => {
             const urlManagerTest = new UrlManager(testUrl);
             urlSearchParamsGetMock.mockReturnValue(testParameterValue);
             urlSearchParamsHasMock.mockReturnValue(true);
             const parameterValue = urlManagerTest.getParameter(testParameterName);
             expect(parameterValue).toBe(testParameterValue);
+        });
+
+        it('should save the value of the parameter if the parameter is not in the manager but exists', () => {
+            const urlManagerTest = new UrlManager(testUrl);
+            urlSearchParamsGetMock.mockReturnValue(testParameterValue);
+            urlSearchParamsHasMock.mockReturnValue(true);
+            const parameterValue = urlManagerTest.getParameter(testParameterName);
+            expect(urlManagerTest.parameters[testParameterName]).toBeDefined();
         });
 
 
