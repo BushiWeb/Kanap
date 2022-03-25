@@ -10,7 +10,7 @@ import { ProductView } from './ProductView';
 import { MOCKED_PRODUCT_ENTITY_DATA } from "../model/mockedProductEntityData";
 
 
-describe('ProductView Unit Test Suite', () => {
+describe('ProductView Functionnal Test Suite', () => {
     const productViewTest = new ProductView();
 
     beforeEach(() => {

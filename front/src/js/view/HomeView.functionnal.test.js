@@ -8,7 +8,7 @@ import { HomeView } from "./HomeView";
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 
 
-describe('HomeView Unit Test Suite', () => {
+describe('HomeView Functionnal Test Suite', () => {
     const homeViewTest = new HomeView();
 
     beforeEach(() => {

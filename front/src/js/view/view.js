@@ -10,6 +10,57 @@ export class View {
         window.alert(message);
     }
 
+
+    /**
+     * Create a notification and display it.
+     * @param {string} message - The message of the notification.
+     */
+    displayNotification(message) {
+        const notificationContainerId = 'notification-container';
+        let notificationContainer = this.getElements('#' + notificationContainerId)[0];
+
+        if (notificationContainer === undefined) {
+            notificationContainer = this.createElement('p', {
+                id: notificationContainerId
+            });
+        } else {
+            notificationContainer.remove();
+        }
+
+        notificationContainer.textContent = message;
+        document.body.append(notificationContainer);
+    }
+
+
+    /**
+     * Create error message and display it next to the associated form field.
+     * @param {HTMLElement} formField - Form field to associate the error to.
+     * @param {string} message - The message of the notification.
+     */
+    createFormFieldError(formField, message) {
+        const errorContainerClass = 'error';
+
+        this.deleteFormFieldError(formField);
+
+        const errorElt = this.createElement('p', {
+            class: errorContainerClass
+        });
+        errorElt.textContent = message;
+
+        formField.parentElement.insertBefore(errorElt, formField.nextElementSibling);
+    }
+
+
+    /**
+     * Delete the error associated to the form field.
+     * @param {HTMLElement} formField - Form field associated to the error.
+     */
+    deleteFormFieldError(formField) {
+        if (formField.nextElementSibling !== null && formField.nextElementSibling.classList.contains('error')) {
+            formField.nextElementSibling.remove();
+        }
+    }
+
     /**
      * Create a DOM Element with attributes.
      * @param {string} element - The element tag to create.
