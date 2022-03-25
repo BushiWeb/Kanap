@@ -124,6 +124,10 @@ export class FormValidator {
             return true;
         }
 
+        if (Number.isNaN(parseFloat(formField.value))) {
+            return 'La valeur doit être un nombre';
+        }
+
         if (options && typeof options.min === 'number' && options.min !== NaN) {
             minBound = options.min;
         } else if (formField.min) {

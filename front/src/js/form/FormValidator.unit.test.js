@@ -242,6 +242,14 @@ describe('FormValidator Unit Test Suite', () => {
             expect(validationResult).toBe(true);
         });
 
+        it('should return a string if the value is not a number', () => {
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.value = 'a';
+            const validationResult = FormValidator.validateNumber(textInput, null);
+            expect(typeof validationResult).toBe('string');
+        });
+
         it('should return true if the validateBoundaries() method returns true', () => {
             validateBoundariesMock.mockReturnValue(true)
             const validationResult = FormValidator.validateNumber(numberInput, { min: inputValue - 1 });
