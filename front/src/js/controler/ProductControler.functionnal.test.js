@@ -15,14 +15,16 @@ describe('ProductControler Functionnal Test Suite', () => {
     const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
     delete window.location;
     window.location = new URL(testUrl);
-    const controlerTest = new ProductControler(CONFIG);
+    let controlerTest;
 
     global.fetch = jest.fn().mockImplementation();
     const consoleMock = jest.spyOn(global.console, 'error');
     const alertMock = jest.spyOn(window, 'alert');
 
+
     beforeEach(() => {
         window.location.href = testUrl;
+        controlerTest = new ProductControler(CONFIG);
 
         global.fetch.mockReset();
         consoleMock.mockReset();
@@ -154,8 +156,6 @@ describe('ProductControler Functionnal Test Suite', () => {
 
 
     describe('Add to cart Event Test Suite', () => {
-        const localStorageGetItemMock = jest.spyOn(Storage.prototype, 'getItem');
-        const localStorageSetItemMock = jest.spyOn(Storage.prototype, 'setItem');
         const cartExample = [
             {
                 id: '1',
@@ -175,10 +175,6 @@ describe('ProductControler Functionnal Test Suite', () => {
         ];
 
         beforeEach(async () => {
-            localStorageGetItemMock.mockReset();
-            localStorageSetItemMock.mockReset();
-            localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
-
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true
@@ -203,43 +199,42 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(alertMock).toHaveBeenCalledWith('Merci de choisir une quantité de produit valide.');
         });
 
-        it('should add a new product to the cart by calling the localStorage.setItem() method with the previous cart containing the new item', () => {
-            const returnCart = cartExample.concat({
+        it('should add a new product to the cart', () => {
+            localStorage.setItem('cart', JSON.stringify(cartExample));
+            const addedProduct = {
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
                 quantity: 10
-            });
+            }
 
             userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
 
-            expect(localStorageSetItemMock).toHaveBeenCalled();
-            expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+            expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(addedProduct);
             expect(alertMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
         });
 
-        it('should change the quantity of the same product in the cart and call the localStorage.setItem() method', () => {
+        it('should change the quantity of the same product in the cart', () => {
             const doubleProductCartValue = cartExample.concat({
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
                 quantity: 2
             });
-            localStorageGetItemMock.mockReturnValue(JSON.stringify(doubleProductCartValue));
+            localStorage.setItem('cart', JSON.stringify(doubleProductCartValue));
 
-            const returnCart = cartExample.concat({
+            const modifiedProduct = {
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
                 quantity: 12
-            });
+            };
 
             userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
 
-            expect(localStorageSetItemMock).toHaveBeenCalled();
-            expect(localStorageSetItemMock).toHaveBeenCalledWith('kanapCart', JSON.stringify(returnCart));
+            expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(modifiedProduct);
             expect(alertMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
         });

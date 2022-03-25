@@ -3,9 +3,10 @@
  */
 
 import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
+import { Cart } from '../entity/Cart';
 
 
-describe('CartModel Functionnal Test Suite', () => {
+describe('CartModel Unit Test Suite', () => {
     let cartExample;
 
     const cartManager = new CartManagerLocalStorage();
@@ -28,67 +29,77 @@ describe('CartModel Functionnal Test Suite', () => {
                 quantity: 2
             }
         ];
-        localStorage.removeItem(cartManager.storageName);
     });
 
 
     describe('getCart() Method Test Suite', () => {
-        it('should return the cart object', () => {
+        it('should return a Cart entity if the manager doesn\'t contain the cart but the localStorage does', () => {
+            cartManager.cartComplete = false;
             localStorage.setItem(cartManager.storageName, JSON.stringify(cartExample));
-            const cartContent = cartManager.getCart();
-            expect(cartContent).toEqual(cartExample);
+            const cartData = cartManager.getCart();
+            expect(cartData instanceof Cart).toBeTruthy();
+            expect(cartData.getData()).toEqual(cartExample);
         });
 
-        it('should return an empty array if there is no cart object in the localStorage', () => {
-            const cartContent = cartManager.getCart();
-            expect(cartContent).toEqual([]);
+        it('should return a Cart entity if neither the manager nor the localStorage contains the cart', () => {
+            cartManager.cartComplete = false;
+            localStorage.clear();
+            const cartData = cartManager.getCart();
+            expect(cartData instanceof Cart).toBeTruthy();
+            expect(cartData.getData()).toEqual([]);
+        });
+
+        it('should return a Cart entity if the cart is in the manager', () => {
+            cartManager.cartComplete = true;
+            cartManager.cart = new Cart(cartExample);
+            const cartData = cartManager.getCart();
+            expect(cartData instanceof Cart).toBeTruthy();
+            expect((cartData.getData())).toEqual(cartExample);
         });
     });
 
 
     describe('postCart() Method Test Suite', () => {
-        it('should add the cart object to the localStorage', () => {
-            cartManager.postCart(cartExample);
-            expect(localStorage.getItem(cartManager.storageName)).toBe(JSON.stringify(cartExample));
+        it('should store the data in the localStorage', () => {
+            cartManager.cart = new Cart(cartExample);
+            localStorage.clear();
+            cartManager.postCart();
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
     });
 
 
     describe('addProduct() Method Test Suite', () => {
-        beforeEach(() => {
-            localStorage.setItem(cartManager.storageName, JSON.stringify(cartExample));
-        })
-
-        it('should add one product to the cart', () => {
-            const testProduct = {
-                id: '4',
-                color: 'green',
-                quantity: 4
-            };
-            const newCart = cartExample.concat(testProduct);
-
-            cartManager.addProduct(testProduct);
-            expect(localStorage.getItem(cartManager.storageName)).toBe(JSON.stringify(newCart));
+        it('should add a product if the cart doesn\'t contain the product', () => {
+            cartManager.cart = new Cart(cartExample.slice(0, 2));
+            localStorage.clear();
+            cartManager.addProduct(cartExample[2]);
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
 
-        it('should add one product to the cart even if the product is already in the cart but with a different color', () => {
-            const testProduct = Object.assign({}, cartExample[0]);
-            testProduct.color = 'indigo';
-            testProduct.quantity = 2;
-            const newCart = cartExample.concat(testProduct);
-
-            cartManager.addProduct(testProduct);
-            expect(localStorage.getItem(cartManager.storageName)).toBe(JSON.stringify(newCart));
+        it('should add a product if the cart doesn\'t contain the product but contains a product with the same id', () => {
+            cartExample[0].id = cartExample[2].id;
+            cartManager.cart = new Cart(cartExample.slice(0, 2));
+            localStorage.clear();
+            cartManager.addProduct(cartExample[2]);
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
 
-        it('should change the quantity of one product if the added product is already in the cart with the same color', () => {
-            const testProduct = Object.assign({}, cartExample[0]);
-            testProduct.quantity = 2;
-            const newCart = JSON.parse(JSON.stringify(cartExample));
-            newCart[0].quantity += testProduct.quantity;
-
-            cartManager.addProduct(testProduct);
-            expect(localStorage.getItem(cartManager.storageName)).toBe(JSON.stringify(newCart));
+        it('should add a product if the cart doesn\'t contain the product but contains a product with the same color', () => {
+            cartExample[0].color = cartExample[2].color;
+            cartManager.cart = new Cart(cartExample.slice(0, 2));
+            localStorage.clear();
+            cartManager.addProduct(cartExample[2]);
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
-    })
+
+        it('should change the product\'s quantity if the product is already in the manager', () => {
+            const testQuantity = 2;
+            cartExample[2].quantity = testQuantity;
+            cartManager.cart = new Cart(cartExample);
+            localStorage.clear();
+            cartManager.addProduct(cartExample[2]);
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))[2].quantity).toEqual(2 * testQuantity);
+        });
+    });
 });

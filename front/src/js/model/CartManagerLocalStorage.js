@@ -1,35 +1,47 @@
+import { Cart } from '../entity/Cart';
+import { LocalStorageDao } from '../dao/LocalStorageDao';
+
 /**
  * Class managing the cart, stored in the local storage.
  */
 export class CartManagerLocalStorage {
     /**
      * Set up the key of the cart in the localStorage.
+     * Set up the DAO.
+     * Set up the entities and the boolean indicating if the cart is complete.
      */
     constructor() {
-        this.storageName = 'kanapCart';
+        this.storageName = 'cart';
+        this.dao = new LocalStorageDao();
+        this.cart = new Cart();
+        this.cartComplete = false;
     }
 
 
     /**
-     * Fetch the cart object from the localStorage.
-     * @return {{id:string, color: string, quantity: number}[]} Return the parsed cart object. If no products are in the cart or if the cart doesn't exist, return an empty array.
+     * Return the cart's data. If the property is empty and the cart is incomplete, fetches the data from the localStorage and saves them.
+     * @return {Cart} Return the cart entity.
      */
     getCart() {
-        const cartObject = localStorage.getItem(this.storageName);
-        if (!cartObject) {
-            return [];
+        if (this.cartComplete) {
+            return this.cart;
         }
 
-        return JSON.parse(cartObject);
+        let daoData = this.dao.getData(this.storageName, true);
+        this.cartComplete = true;
+        if (daoData === undefined) {
+            daoData = [];
+        }
+        this.cart = new Cart(daoData);
+        return this.cart;
     }
 
 
     /**
      * Create or modify the cart object in the localStorage.
-     * @param {{id:string, color: string, quantity: number}[]} cartObject - The cart object.
      */
-    postCart(cartObject) {
-        localStorage.setItem(this.storageName, JSON.stringify(cartObject));
+    postCart() {
+        this.dao.setData(this.storageName, this.cart.getData());
     }
 
 
@@ -38,17 +50,10 @@ export class CartManagerLocalStorage {
      * @param {{id:string, color: string, quantity: number}} productObject - An object containing the informations about the product.
      */
     addProduct(productObject) {
-        let cartObject = this.getCart();
+        this.getCart();
 
-        for (let i = 0 ; i < cartObject.length ; i++) {
-            if (cartObject[i].id === productObject.id && cartObject[i].color === productObject.color) {
-                cartObject[i].quantity += productObject.quantity;
-                this.postCart(cartObject);
-                return;
-            }
-        }
+        this.cart.addProduct(productObject);
 
-        cartObject.push(productObject);
-        this.postCart(cartObject);
+        this.postCart();
     }
 }

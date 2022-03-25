@@ -18,6 +18,7 @@ export class ProductControler {
     constructor(config) {
         this.view = new ProductView();
         this.productManager = ProductManagerFactory.createProductManager('KanapApi', config);
+        this.cartManager = CartManagerFactory.createCartManager('LocalStorage');
         this.urlManager = new UrlManager();
     }
 
@@ -85,10 +86,6 @@ export class ProductControler {
      * @param {{id:string, color: string, quantity: number}} productObject - The object containing the informations about the product
      */
     addProductToCart(productObject) {
-        if (!this.cartModel) {
-            this.cartModel = CartManagerFactory.createCartManager('LocalStorage');
-        }
-
-        this.cartModel.addProduct(productObject);
+        this.cartManager.addProduct(productObject);
     }
 }

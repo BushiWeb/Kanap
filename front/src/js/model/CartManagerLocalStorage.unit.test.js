@@ -3,18 +3,51 @@
  */
 
 import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
+import { LocalStorageDao } from "../dao/LocalStorageDao";
+import { Cart } from "../entity/Cart";
+
+const mockGetData = jest.fn();
+const mockSetData = jest.fn();
+jest.mock('../dao/LocalStorageDao', () => {
+    return {
+        LocalStorageDao: jest.fn().mockImplementation(() => {
+            return {
+                getData: mockGetData,
+                setData: mockSetData
+            };
+        })
+    }
+});
+
+const mockGetEntityData = jest.fn();
+const mockAddProduct = jest.fn();
+jest.mock('../entity/Cart', () => {
+    return {
+        Cart: jest.fn().mockImplementation(() => {
+            return {
+                getData: mockGetEntityData,
+                addProduct: mockAddProduct
+            };
+        })
+    }
+});
+
+beforeEach(() => {
+    mockSetData.mockClear();
+    mockGetData.mockClear();
+    mockGetEntityData.mockClear();
+    mockAddProduct.mockClear();
+    LocalStorageDao.mockClear();
+    Cart.mockClear();
+})
 
 
 describe('CartModel Unit Test Suite', () => {
-    const localStorageGetItemMock = jest.spyOn(Storage.prototype, 'getItem');
-    const localStorageSetItemMock = jest.spyOn(Storage.prototype, 'setItem');
     let cartExample;
 
     const cartManager = new CartManagerLocalStorage();
 
     beforeEach(() => {
-        localStorageGetItemMock.mockReset();
-        localStorageSetItemMock.mockReset();
         cartExample = [
             {
                 id: '1',
@@ -36,32 +69,49 @@ describe('CartModel Unit Test Suite', () => {
 
 
     describe('getCart() Method Test Suite', () => {
-        it('should call the localStorage.getItem() method', () => {
-            localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
+        it('should call the localStorageDao.getData() method if the cart is not in the manager, and set CartManagerLocalStorage.cartComplete to true', () => {
+            cartManager.cartComplete = false;
             cartManager.getCart();
-            expect(localStorageGetItemMock).toHaveBeenCalled();
-            expect(localStorageGetItemMock).toHaveBeenCalledWith(cartManager.storageName);
+            expect(mockGetData).toHaveBeenCalled();
+            expect(cartManager.cartComplete).toBeTruthy();
         });
 
-        it('should return the parsed cart object if there is a cart object in the localStorage', () => {
-            localStorageGetItemMock.mockReturnValue(JSON.stringify(cartExample));
-            const cartContent = cartManager.getCart();
-            expect(cartContent).toEqual(cartExample);
+        it('should create a new Cart instance and return it\'s data if the cart is not in the manager but in the localStorage', () => {
+            cartManager.cartComplete = false;
+            mockGetData.mockReturnValueOnce(cartExample);
+            const cartData = cartManager.getCart();
+            expect(Cart).toHaveBeenCalled();
+            expect(Cart).toHaveBeenCalledWith(cartExample);
+            expect(cartData).toEqual(cartManager.cart);
         });
 
-        it('should return an empty array if there is no cart object in the localStorage', () => {
-            localStorageGetItemMock.mockReturnValue(undefined);
-            const cartContent = cartManager.getCart();
-            expect(cartContent).toEqual([]);
+        it('should create a new empty Cart instance and return it\'s data if the cart is not in the manager nor the localStorage', () => {
+            cartManager.cartComplete = false;
+            mockGetData.mockReturnValueOnce(undefined);
+            const cartData = cartManager.getCart();
+            expect(Cart).toHaveBeenCalled();
+            expect(Cart).toHaveBeenCalledWith([]);
+            expect(cartData).toEqual(cartManager.cart);
+        });
+
+        it('should return the cart\'s data if the cart is in the manager', () => {
+            cartManager.cartComplete = true;
+            mockGetEntityData.mockReturnValue(cartExample);
+            const cartData = cartManager.getCart();
+            expect(cartData).toEqual(cartManager.cart);
         });
     });
 
 
     describe('postCart() Method Test Suite', () => {
-        it('should call the localStorage.setItem() method with the right key and the serialized cart object', () => {
-            cartManager.postCart(cartExample);
-            expect(localStorageSetItemMock).toHaveBeenCalled();
-            expect(localStorageSetItemMock).toHaveBeenCalledWith(cartManager.storageName, JSON.stringify(cartExample));
+        it('should call the localStorageDao.setData() method with the right key and the cart object', () => {
+            cartManager.postCart();
+            expect(mockSetData).toHaveBeenCalled();
+        });
+
+        it('should call the Cart.getData() method', () => {
+            cartManager.postCart();
+            expect(mockGetEntityData).toHaveBeenCalled();
         });
     });
 
@@ -73,47 +123,22 @@ describe('CartModel Unit Test Suite', () => {
         beforeEach(() => {
             getCartMock.mockReset();
             postCartMock.mockReset();
-            getCartMock.mockReturnValue(cartExample);
         });
 
         it('should call the getCart() method from the cart model', () => {
-            cartManager.addProduct({ id: 'test' });
+            cartManager.addProduct(cartExample[0]);
             expect(getCartMock).toHaveBeenCalled();
         });
 
-        it('should call the CartModel.postCart() method with the cart containing one more product', () => {
-            const testProduct = {
-                id: '4',
-                color: 'green',
-                quantity: 4
-            };
-            const newCart = cartExample.concat(testProduct);
-
-            cartManager.addProduct(testProduct);
-            expect(postCartMock).toHaveBeenCalled();
-            expect(postCartMock).toHaveBeenCalledWith(newCart);
+        it('should call the Cart.addProduct() method', () => {
+            cartManager.addProduct(cartExample[0]);
+            expect(mockAddProduct).toHaveBeenCalled();
+            expect(mockAddProduct).toHaveBeenCalledWith(cartExample[0]);
         });
 
-        it('should call the CartModel.postCart() method with the cart containing one more product if the new product has the same id but a different color than another product in the cart', () => {
-            const testProduct = Object.assign({}, cartExample[0]);
-            testProduct.color = 'indigo';
-            testProduct.quantity = 2;
-            const newCart = cartExample.concat(testProduct);
-
-            cartManager.addProduct(testProduct);
+        it('should call the CartManagerLocalStorage.postCart() method with the cart', () => {
+            cartManager.addProduct(cartExample[0]);
             expect(postCartMock).toHaveBeenCalled();
-            expect(postCartMock).toHaveBeenCalledWith(newCart);
         });
-
-        it('should call the CartModel.postCart() method with the cart having the updated quantity for the product that has been added and was already present', () => {
-            const testProduct = Object.assign({}, cartExample[0]);
-            testProduct.quantity = 2;
-            const newCart = JSON.parse(JSON.stringify(cartExample));
-            newCart[0].quantity += testProduct.quantity;
-
-            cartManager.addProduct(testProduct);
-            expect(postCartMock).toHaveBeenCalled();
-            expect(postCartMock).toHaveBeenCalledWith(newCart);
-        });
-    })
+    });
 });
