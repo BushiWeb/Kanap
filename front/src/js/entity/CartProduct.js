@@ -37,6 +37,16 @@
     }
 
 
+    /**
+     * Compare the current CartProduct with another one. Two products are identical if they have the same ID and the same color.
+     * @param {CartProduct} cartProduct - Cart product to check.
+     * @return {boolean} Return true if the given product is the same as the current product, return false otherwie.
+     */
+    compare(cartProduct) {
+        return cartProduct.id === this.id && cartProduct.color === this.color;
+    }
+
+
     /********************************************
      * GETTERS
      ********************************************/

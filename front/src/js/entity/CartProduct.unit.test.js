@@ -64,4 +64,33 @@ describe('CartProduct Unit Test Suite', () => {
             expect(cartProductEntity.getData()).toEqual(testProduct);
         });
     });
+
+
+    describe('compare() Method Test Suite', () => {
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+        const compareCartProduct = new CartProduct('id', 'color', 3);
+        it('should return true if both products are identical', () => {
+            compareCartProduct._id = cartProductEntity.id;
+            compareCartProduct._color = cartProductEntity.color;
+            expect(cartProductEntity.compare(compareCartProduct)).toBe(true);
+        });
+
+        it('should return false if the products don\'t have the same color', () => {
+            compareCartProduct._id = cartProductEntity.id;
+            compareCartProduct._color = 'color';
+            expect(cartProductEntity.compare(compareCartProduct)).toBe(false);
+        });
+
+        it('should return false if the products don\'t have the same id', () => {
+            compareCartProduct._id = 'id';
+            compareCartProduct._color = cartProductEntity.color;
+            expect(cartProductEntity.compare(compareCartProduct)).toBe(false);
+        });
+
+        it('should return false if the products don\'t have the same id and color', () => {
+            compareCartProduct._id = 'id';
+            compareCartProduct._color = 'color';
+            expect(cartProductEntity.compare(compareCartProduct)).toBe(false);
+        });
+    });
 });
