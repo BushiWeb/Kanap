@@ -4,6 +4,7 @@ import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 const mockAddToQuantity = jest.fn();
 const mockGetData = jest.fn();
+const mockCompare = jest.fn();
 jest.mock('./CartProduct', () => {
     return {
         CartProduct: jest.fn().mockImplementation((id, color, quantity) => {
@@ -12,7 +13,8 @@ jest.mock('./CartProduct', () => {
                 color: color,
                 quantity: quantity,
                 addToQuantity: mockAddToQuantity,
-                getData: mockGetData
+                getData: mockGetData,
+                compare: mockCompare
             };
         })
     }
@@ -120,12 +122,14 @@ describe('Cart Unit Test Suite', () => {
 
         it('should return the index of the product', () => {
             cartEntity._products = [testProductToPopulate, testProductToSearch];
+            mockCompare.mockReturnValueOnce(false).mockReturnValueOnce(true);
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(1);
         });
 
         it('should return false if the product is not in the cart', () => {
             cartEntity._products = [testProductToPopulate];
+            mockCompare.mockReturnValue(false);
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(false);
         });
@@ -134,6 +138,7 @@ describe('Cart Unit Test Suite', () => {
             testProductToPopulate._color = MOCKED_API_DATA[1].colors[0];
             testProductToPopulate._id = testProductToSearch.id;
             cartEntity._products = [testProductToPopulate];
+            mockCompare.mockReturnValue(false);
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(false);
         });
@@ -142,6 +147,7 @@ describe('Cart Unit Test Suite', () => {
             testProductToPopulate._color = testProductToSearch.color;
             testProductToPopulate._id = MOCKED_API_DATA[1]._id;
             cartEntity._products = [testProductToPopulate];
+            mockCompare.mockReturnValue(false);
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(false);
         });

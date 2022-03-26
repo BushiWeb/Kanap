@@ -36,7 +36,7 @@ export class Cart {
      */
     searchProduct(product) {
         for (let i = 0 ; i < this._products.length ; i++) {
-            if (this._products[i].color === product.color && this._products[i].id === product.id) {
+            if (this.products[i].compare(product)) {
                 return i;
             }
         }
