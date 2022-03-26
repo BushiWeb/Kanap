@@ -1,18 +1,18 @@
 import { ProductApiDao } from "../dao/ProductApiDao";
 import { Product } from "../entity/Product";
+import { ProductManager } from "./ProductManager";
 
 /**
  * Class managing products data.
  */
-export class ProductManagerKanapApi {
+export class ProductManagerKanapApi extends ProductManager {
     /**
-     * Create an instance of the ProductApiDao. Create an empty array for the Product entities. Create the produtsListComplete property that indicates if all the products have already been fetched.
+     * Create an instance of the ProductApiDao. Call the parent constructor and set up the DAO.
      * @param {Object | string} config - The configuration object or string, passed to the ProductApiDao.
      */
     constructor(config) {
+        super();
         this.dao = new ProductApiDao(config);
-        this.products = [];
-        this.productsListComplete = false;
     }
 
 
