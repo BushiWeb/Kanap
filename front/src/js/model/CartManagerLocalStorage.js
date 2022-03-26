@@ -63,4 +63,58 @@ export class CartManagerLocalStorage extends CartManager {
 
         this.postCart();
     }
+
+
+    /**
+     * Stores data into the cart property.
+     * @param {{id: string, color: string, quantity: number}[]} data - Data fetched by the DAO.
+     */
+    generateCartFromData(data) {
+        const cartProducts = [];
+
+        for (let i = 0 ; i < data.length ; i++) {
+            cartProducts.push(this.generateCartProductFromData(data[i]));
+        }
+
+        this.cart.products = cartProducts;
+    }
+
+
+    /**
+     * Create a CartProduct from the data.
+     * @param {{id: string, color: string, quantity: number}} data - Data fetched by the DAO.
+     * @return {CartProduct} Return the generated CartProduct.
+     */
+    generateCartProductFromData(data) {
+        return new CartProduct(data.id, data.color, data.quantity)
+    }
+
+
+    /**
+     * Generate data to the right format from the cart. These data can then be passed to the DAO.
+     * @return {{id: string, color: string, quantity: number}[]} Return JSON data to give to the DAO.
+     */
+    generateDataFromCart() {
+        const returnData = [];
+
+        for (let cartProduct of this.cart.products) {
+            returnData.push(this.generateDataFromCartProduct(cartProduct));
+        }
+
+        return returnData;
+    }
+
+
+    /**
+     * Generate data to the right format from the cart. These data can then be passed to the DAO.
+     * @param {CartProduct} cartProduct - CartProduct to generate the data from.
+     * @return {{id: string, color: string, quantity: number}} Return JSON data to give to the DAO.
+     */
+    generateDataFromCartProduct(cartProduct) {
+        return {
+            id: cartProduct.id,
+            color: cartProduct.color,
+            quantity: cartProduct.quantity
+        };
+    }
 }

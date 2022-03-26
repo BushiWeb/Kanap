@@ -107,4 +107,51 @@ describe('CartModel Unit Test Suite', () => {
             expect(JSON.parse(localStorage.getItem(cartManager.storageName))[2].quantity).toEqual(2 * testQuantity);
         });
     });
+
+
+    describe('generateCartFromData() Method Test Suite', () => {
+        cartManager.cart = new Cart();
+
+        it('should call the generateCartProductFromData() method from the cart model', () => {
+            cartManager.generateCartFromData(cartExample);
+            const cartProducts = cartManager.cart.products;
+            expect(cartProducts.length).toBe(cartExample.length);
+            for (let i = 0 ; i < cartProducts.length ; i++) {
+                expect(cartProducts[i]).toEqual(new CartProduct(cartExample[i].id, cartExample[i].color, cartExample[i].quantity));
+            }
+        });
+    });
+
+
+    describe('generateCartProductFromData() Method Test Suite', () => {
+        it('should return a CartProduct with the right data', () => {
+            const cartProductGen = cartManager.generateCartProductFromData(cartExample[0]);
+            expect(cartProductGen instanceof CartProduct).toBeTruthy();
+            expect(cartProductGen.id).toBe(cartExample[0].id);
+            expect(cartProductGen.quantity).toBe(cartExample[0].quantity);
+            expect(cartProductGen.color).toBe(cartExample[0].color);
+        });
+    });
+
+
+    describe('generateDataFromCart() Method Test Suite', () => {
+        it('should return the data object', () => {
+            cartManager.cart = new Cart();
+            cartManager.cart.products = [
+                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity),
+                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity),
+                new CartProduct(cartExample[2].id, cartExample[2].color, cartExample[2].quantity),
+            ]
+            const dataGen = cartManager.generateDataFromCart();
+            expect(dataGen).toEqual(cartExample);
+        });
+    });
+
+
+    describe('generateDataFromCart() Method Test Suite', () => {
+        it('should return the data object', () => {
+            const dataGen = cartManager.generateDataFromCartProduct(new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity));
+            expect(dataGen).toEqual(cartExample[0]);
+        });
+    });
 });
