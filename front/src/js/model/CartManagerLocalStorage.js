@@ -1,20 +1,20 @@
 import { Cart } from '../entity/Cart';
 import { LocalStorageDao } from '../dao/LocalStorageDao';
+import { CartManager } from './CartManager';
 
 /**
  * Class managing the cart, stored in the local storage.
  */
-export class CartManagerLocalStorage {
+export class CartManagerLocalStorage extends CartManager {
     /**
+     * Call the parent constructor.
      * Set up the key of the cart in the localStorage.
      * Set up the DAO.
-     * Set up the entities and the boolean indicating if the cart is complete.
      */
     constructor() {
+        super();
         this.storageName = 'cart';
         this.dao = new LocalStorageDao();
-        this.cart = new Cart();
-        this.cartComplete = false;
     }
 
 
