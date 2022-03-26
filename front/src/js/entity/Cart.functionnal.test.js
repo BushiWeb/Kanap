@@ -20,25 +20,12 @@ describe('Cart Functionnal Test Suite', () => {
         it('should create an instance of Cart with the right products', () => {
             const cartProductEntity = new Cart(testProducts);
 
-            for (let i = 0 ; i < testProducts.length ; i++) {
-                expect(cartProductEntity._products).toContainEqual(new CartProduct(testProducts[i].id, testProducts[i].color, testProducts[i].quantity));
-            }
+            expect(cartProductEntity._products).toBe(testProducts);
         });
 
         it('should create an instance of Cart without any product', () => {
             const cartEntity = new Cart();
             expect(cartEntity._products.length).toBe(0);
-        });
-    });
-
-
-    describe('Setters Test Suite', () => {
-        const cartEntity = new Cart();
-
-        it('should set the value of Cart._products', () => {
-            const newProducts = [new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity)]
-            cartEntity.products = [testProducts[0]];
-            expect(cartEntity._products).toEqual(newProducts);
         });
     });
 

@@ -1,6 +1,7 @@
 import { Cart } from '../entity/Cart';
 import { LocalStorageDao } from '../dao/LocalStorageDao';
 import { CartManager } from './CartManager';
+import { CartProduct } from '../entity/CartProduct';
 
 /**
  * Class managing the cart, stored in the local storage.
@@ -29,10 +30,16 @@ export class CartManagerLocalStorage extends CartManager {
 
         let daoData = this.dao.getData(this.storageName, true);
         this.cartComplete = true;
+        let cartProducts = [];
         if (daoData === undefined) {
             daoData = [];
         }
-        this.cart = new Cart(daoData);
+
+        for (let i = 0 ; i < daoData.length ; i++) {
+            cartProducts.push(new CartProduct(daoData[i].id, daoData[i].color, daoData[i].quantity));
+        }
+
+        this.cart = new Cart(cartProducts);
         return this.cart;
     }
 

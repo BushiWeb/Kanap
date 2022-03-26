@@ -4,6 +4,7 @@
 
 import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
 import { Cart } from '../entity/Cart';
+import { CartProduct } from '../entity/CartProduct';
 
 
 describe('CartModel Unit Test Suite', () => {
@@ -51,6 +52,10 @@ describe('CartModel Unit Test Suite', () => {
 
         it('should return a Cart entity if the cart is in the manager', () => {
             cartManager.cartComplete = true;
+            let cartProducts = [];
+            for (let i = 0 ; i < cartExample.length ; i++) {
+                cartProducts.push(new CartProduct(cartExample[i].id, cartExample[i].color, cartExample[i].quantity));
+            }
             cartManager.cart = new Cart(cartExample);
             const cartData = cartManager.getCart();
             expect(cartData instanceof Cart).toBeTruthy();

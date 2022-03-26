@@ -76,7 +76,7 @@ describe('Cart Unit Test Suite', () => {
         it('should set the value of Cart._products by calling the CartProduct constructor', () => {
             cartEntity.products = testProducts;
 
-            expect(CartProduct).toHaveBeenCalledTimes(testProducts.length);
+            expect(cartEntity._products).toBe(testProducts);
         });
     });
 

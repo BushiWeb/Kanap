@@ -6,7 +6,7 @@ import { CartProduct } from "./CartProduct";
 export class Cart {
     /**
      * Construct the cart.
-     * @param {{id: string, color: string, quantity: number}[]} products - Products in the cart.
+     * @param {CartProduct[]} products - Products in the cart.
      */
     constructor(products = []) {
         this.products = products;
@@ -76,12 +76,9 @@ export class Cart {
      ********************************************/
     /**
      * Set the cart content
-     * @param {{id: string, color: string, quantity: number}[]} products - Products in the cart.
+     * @param {Cartproducts[]} products - Products in the cart.
      */
      set products(products) {
-        this._products = [];
-        for (let i = 0 ; i < products.length ; i++) {
-            this._products.push(new CartProduct(products[i].id, products[i].color, products[i].quantity));
-        }
+        this._products = products;
     }
 }
