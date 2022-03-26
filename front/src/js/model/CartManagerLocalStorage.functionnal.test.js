@@ -39,7 +39,7 @@ describe('CartModel Unit Test Suite', () => {
             localStorage.setItem(cartManager.storageName, JSON.stringify(cartExample));
             const cartData = cartManager.getCart();
             expect(cartData instanceof Cart).toBeTruthy();
-            expect(cartData.getData()).toEqual(cartExample);
+            expect(cartManager.generateDataFromCart()).toEqual(cartExample);
         });
 
         it('should return a Cart entity if neither the manager nor the localStorage contains the cart', () => {
@@ -47,7 +47,7 @@ describe('CartModel Unit Test Suite', () => {
             localStorage.clear();
             const cartData = cartManager.getCart();
             expect(cartData instanceof Cart).toBeTruthy();
-            expect(cartData.getData()).toEqual([]);
+            expect(cartManager.generateDataFromCart()).toEqual([]);
         });
 
         it('should return a Cart entity if the cart is in the manager', () => {
@@ -59,7 +59,7 @@ describe('CartModel Unit Test Suite', () => {
             cartManager.cart = new Cart(cartExample);
             const cartData = cartManager.getCart();
             expect(cartData instanceof Cart).toBeTruthy();
-            expect((cartData.getData())).toEqual(cartExample);
+            expect(cartManager.generateDataFromCart()).toEqual(cartExample);
         });
     });
 
@@ -75,36 +75,38 @@ describe('CartModel Unit Test Suite', () => {
 
 
     describe('addProduct() Method Test Suite', () => {
+        beforeEach(() => {
+            cartManager.cart = new Cart([
+                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity),
+                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity)
+            ]);
+        });
         it('should add a product if the cart doesn\'t contain the product', () => {
-            cartManager.cart = new Cart(cartExample.slice(0, 2));
             localStorage.clear();
             cartManager.addProduct(cartExample[2]);
             expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
 
         it('should add a product if the cart doesn\'t contain the product but contains a product with the same id', () => {
-            cartExample[0].id = cartExample[2].id;
-            cartManager.cart = new Cart(cartExample.slice(0, 2));
+            cartExample[2].id = cartExample[0].id;
             localStorage.clear();
             cartManager.addProduct(cartExample[2]);
             expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
 
         it('should add a product if the cart doesn\'t contain the product but contains a product with the same color', () => {
-            cartExample[0].color = cartExample[2].color;
-            cartManager.cart = new Cart(cartExample.slice(0, 2));
+            cartExample[2].color = cartExample[0].color;
             localStorage.clear();
             cartManager.addProduct(cartExample[2]);
             expect(JSON.parse(localStorage.getItem(cartManager.storageName))).toEqual(cartExample);
         });
 
         it('should change the product\'s quantity if the product is already in the manager', () => {
-            const testQuantity = 2;
-            cartExample[2].quantity = testQuantity;
-            cartManager.cart = new Cart(cartExample);
+            cartExample[2].color = cartExample[0].color;
+            cartExample[2].id = cartExample[0].id;
             localStorage.clear();
             cartManager.addProduct(cartExample[2]);
-            expect(JSON.parse(localStorage.getItem(cartManager.storageName))[2].quantity).toEqual(2 * testQuantity);
+            expect(JSON.parse(localStorage.getItem(cartManager.storageName))[0].quantity).toEqual(cartExample[0].quantity + cartExample[2].quantity);
         });
     });
 
@@ -140,7 +142,7 @@ describe('CartModel Unit Test Suite', () => {
             cartManager.cart.products = [
                 new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity),
                 new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity),
-                new CartProduct(cartExample[2].id, cartExample[2].color, cartExample[2].quantity),
+                new CartProduct(cartExample[2].id, cartExample[2].color, cartExample[2].quantity)
             ]
             const dataGen = cartManager.generateDataFromCart();
             expect(dataGen).toEqual(cartExample);

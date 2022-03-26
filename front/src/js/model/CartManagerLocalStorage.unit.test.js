@@ -82,6 +82,15 @@ describe('CartModel Unit Test Suite', () => {
 
 
     describe('getCart() Method Test Suite', () => {
+        const generateCartFromDataMock = jest.spyOn(cartManager, 'generateCartFromData');
+
+        beforeEach(() => {
+            generateCartFromDataMock.mockReset();
+        });
+
+        afterAll(() => {
+            generateCartFromDataMock.mockRestore();
+        });
         it('should call the localStorageDao.getData() method if the cart is not in the manager, and set CartManagerLocalStorage.cartComplete to true', () => {
             cartManager.cartComplete = false;
             cartManager.getCart();
@@ -89,21 +98,21 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartManager.cartComplete).toBeTruthy();
         });
 
-        it('should create a new Cart instance and return it\'s data if the cart is not in the manager but in the localStorage', () => {
+        it('should call generateCartFromData() method and return the cart data if the cart is not in the manager but in the localStorage', () => {
             cartManager.cartComplete = false;
             mockGetData.mockReturnValueOnce(cartExample);
             const cartData = cartManager.getCart();
-            expect(Cart).toHaveBeenCalled();
-            expect(Cart).toHaveBeenCalledWith(cartExample);
+            expect(generateCartFromDataMock).toHaveBeenCalled();
+            expect(generateCartFromDataMock).toHaveBeenCalledWith(cartExample);
             expect(cartData).toEqual(cartManager.cart);
         });
 
-        it('should create a new empty Cart instance and return it\'s data if the cart is not in the manager nor the localStorage', () => {
+        it('should call generateCartFromData() method with an ampty array and return the cart data if the cart is not in the manager nor the localStorage', () => {
             cartManager.cartComplete = false;
             mockGetData.mockReturnValueOnce(undefined);
             const cartData = cartManager.getCart();
-            expect(Cart).toHaveBeenCalled();
-            expect(Cart).toHaveBeenCalledWith([]);
+            expect(generateCartFromDataMock).toHaveBeenCalled();
+            expect(generateCartFromDataMock).toHaveBeenCalledWith([]);
             expect(cartData).toEqual(cartManager.cart);
         });
 
@@ -117,6 +126,16 @@ describe('CartModel Unit Test Suite', () => {
 
 
     describe('postCart() Method Test Suite', () => {
+        const generateDataFromCartMock = jest.spyOn(cartManager, 'generateDataFromCart');
+
+        beforeEach(() => {
+            generateDataFromCartMock.mockReset();
+        });
+
+        afterAll(() => {
+            generateDataFromCartMock.mockRestore();
+        });
+
         it('should call the localStorageDao.setData() method with the right key and the cart object', () => {
             cartManager.postCart();
             expect(mockSetData).toHaveBeenCalled();
@@ -124,7 +143,7 @@ describe('CartModel Unit Test Suite', () => {
 
         it('should call the Cart.getData() method', () => {
             cartManager.postCart();
-            expect(mockGetEntityData).toHaveBeenCalled();
+            expect(generateDataFromCartMock).toHaveBeenCalled();
         });
     });
 
@@ -132,10 +151,12 @@ describe('CartModel Unit Test Suite', () => {
     describe('addProduct() Method Test Suite', () => {
         const getCartMock = jest.spyOn(cartManager, 'getCart');
         const postCartMock = jest.spyOn(cartManager, 'postCart');
+        const generateCartProductMock = jest.spyOn(cartManager, 'generateCartProductFromData');
 
         beforeEach(() => {
             getCartMock.mockReset();
             postCartMock.mockReset();
+            generateCartProductMock.mockReset();
         });
 
         it('should call the getCart() method from the cart model', () => {
@@ -143,53 +164,19 @@ describe('CartModel Unit Test Suite', () => {
             expect(getCartMock).toHaveBeenCalled();
         });
 
+        it('should call the generateCartProductFromData() method from the cart model', () => {
+            cartManager.addProduct(cartExample[0]);
+            expect(generateCartProductMock).toHaveBeenCalled();
+        });
+
         it('should call the Cart.addProduct() method', () => {
             cartManager.addProduct(cartExample[0]);
             expect(mockAddProduct).toHaveBeenCalled();
-            expect(mockAddProduct).toHaveBeenCalledWith(cartExample[0]);
         });
 
         it('should call the CartManagerLocalStorage.postCart() method with the cart', () => {
             cartManager.addProduct(cartExample[0]);
             expect(postCartMock).toHaveBeenCalled();
-        });
-    });
-
-
-    describe('generateCartFromData() Method Test Suite', () => {
-        const generateCartProductMock = jest.spyOn(cartManager, 'generateCartProductFromData');
-
-        beforeEach(() => {
-            generateCartProductMock.mockReset();
-        });
-
-        it('should call the generateCartProductFromData() method from the cart model', () => {
-            cartManager.generateCartFromData(cartExample);
-            expect(generateCartProductMock).toHaveBeenCalledTimes(cartExample.length);
-        });
-    });
-
-
-    describe('generateCartProductFromData() Method Test Suite', () => {
-        it('should return a CartProduct', () => {
-            const cartProductGen = cartManager.generateCartProductFromData(cartExample[0]);
-            expect(cartProductGen instanceof CartProduct).toBeTruthy();
-        });
-    });
-
-
-    describe('generateDataFromCart() Method Test Suite', () => {
-        cartManager.cart = new Cart();
-        cartManager.cart.
-
-        it('should call the generateDataFromCartProduct()', () => {
-            cartManager.generateCartFromData();
-            expect(generateCartProductMock).toHaveBeenCalledTimes(cartExample.length);
-        });
-
-        it('should return a CartProduct', () => {
-            const cartProductGen = cartManager.generateCartProductFromData(cartExample[0]);
-            expect(cartProductGen instanceof CartProduct).toBeTruthy();
         });
     });
 });

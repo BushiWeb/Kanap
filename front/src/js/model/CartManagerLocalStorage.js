@@ -30,16 +30,12 @@ export class CartManagerLocalStorage extends CartManager {
 
         let daoData = this.dao.getData(this.storageName, true);
         this.cartComplete = true;
-        let cartProducts = [];
         if (daoData === undefined) {
             daoData = [];
         }
 
-        for (let i = 0 ; i < daoData.length ; i++) {
-            cartProducts.push(new CartProduct(daoData[i].id, daoData[i].color, daoData[i].quantity));
-        }
+        this.generateCartFromData(daoData);
 
-        this.cart = new Cart(cartProducts);
         return this.cart;
     }
 
@@ -48,7 +44,7 @@ export class CartManagerLocalStorage extends CartManager {
      * Create or modify the cart object in the localStorage.
      */
     postCart() {
-        this.dao.setData(this.storageName, this.cart.getData());
+        this.dao.setData(this.storageName, this.generateDataFromCart());
     }
 
 
@@ -59,7 +55,7 @@ export class CartManagerLocalStorage extends CartManager {
     addProduct(productObject) {
         this.getCart();
 
-        this.cart.addProduct(productObject);
+        this.cart.addProduct(this.generateCartProductFromData(productObject));
 
         this.postCart();
     }
