@@ -49,25 +49,28 @@ export class ProductControler {
     addToCartEventHandler(event) {
         let colorElement = this.view.getColor();
         let quantityElement = this.view.getQuantity();
-        let errorMessage = '';
+        let error = false;
 
         if (typeof FormValidator.validateFormField(colorElement, {
             required: true
         }) === 'string') {
-            errorMessage = 'Merci de choisir une couleur avant d\'ajouter votre produit au panier.';
+            this.view.createFormFieldError(colorElement, 'Merci de choisir une couleur avant d\'ajouter votre produit au panier.');
+            error = true;
+        } else {
+            this.view.deleteFormFieldError(colorElement);
         }
 
         if (typeof FormValidator.validateFormField(quantityElement, {
             required: true
         }) === 'string') {
-            if (errorMessage) {
-                errorMessage += '\n';
-            }
-            errorMessage += 'Merci de choisir une quantité de produit valide.'
+            this.view.createFormFieldError(quantityElement, 'Merci de choisir une quantité de produit valide.');
+            error = true;
+        } else {
+            this.view.deleteFormFieldError(quantityElement);
         }
 
-        if (errorMessage) {
-            this.view.alert(errorMessage);
+
+        if (error) {
             return;
         }
 
@@ -77,7 +80,7 @@ export class ProductControler {
             quantity: parseInt(quantityElement.value)
         });
 
-        this.view.alert('Le produit a bien été ajouté au panier.')
+        this.view.displayNotification('Le produit a bien été ajouté au panier.')
     }
 
 

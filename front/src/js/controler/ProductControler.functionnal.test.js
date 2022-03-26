@@ -187,16 +187,27 @@ describe('ProductControler Functionnal Test Suite', () => {
         it('should alert an error if the color is not selected', () => {
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
-            expect(alertMock).toHaveBeenCalled();
-            expect(alertMock).toHaveBeenCalledWith('Merci de choisir une couleur avant d\'ajouter votre produit au panier.');
+            expect(document.getElementById('colors').nextElementSibling).toHaveClass('error');
         });
 
         it('should alert an error if the quantity is invalid', () => {
             userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
             userEvent.type(getByLabelText(document.body, 'Quantity'), '-3');
             userEvent.click(getByText(document.body, 'Add to cart'));
-            expect(alertMock).toHaveBeenCalled();
-            expect(alertMock).toHaveBeenCalledWith('Merci de choisir une quantité de produit valide.');
+            expect(document.getElementById('quantity').nextElementSibling).toHaveClass('error');
+        });
+
+        it('should remove the error if the fields are valid', () => {
+            userEvent.click(getByText(document.body, 'Add to cart'));
+
+            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '3');
+
+            userEvent.click(getByText(document.body, 'Add to cart'));
+
+            const errorContainers = document.getElementsByClassName('error');
+
+            expect(errorContainers.length).toBe(0);
         });
 
         it('should add a new product to the cart', () => {
@@ -212,8 +223,9 @@ describe('ProductControler Functionnal Test Suite', () => {
             userEvent.click(getByText(document.body, 'Add to cart'));
 
             expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(addedProduct);
-            expect(alertMock).toHaveBeenCalled();
-            expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
+
+            const notificationContainer = document.getElementById('notification-container');
+            expect(notificationContainer).not.toBeNull();
         });
 
         it('should change the quantity of the same product in the cart', () => {
@@ -235,8 +247,9 @@ describe('ProductControler Functionnal Test Suite', () => {
             userEvent.click(getByText(document.body, 'Add to cart'));
 
             expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(modifiedProduct);
-            expect(alertMock).toHaveBeenCalled();
-            expect(alertMock).toHaveBeenCalledWith('Le produit a bien été ajouté au panier.');
+
+            const notificationContainer = document.getElementById('notification-container');
+            expect(notificationContainer).not.toBeNull();
         });
     });
 });
