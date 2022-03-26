@@ -82,15 +82,4 @@ describe('Cart Functionnal Test Suite', () => {
             expect(searchResult).toBe(false);
         });
     });
-
-
-    describe('getData() Method Test Suite', () => {
-        const cartEntity = new Cart();
-        cartEntity._products = [new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity), new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity)];
-
-        it('should return an array of cart products object data', () => {
-            const data = cartEntity.getData();
-            expect(data).toEqual(testProducts);
-        });
-    });
 });

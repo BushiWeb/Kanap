@@ -46,19 +46,6 @@ export class Cart {
     }
 
 
-    /**
-     * Create an array of litteral objects of the products.
-     * @return {{id: string, color: string, quantity: number}[]} Array containing the objects representing the products
-     */
-    getData() {
-        const dataResult = [];
-        for (const cartProduct of this._products) {
-            dataResult.push(cartProduct.getData());
-        }
-        return dataResult;
-    }
-
-
     /********************************************
      * GETTERS
      ********************************************/

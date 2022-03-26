@@ -58,14 +58,6 @@ describe('CartProduct Unit Test Suite', () => {
     });
 
 
-    describe('getData() Method Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
-        it('should return an object containing the entity data', () => {
-            expect(cartProductEntity.getData()).toEqual(testProduct);
-        });
-    });
-
-
     describe('compare() Method Test Suite', () => {
         const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
         const compareCartProduct = new CartProduct('id', 'color', 3);

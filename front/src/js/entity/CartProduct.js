@@ -25,19 +25,6 @@
 
 
     /**
-     * Create a litteral object of the instance.
-     * @return {{id: string, color: string, quantity: number}} Litteral object representing the instance.
-     */
-    getData() {
-        return {
-            id: this._id,
-            color: this._color,
-            quantity: this._quantity
-        }
-    }
-
-
-    /**
      * Compare the current CartProduct with another one. Two products are identical if they have the same ID and the same color.
      * @param {CartProduct} cartProduct - Cart product to check.
      * @return {boolean} Return true if the given product is the same as the current product, return false otherwie.
