@@ -38,6 +38,8 @@ describe('Cart Unit Test Suite', () => {
         }
     ];
 
+    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
+
     describe('Constructor Test Suite', () => {
         const productsSetterMock = jest.spyOn(Cart.prototype, 'products', 'set');
 
@@ -97,14 +99,14 @@ describe('Cart Unit Test Suite', () => {
         it('should change the product\'s quantity if it is already in the cart', () => {
             searchProductMock.mockReturnValue(0);
             cartEntity._products = [new CartProduct()];
-            cartEntity.addProduct(testProducts[0]);
+            cartEntity.addProduct(testCartProductEntity);
             expect(mockAddToQuantity).toHaveBeenCalled();
         });
 
         it('should add the product to the cart', () => {
             const pushMock = jest.spyOn(Array.prototype, 'push');
             searchProductMock.mockReturnValue(false);
-            cartEntity.addProduct(testProducts[0]);
+            cartEntity.addProduct(testCartProductEntity);
             expect(pushMock).toHaveBeenCalled();
             pushMock.mockRestore();
         });

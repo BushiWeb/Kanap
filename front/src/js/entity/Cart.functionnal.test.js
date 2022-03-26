@@ -16,6 +16,8 @@ describe('Cart Functionnal Test Suite', () => {
         }
     ];
 
+    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
+
     describe('Constructor Test Suite', () => {
         it('should create an instance of Cart with the right products', () => {
             const cartProductEntity = new Cart(testProducts);
@@ -34,17 +36,15 @@ describe('Cart Functionnal Test Suite', () => {
         const cartEntity = new Cart();
 
         it('should change the product\'s quantity if it is already in the cart', () => {
-            const testProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
-            cartEntity._products = [testProductEntity];
-            cartEntity.addProduct(testProducts[0]);
+            cartEntity._products = [testCartProductEntity];
+            cartEntity.addProduct(testCartProductEntity);
             expect(cartEntity._products[0].quantity).toBe(2 * testProducts[0].quantity);
         });
 
         it('should add the product to the cart', () => {
             cartEntity._products = [];
-            const testProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
-            cartEntity.addProduct(testProducts[0]);
-            expect(cartEntity._products[0]).toEqual(testProductEntity);
+            cartEntity.addProduct(testCartProductEntity);
+            expect(cartEntity._products[0]).toEqual(testCartProductEntity);
         });
     });
 

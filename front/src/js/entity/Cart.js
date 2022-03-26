@@ -16,16 +16,15 @@ export class Cart {
     /**
      * Add a product to the cart.
      * If the product is already in the cart (same id and same color), updates the quantity of the product.
-     * @param {{id: string, color: string, quantity: number}} product - Product to add to the cart.
+     * @param {CartProduct} product - Product to add to the cart.
      */
     addProduct(product) {
-        const cartProduct = new CartProduct(product.id, product.color, product.quantity);
-        const productIndex = this.searchProduct(cartProduct);
+        const productIndex = this.searchProduct(product);
 
         if (productIndex === false) {
-            this._products.push(cartProduct);
+            this._products.push(product);
         } else {
-            this._products[productIndex].addToQuantity(cartProduct.quantity);
+            this._products[productIndex].addToQuantity(product.quantity);
         }
     }
 
