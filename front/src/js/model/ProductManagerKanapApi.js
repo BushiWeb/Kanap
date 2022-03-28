@@ -37,7 +37,7 @@ export class ProductManagerKanapApi extends ProductManager {
      * If the product isn't in the products property, but all the products are in the property, throw an error.
      * If the product isn't in the products property but not all the products are stored, fetch the data from using the dao and update the products property.
      * @param {string} productId - The id of the product to fetch.
-     * @returns {Object} Return an object containing the product's data.
+     * @returns {Product} Return the corresponding entity.
      * @throws Throw an error if the product is not in the products property but all the products have already been fetched.
      */
     async getProduct(productId) {
@@ -53,6 +53,27 @@ export class ProductManagerKanapApi extends ProductManager {
 
         }
         return this.products[productIndex];
+    }
+
+
+    /**
+     * Fetch a list of products.
+     * Use the getProduct() method to fetch each product individually. If getProduct() throws an error, catch it.
+     * @param {string[]} productsIds - Array of products IDs.
+     * @returns {Object} Return an array containing all the products entities. If getProduct() throws an error for one product, place an error message in the array in place of the entity.
+     */
+    async getProductsList(productsIds) {
+        let returnedProducts = [];
+
+        for (let productId of productsIds) {
+            try {
+                returnedProducts.push(await this.getProduct(productId));
+            } catch (error) {
+                returnedProducts.push(`Une erreur a eu lieue avec la récupération du produit ${productId}`);
+            }
+        }
+
+        return returnedProducts;
     }
 
 

@@ -161,4 +161,27 @@ describe('ProductManagerKanapApi Functionnal Test Suite', () => {
             }).rejects.toThrow();
         });
     });
+
+
+    describe('getProductsList() Method Test Suite', () => {
+        const idsList = [MOCKED_PRODUCT_ENTITY_DATA[0].id, MOCKED_PRODUCT_ENTITY_DATA[1].id];
+
+        it('should return an array of products entities', async () => {
+            productManager.productsListComplete = true;
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+            const productsList = await productManager.getProductsList(idsList);
+            expect(productsList[0]).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
+            expect(productsList[1]).toEqual(MOCKED_PRODUCT_ENTITY_DATA[1]);
+        });
+
+        it('should return an array of products entities and error messages', async () => {
+            productManager.productsListComplete = true;
+            productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+            const errorIdsList = [...idsList, '2'];
+            const productsList = await productManager.getProductsList(errorIdsList);
+            expect(productsList[0]).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
+            expect(productsList[1]).toEqual(MOCKED_PRODUCT_ENTITY_DATA[1]);
+            expect(typeof productsList[2]).toEqual('string');
+        });
+    });
 });
