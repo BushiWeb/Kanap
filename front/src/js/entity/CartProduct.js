@@ -1,3 +1,5 @@
+import { Product } from './Product';
+
 /**
  * Class representing a product from the API.
  */
@@ -7,11 +9,13 @@
      * @param {string} id - Product's ID.
      * @param {string} color - Product's color.
      * @param {number} quantity - Product's quantity.
+     * @param {Product} product - Associated product entity. Defaults to undefined.
      */
-    constructor(id, color, quantity) {
+    constructor(id, color, quantity, product = undefined) {
         this._id = id;
         this._color = color;
         this._quantity = quantity;
+        this._product = product;
     }
 
 
@@ -61,6 +65,14 @@
         return this._quantity;
     }
 
+    /**
+     * _product property getter.
+     * @return {Product} Return the value of the _product property.
+     */
+    get product() {
+        return this._product;
+    }
+
 
     /********************************************
      * SETTERS
@@ -71,5 +83,13 @@
      */
      set quantity(quantity) {
         this._quantity = quantity;
+    }
+
+    /**
+     * _product property setter.
+     * @param {Product} product - The new product's entity.
+     */
+     set product(product) {
+        this._product = product;
     }
 }

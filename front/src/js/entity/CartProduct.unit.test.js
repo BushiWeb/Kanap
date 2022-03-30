@@ -1,4 +1,5 @@
 import { CartProduct } from "./CartProduct";
+import { Product } from "./Product";
 
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
@@ -8,6 +9,16 @@ describe('CartProduct Unit Test Suite', () => {
         color: MOCKED_API_DATA[0].colors[0],
         quantity: 4
     }
+
+    const testProductEntity = new Product(
+        MOCKED_API_DATA[0]._id,
+        MOCKED_API_DATA[0].name,
+        MOCKED_API_DATA[0].price,
+        MOCKED_API_DATA[0].description,
+        MOCKED_API_DATA[0].imageUrl,
+        MOCKED_API_DATA[0].altTxt,
+        MOCKED_API_DATA[0].colors
+    );
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of CartProduct with the right informations', () => {
@@ -20,7 +31,7 @@ describe('CartProduct Unit Test Suite', () => {
 
 
     describe('Getters Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProductEntity);
 
         it('should return the value of CartProduct._id', () => {
             expect(cartProductEntity.id).toBe(cartProductEntity._id);
@@ -33,16 +44,34 @@ describe('CartProduct Unit Test Suite', () => {
         it('should return the value of CartProduct._quantity', () => {
             expect(cartProductEntity.quantity).toBe(cartProductEntity._quantity);
         });
+
+        it('should return the value of CartProduct._quantity', () => {
+            expect(cartProductEntity.product).toBe(cartProductEntity._product);
+        });
     });
 
 
     describe('Setters Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProductEntity);
 
         it('should set the value of CartProduct._quantity', () => {
             const newQuantity = 8;
             cartProductEntity.quantity = 8;
             expect(cartProductEntity._quantity).toBe(newQuantity);
+        });
+
+        it('should set the value of CartProduct._product', () => {
+            const newProductEntity = new Product(
+                MOCKED_API_DATA[1]._id,
+                MOCKED_API_DATA[1].name,
+                MOCKED_API_DATA[1].price,
+                MOCKED_API_DATA[1].description,
+                MOCKED_API_DATA[1].imageUrl,
+                MOCKED_API_DATA[1].altTxt,
+                MOCKED_API_DATA[1].colors
+            );;
+            cartProductEntity.product = newProductEntity;
+            expect(cartProductEntity._product).toBe(newProductEntity);
         });
     });
 
