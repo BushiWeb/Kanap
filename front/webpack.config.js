@@ -4,7 +4,8 @@ module.exports = {
     mode: 'production',
     entry : {
         script: './src/js/start/script.js',
-        product: './src/js/start/product.js'
+        product: './src/js/start/product.js',
+        cart: './src/js/start/cart.js'
     },
     output : {
         filename : '[name].js',

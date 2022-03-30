@@ -23,7 +23,7 @@ export class ProductControler {
     }
 
     /**
-     * Activate when the Home page loads.
+     * Activate when the Cart page loads.
      * Fetch the data and display them.
      * If an error occurs while fetching the data, display the error in a modal box (alert).
      * Add the event listeners on the page.
