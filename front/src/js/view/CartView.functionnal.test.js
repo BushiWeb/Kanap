@@ -11,6 +11,7 @@ import { CartProduct } from '../entity/CartProduct';
 
 
 describe('CartView Functionnal Test Suite', () => {
+    let cartEntity = new Cart();
     const cartViewTest = new CartView();
     const cartProductEntities = [
         new CartProduct(
@@ -50,8 +51,6 @@ describe('CartView Functionnal Test Suite', () => {
     });
 
     describe('render() Method Test Suite', () => {
-        let cartEntity = new Cart();
-
         beforeEach(() => {
             cartEntity._totalPrice = undefined;
             cartEntity._totalQuantity = undefined;
@@ -114,6 +113,41 @@ describe('CartView Functionnal Test Suite', () => {
             expect(productsCardElement.length).toBe(0);
             expect(priceElt.textContent).toBe('0');
             expect(quantityElt.textContent).toBe('0');
+        });
+    });
+
+
+    describe('insertTotalQuantity() Method Test Suite', () => {
+        it('should insert the righ value in the element', () => {
+            cartViewTest.insertTotalQuantity(10);
+
+            const quantityElt = document.getElementById('totalQuantity');
+
+            expect(quantityElt.textContent).toBe('10');
+        });
+    });
+
+
+    describe('insertTotalPrice() Method Test Suite', () => {
+        it('should insert the righ value in the element', () => {
+            cartViewTest.insertTotalPrice(10);
+
+            const priceElt = document.getElementById('totalPrice');
+
+            expect(priceElt.textContent).toBe('10');
+        });
+    });
+
+
+    describe('insertTotals() Method Test Suite', () => {
+        it('should insert the righ values in the elements', () => {
+            cartViewTest.insertTotals(10, 10);
+
+            const priceElt = document.getElementById('totalPrice');
+            const quantityElt = document.getElementById('totalQuantity');
+
+            expect(priceElt.textContent).toBe('10');
+            expect(quantityElt.textContent).toBe('10');
         });
     });
 });

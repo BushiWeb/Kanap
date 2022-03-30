@@ -94,10 +94,38 @@ export class CartView extends View {
             containerElement.appendChild(articleWrapper);
         }
 
-        const quantityElement = this.getElements('#totalQuantity')[0];
-        const priceElement = this.getElements('#totalPrice')[0];
+        let totalPrice = cart.totalPrice;
+        let totalQuantity = cart.totalQuantity
+        this.insertTotals((totalPrice === undefined)? 0 : totalPrice, (totalQuantity === undefined)? 0 : totalQuantity);
+    }
 
-        quantityElement.textContent = (cart.totalQuantity === undefined)? 0 : cart.totalQuantity;
-        priceElement.textContent = (cart.totalPrice === undefined)? 0 : cart.totalPrice;
+
+    /**
+     * Insert the total quantity in the page.
+     * @param {number} quantity - Value to insert.
+     */
+    insertTotalQuantity(quantity) {
+        this.getElements('#totalQuantity')[0].textContent = quantity;
+
+    }
+
+
+    /**
+     * Insert the total price in the page.
+     * @param {number} price - Value to insert.
+     */
+    insertTotalPrice(price) {
+        this.getElements('#totalPrice')[0].textContent = price;
+    }
+
+
+    /**
+     * Insert the total price and quantity in the page.
+     * @param {number} price - Price to insert.
+     * @param {number} quantity - Quantity to insert.
+     */
+    insertTotals(price, quantity) {
+        this.insertTotalPrice(price);
+        this.insertTotalQuantity(quantity);
     }
 }
