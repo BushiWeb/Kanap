@@ -1,4 +1,5 @@
 import { Cart } from "../entity/Cart";
+import { ProductManager } from "./ProductManager";
 
 /**
  * Parent class for all Cart managers.
@@ -11,5 +12,20 @@ export class CartManager {
         this.cart = new Cart();
         this.cartComplete = false;
         this.dao = undefined;
+    }
+
+
+    /**
+     *
+     * @param {ProductManager} productManager - ProductManager instance to fetch product's informations.
+     */
+    async setCartProductProductInfos(productManager) {
+        for (let cartProduct of this.cart.products) {
+            try {
+                cartProduct.product = await productManager.getProduct(cartProduct.id);
+            } catch (error) {
+                cartProduct.product = error;
+            }
+        }
     }
 }
