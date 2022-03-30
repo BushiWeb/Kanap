@@ -1,5 +1,6 @@
 import { Cart } from "./Cart";
 import { CartProduct } from './CartProduct';
+import { Product } from './Product';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 const mockAddToQuantity = jest.fn();
@@ -66,10 +67,43 @@ describe('Cart Unit Test Suite', () => {
 
     describe('Getters Test Suite', () => {
         const cartEntity = new Cart();
+        const mockUpdatePrice = jest.spyOn(cartEntity, 'updateTotalPrice');
+        const mockUpdateQuantity = jest.spyOn(cartEntity, 'updateTotalQuantity');
+
+        beforeEach(() => {
+            mockUpdatePrice.mockReset();
+            mockUpdateQuantity.mockReset();
+        });
+        afterAll(() => {
+            mockUpdatePrice.mockRestore();
+            mockUpdateQuantity.mockRestore();
+        });
 
         it('should return the value of Cart._products', () => {
             cartEntity._products = testProducts[0];
             expect(cartEntity.products).toBe(cartEntity._products);
+        });
+
+        it('should return the value of Cart._totalQuantity', () => {
+            cartEntity._totalQuantity = 20;
+            expect(cartEntity.totalQuantity).toBe(cartEntity._totalQuantity);
+        });
+
+        it('should call updateTotalQuantity() if the total quantity is undefined', () => {
+            cartEntity._totalQuantity = undefined;
+            cartEntity.totalQuantity;
+            expect(mockUpdateQuantity).toHaveBeenCalled();
+        });
+
+        it('should return the value of Cart._totalPrice', () => {
+            cartEntity._totalPrice = 20;
+            expect(cartEntity.totalPrice).toBe(cartEntity._totalPrice);
+        });
+
+        it('should call updateTotalPrice() if the total price is undefined', () => {
+            cartEntity._totalPrice = undefined;
+            cartEntity.totalPrice;
+            expect(mockUpdatePrice).toHaveBeenCalled();
         });
     });
 
@@ -89,13 +123,19 @@ describe('Cart Unit Test Suite', () => {
         const cartEntity = new Cart();
 
         const searchProductMock = jest.spyOn(Cart.prototype, 'searchProduct');
+        const mockUpdatePrice = jest.spyOn(cartEntity, 'updateTotalPrice');
+        const mockUpdateQuantity = jest.spyOn(cartEntity, 'updateTotalQuantity');
 
         beforeEach(() => {
             searchProductMock.mockReset();
+            mockUpdatePrice.mockReset();
+            mockUpdateQuantity.mockReset();
         });
 
         afterAll(() => {
             searchProductMock.mockRestore();
+            mockUpdatePrice.mockRestore();
+            mockUpdateQuantity.mockRestore();
         });
 
         it('should change the product\'s quantity if it is already in the cart', () => {
@@ -111,6 +151,20 @@ describe('Cart Unit Test Suite', () => {
             cartEntity.addProduct(testCartProductEntity);
             expect(pushMock).toHaveBeenCalled();
             pushMock.mockRestore();
+        });
+
+        it('should update the totalPrice', () => {
+            searchProductMock.mockReturnValue(0);
+            cartEntity._products = [new CartProduct()];
+            cartEntity.addProduct(testCartProductEntity);
+            expect(mockUpdatePrice).toHaveBeenCalled();
+        });
+
+        it('should update the totalQuantity', () => {
+            searchProductMock.mockReturnValue(0);
+            cartEntity._products = [new CartProduct()];
+            cartEntity.addProduct(testCartProductEntity);
+            expect(mockUpdateQuantity).toHaveBeenCalled();
         });
     });
 

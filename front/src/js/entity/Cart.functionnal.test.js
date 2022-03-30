@@ -1,5 +1,6 @@
 import { Cart } from "./Cart";
 import { CartProduct } from "./CartProduct";
+import { Product } from "./Product";
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('Cart Functionnal Test Suite', () => {
@@ -16,7 +17,31 @@ describe('Cart Functionnal Test Suite', () => {
         }
     ];
 
-    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
+    const testCartProductEntities = [
+        new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity),
+        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity)
+    ]
+
+    const testProductEntities = [
+        new Product(
+            MOCKED_API_DATA[0]._id,
+            MOCKED_API_DATA[0].name,
+            MOCKED_API_DATA[0].price,
+            MOCKED_API_DATA[0].description,
+            MOCKED_API_DATA[0].imageUrl,
+            MOCKED_API_DATA[0].altTxt,
+            MOCKED_API_DATA[0].colors
+        ),
+        new Product(
+            MOCKED_API_DATA[1]._id,
+            MOCKED_API_DATA[1].name,
+            MOCKED_API_DATA[1].price,
+            MOCKED_API_DATA[1].description,
+            MOCKED_API_DATA[1].imageUrl,
+            MOCKED_API_DATA[1].altTxt,
+            MOCKED_API_DATA[1].colors
+        )
+    ]
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of Cart with the right products', () => {
@@ -36,50 +61,81 @@ describe('Cart Functionnal Test Suite', () => {
         const cartEntity = new Cart();
 
         it('should change the product\'s quantity if it is already in the cart', () => {
-            cartEntity._products = [testCartProductEntity];
-            cartEntity.addProduct(testCartProductEntity);
+            cartEntity._products = [testCartProductEntities[0]];
+            cartEntity.addProduct(testCartProductEntities[0]);
             expect(cartEntity._products[0].quantity).toBe(2 * testProducts[0].quantity);
         });
 
         it('should add the product to the cart', () => {
             cartEntity._products = [];
-            cartEntity.addProduct(testCartProductEntity);
-            expect(cartEntity._products[0]).toEqual(testCartProductEntity);
+            cartEntity.addProduct(testCartProductEntities[0]);
+            expect(cartEntity._products[0]).toEqual(testCartProductEntities[0]);
         });
     });
 
 
     describe('searchProduct() Test Suite', () => {
-        const testProductToSearch = new CartProduct(MOCKED_API_DATA[0]._id, MOCKED_API_DATA[0].colors[0], 4);
-        const testProductToPopulate = new CartProduct(MOCKED_API_DATA[1]._id, MOCKED_API_DATA[1].colors[0], 4);
         const cartEntity = new Cart();
 
         it('should return the index of the product', () => {
-            cartEntity._products = [testProductToPopulate, testProductToSearch];
-            const searchResult = cartEntity.searchProduct(testProductToSearch);
+            cartEntity._products = [testCartProductEntities[1], testCartProductEntities[0]];
+            const searchResult = cartEntity.searchProduct(testCartProductEntities[0]);
             expect(searchResult).toBe(1);
         });
 
         it('should return false if the product is not in the cart', () => {
-            cartEntity._products = [testProductToPopulate];
-            const searchResult = cartEntity.searchProduct(testProductToSearch);
+            cartEntity._products = [testCartProductEntities[1]];
+            const searchResult = cartEntity.searchProduct(testCartProductEntities[0]);
             expect(searchResult).toBe(false);
         });
 
         it('should return false if the product is not in the cart but a product has the same ID', () => {
-            testProductToPopulate._color = MOCKED_API_DATA[1].colors[0];
-            testProductToPopulate._id = testProductToSearch.id;
-            cartEntity._products = [testProductToPopulate];
-            const searchResult = cartEntity.searchProduct(testProductToSearch);
+            testCartProductEntities[1]._color = MOCKED_API_DATA[1].colors[0];
+            testCartProductEntities[1]._id = testCartProductEntities[0].id;
+            cartEntity._products = [testCartProductEntities[1]];
+            const searchResult = cartEntity.searchProduct(testCartProductEntities[0]);
             expect(searchResult).toBe(false);
         });
 
         it('should return false if the product is not in the cart but a product has the same color', () => {
-            testProductToPopulate._color = testProductToSearch.color;
-            testProductToPopulate._id = MOCKED_API_DATA[1]._id;
-            cartEntity._products = [testProductToPopulate];
-            const searchResult = cartEntity.searchProduct(testProductToSearch);
+            testCartProductEntities[1]._color = testCartProductEntities[0].color;
+            testCartProductEntities[1]._id = MOCKED_API_DATA[1]._id;
+            cartEntity._products = [testCartProductEntities[1]];
+            const searchResult = cartEntity.searchProduct(testCartProductEntities[0]);
             expect(searchResult).toBe(false);
+        });
+    });
+
+
+    describe('updateTotalPrice() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        it('should update the total price', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+            const totalPrice = testCartProductEntities[0].quantity * testCartProductEntities[0].product._price + testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+            cartEntity.updateTotalPrice();
+            expect(cartEntity._totalPrice).toBe(totalPrice)
+        });
+
+        it('should update the totalPrice to undefined if the CartProduct.product properties are missing', () => {
+            cartEntity._products[1].product = undefined;
+            cartEntity._totalPrice = 2;
+            cartEntity.updateTotalPrice();
+            expect(cartEntity._totalPrice).toBeUndefined();
+        });
+    });
+
+
+    describe('updateTotalQuantity() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        it('should update the total quantity', () => {
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+            const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
+            cartEntity.updateTotalQuantity();
+            expect(cartEntity._totalQuantity).toBe(totalQuantity)
         });
     });
 });

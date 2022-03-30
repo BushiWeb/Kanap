@@ -10,6 +10,8 @@ export class Cart {
      */
     constructor(products = []) {
         this.products = products;
+        this._totalPrice = undefined;
+        this._totalQuantity = undefined;
     }
 
 
@@ -26,6 +28,9 @@ export class Cart {
         } else {
             this._products[productIndex].addToQuantity(product.quantity);
         }
+
+        this.updateTotalPrice();
+        this.updateTotalQuantity();
     }
 
 
@@ -45,6 +50,38 @@ export class Cart {
     }
 
 
+    /**
+     * Update the _totalPrice value. If the price of one CartProduct is undefined, set _totalPrice to undefined.
+     */
+    updateTotalPrice() {
+        let totalPrice = 0;
+
+        for (let cartProduct of this.products) {
+            if (cartProduct.product === undefined) {
+                totalPrice = undefined;
+                break;
+            }
+            totalPrice += cartProduct.quantity * cartProduct.product.price;
+        }
+
+        this._totalPrice = totalPrice;
+    }
+
+
+    /**
+     * Update the _totalQuantity value.
+     */
+    updateTotalQuantity() {
+        let totalQuantity = 0;
+
+        for (let cartProduct of this.products) {
+            totalQuantity += cartProduct.quantity;
+        }
+
+        this._totalQuantity = totalQuantity;
+    }
+
+
     /********************************************
      * GETTERS
      ********************************************/
@@ -54,6 +91,28 @@ export class Cart {
      */
     get products() {
         return this._products;
+    }
+
+    /**
+     * Return the total price.
+     * @return {number} Return _totalPrice.
+     */
+    get totalPrice() {
+        if (this._totalPrice === undefined) {
+            this.updateTotalPrice();
+        }
+        return this._totalPrice;
+    }
+
+    /**
+     * Return the total quantity.
+     * @return {number} Return _totalQuantity.
+     */
+    get totalQuantity() {
+        if (this._totalQuantity === undefined) {
+            this.updateTotalQuantity();
+        }
+        return this._totalQuantity;
     }
 
 
