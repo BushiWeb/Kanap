@@ -20,11 +20,12 @@ export class CartManager {
      * @param {ProductManager} productManager - ProductManager instance to fetch product's informations.
      */
     async setCartProductProductInfos(productManager) {
-        for (let cartProduct of this.cart.products) {
+        for (let i = 0 ; i < this.cart.products.length ; i++) {
             try {
-                cartProduct.product = await productManager.getProduct(cartProduct.id);
+                this.cart.products[i].product = await productManager.getProduct(this.cart.products[i].id);
             } catch (error) {
-                cartProduct.product = error;
+                this.cart.products.splice(i, 1);
+                i--;
             }
         }
     }

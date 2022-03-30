@@ -72,8 +72,7 @@ describe('CartModel Unit Test Suite', () => {
         it('should give each CartProduct an error if the Product entity can\'t be created', async () => {
             mockGetProduct.mockImplementation(() => { throw new Error(); });
             await cartManager.setCartProductProductInfos(productManager);
-            expect(cartManager.cart.products[0].product instanceof Error).toBe(true);
-            expect(cartManager.cart.products[1].product instanceof Error).toBe(true);
+            expect(cartManager.cart.products.length).toBe(0);
         });
     });
 });

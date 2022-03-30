@@ -24,16 +24,16 @@ describe('CartModel Unit Test Suite', () => {
 
     describe('setCartProductProductInfos() Method Test Suite', () => {
         let cartManager = new CartManager();
-        cartManager.cart.products.push(new CartProduct(MOCKED_API_DATA[0]._id, 'black', 12), new CartProduct('12', 'blue', 3));
+        cartManager.cart.products.push(new CartProduct('12', 'blue', 3), new CartProduct(MOCKED_API_DATA[0]._id, 'black', 12));
 
-        it('should give the first CartProduct it\'s corresponding Product entity, and the second one an Error', async () => {
-            global.fetch.mockResolvedValueOnce({
+        it('should delete the first CartProduct and give the second one it\'s corresponding Product entity', async () => {
+            global.fetch.mockRejectedValueOnce(new Error()).mockResolvedValueOnce({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok : true
-            }).mockRejectedValueOnce(new Error());
+            });
             await cartManager.setCartProductProductInfos(productManager);
+            expect(cartManager.cart._products.length).toBe(1);
             expect(cartManager.cart._products[0]._product).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
-            expect(cartManager.cart._products[1]._product instanceof Error).toBe(true);
         });
     });
 });
