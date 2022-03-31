@@ -148,7 +148,6 @@ describe('Cart Functionnal Test Suite', () => {
         it('should update the total quantity and price', () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
-            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
             const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
             const totalPrice = testCartProductEntities[0].quantity * testCartProductEntities[0].product._price + testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
             cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
@@ -156,6 +155,35 @@ describe('Cart Functionnal Test Suite', () => {
             cartEntity.updateTotals();
             expect(cartEntity._totalQuantity).toBe(totalQuantity);
             expect(cartEntity._totalPrice).toBe(totalPrice);
+        });
+    });
+
+
+    describe('deleteProduct() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        it('should delete the product and update the total quantity and price and return true', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+
+            const newQuantity = testCartProductEntities[1].quantity;
+            const newPrice = testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+
+            const result = cartEntity.deleteProduct(testCartProductEntities[0]);
+            expect(cartEntity._products).not.toContainEqual(testCartProductEntities[0]);
+            expect(cartEntity._totalQuantity).toBe(newQuantity);
+            expect(cartEntity._totalPrice).toBe(newPrice);
+            expect(result).toBe(true);
+        });
+
+        it('should delete the product and update the total quantity and price and return true', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[1]];
+
+            const result = cartEntity.deleteProduct(testCartProductEntities[0]);
+            expect(result).toBe(false);
         });
     });
 });

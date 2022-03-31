@@ -130,11 +130,6 @@ describe('Cart Unit Test Suite', () => {
             mockUpdateTotals.mockReset();
         });
 
-        afterAll(() => {
-            searchProductMock.mockRestore();
-            mockUpdateTotals.mockRestore();
-        });
-
         it('should change the product\'s quantity if it is already in the cart', () => {
             searchProductMock.mockReturnValue(0);
             cartEntity._products = [new CartProduct()];
@@ -155,6 +150,56 @@ describe('Cart Unit Test Suite', () => {
             cartEntity._products = [new CartProduct()];
             cartEntity.addProduct(testCartProductEntity);
             expect(mockUpdateTotals).toHaveBeenCalled();
+        });
+    });
+
+
+    describe('deleteProduct() Test Suite', () => {
+        const mockSearchProduct = jest.spyOn(Cart.prototype, 'searchProduct');
+        const mockUpdateTotals = jest.spyOn(Cart.prototype, 'updateTotals');
+        const cartEntity = new Cart();
+
+        beforeEach(() => {
+            mockSearchProduct.mockReset();
+            mockUpdateTotals.mockReset();
+        });
+
+        afterAll(() => {
+            mockSearchProduct.mockRestore();
+            mockUpdateTotals.mockRestore();
+        });
+
+        it('should use the searchProduct() method', () => {
+            cartEntity.deleteProduct(testCartProductEntity);
+            expect(mockSearchProduct).toHaveBeenCalled();
+        });
+
+        it('should delete the right element in the products array if searchProduct returns a number', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            cartEntity.deleteProduct(testCartProductEntity);
+            expect(cartEntity._products.length).toBe(0);
+        });
+
+        it('should use the updateTotals() method if searchProduct returns a number', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            cartEntity.deleteProduct(testCartProductEntity);
+            expect(mockUpdateTotals).toHaveBeenCalled();
+        });
+
+        it('should return true if the product exists', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            const result = cartEntity.deleteProduct(testCartProductEntity);
+            expect(result).toBe(true);
+        });
+
+        it('should return false if the product doesn\'t exist', () => {
+            cartEntity._products = [];
+            mockSearchProduct.mockReturnValue(false);
+            const result = cartEntity.deleteProduct(testCartProductEntity);
+            expect(result).toBe(false);
         });
     });
 

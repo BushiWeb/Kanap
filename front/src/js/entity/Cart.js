@@ -50,6 +50,23 @@ export class Cart {
 
 
     /**
+     * Delete a CartProduct from the list.
+     * @param {CartProduct} product - Product to delete.
+     */
+    deleteProduct(product) {
+        let productIndex = this.searchProduct(product);
+
+        if (productIndex === false) {
+            return false;
+        }
+
+        this.products.splice(productIndex, 1);
+        this.updateTotals();
+        return true;
+    }
+
+
+    /**
      * Update the _totalPrice value. If the price of one CartProduct is undefined, set _totalPrice to undefined.
      */
     updateTotalPrice() {

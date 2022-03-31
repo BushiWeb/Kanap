@@ -8,11 +8,13 @@ import { Cart } from "../entity/Cart";
 import { CartProduct } from "../entity/CartProduct";
 import { Product } from "../entity/Product";
 
+const mockDeleteProduct = jest.fn();
 jest.mock('../entity/Cart', () => {
     return {
         Cart: jest.fn().mockImplementation(() => {
             return {
-                products: []
+                products: [],
+                deleteProduct: mockDeleteProduct
             };
         })
     }
@@ -44,13 +46,18 @@ jest.mock('./ProductManagerKanapApi', () => {
 });
 
 CartManager.prototype.postCart = jest.fn();
+CartManager.prototype.getCart = jest.fn();
+CartManager.prototype.generateCartProductFromData = jest.fn();
 
 beforeEach(() => {
+    mockDeleteProduct.mockClear();
     Cart.mockClear();
     CartProduct.mockClear();
     mockGetProduct.mockReset();
     ProductManagerKanapApi.mockClear();
     CartManager.prototype.postCart.mockClear();
+    CartManager.prototype.getCart.mockClear();
+    CartManager.prototype.generateCartProductFromData.mockClear();
 })
 
 
@@ -87,6 +94,32 @@ describe('CartModel Unit Test Suite', () => {
             expect(errorArray.length).toBe(2);
             expect(errorArray[0]).toMatch(new RegExp('name1'));
             expect(errorArray[1]).toMatch(new RegExp('name2'));
+            expect(cartManager.postCart).toHaveBeenCalled();
+        });
+    });
+
+
+    describe('deleteProduct() Method Test Suite', () => {
+        let cartManager = new CartManager();
+        const productToDelete = new CartProduct('21', 'blue', 2, 'name1');
+
+        beforeEach(() => {
+            cartManager.cart.products = [productToDelete, new CartProduct('12', 'red', 1, 'name2')];
+        });
+
+        it('should call the generateCartProductFromData() method', async () => {
+            cartManager.deleteProduct(productToDelete.id, productToDelete.color);
+            expect(cartManager.generateCartProductFromData).toHaveBeenCalled();
+        });
+
+        it('should call the Cart.deleteProduct() method', async () => {
+            cartManager.deleteProduct(productToDelete.id, productToDelete.color);
+            expect(mockDeleteProduct).toHaveBeenCalled();
+        });
+
+        it('should call the postCart() method if the product existed', async () => {
+            mockDeleteProduct.mockReturnValue(true);
+            cartManager.deleteProduct(productToDelete.id, productToDelete.color);
             expect(cartManager.postCart).toHaveBeenCalled();
         });
     });

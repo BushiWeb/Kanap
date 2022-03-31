@@ -39,4 +39,24 @@ export class CartManager {
 
         return errorArray;
     }
+
+
+    /**
+     * Delete a product from the cart. Updates the storage solution.
+     * @param {string} id - ID of the product to delete.
+     * @param {string} color - Color of the product to delete.
+     */
+    deleteProduct(id, color) {
+        this.getCart();
+        const result = this.cart.deleteProduct(this.generateCartProductFromData({
+            id: id,
+            color: color,
+            name: undefined,
+            quantity: undefined
+        }));
+
+        if (result) {
+            this.postCart();
+        }
+    }
 }
