@@ -133,4 +133,17 @@ export class CartView extends View {
         this.insertTotalPrice(price);
         this.insertTotalQuantity(quantity);
     }
+
+
+    /**
+     * Delete a product cart corresponding to the given data.
+     * @param {string} id - ID of the product.
+     * @param {string} color - Color of the product.
+     */
+    removeProductFromDom(id, color) {
+        const elementsToRemove = this.getElements(`[data-id="${id}"][data-color="${color}"]`);
+        for (let element of elementsToRemove) {
+            element.remove();
+        }
+    }
 }

@@ -172,4 +172,49 @@ describe('CartView Functionnal Test Suite', () => {
             expect(quantityElt.textContent).toBe('10');
         });
     });
+
+
+    describe('removeProductFromDom() Method Test Suite', () => {
+        const idToDelete = '123';
+        const colorToDelete = 'blue';
+
+        beforeEach(() => {
+            const cardContainer = document.getElementById('cart__items');
+
+            const articleToDelete = document.createElement('article');
+            articleToDelete.dataset.id = idToDelete;
+            articleToDelete.dataset.color = colorToDelete;
+
+            const articleSameId = document.createElement('article');
+            articleSameId.dataset.id = idToDelete;
+            articleSameId.dataset.color = 'black';
+
+            const articleSameColor = document.createElement('article');
+            articleSameColor.dataset.id = '7777';
+            articleSameColor.dataset.color = colorToDelete;
+
+            const articleDifferent = document.createElement('article');
+            articleDifferent.dataset.id = '12345';
+            articleDifferent.dataset.color = 'red';
+
+            cardContainer.appendChild(articleDifferent);
+            cardContainer.appendChild(articleSameColor);
+            cardContainer.appendChild(articleSameId);
+            cardContainer.appendChild(articleToDelete);
+
+        });
+
+        it('should remove the product cart corresponding to the right ID and color', () => {
+            cartViewTest.removeProductFromDom(idToDelete, colorToDelete);
+
+            const articleElements = document.getElementsByTagName('article');
+
+            expect(articleElements.length).toBe(3);
+
+            for (let articleElement of articleElements) {
+                const difference =
+                expect(articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete).toBe(true);
+            }
+        });
+    });
 });
