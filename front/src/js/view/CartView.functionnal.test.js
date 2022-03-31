@@ -116,6 +116,26 @@ describe('CartView Functionnal Test Suite', () => {
             expect(priceElt.textContent).toBe('0');
             expect(quantityElt.textContent).toBe('0');
         });
+
+
+        it('should create a notification if messages are given', () => {
+            cartEntity.products = cartProductEntities;
+            const message = 'Message';
+            cartViewTest.render(cartEntity, message);
+
+            const notificationContainerElt = document.getElementById('notification-container');
+            expect(notificationContainerElt).not.toBeNull();
+            expect(notificationContainerElt.textContent).toBe(message);
+        });
+
+
+        it('shouldn\'t create any notification if no messsages are given', () => {
+            cartEntity.products = cartProductEntities;
+            cartViewTest.render(cartEntity, '');
+
+            const notificationContainerElt = document.getElementById('notification-container');
+            expect(notificationContainerElt).toBeNull();
+        });
     });
 
 

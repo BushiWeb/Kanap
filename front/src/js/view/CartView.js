@@ -10,10 +10,14 @@ export class CartView extends View {
      * Render the dynamic content of the cart page.
      * Add the cart content to the page.
      * @param {Cart} cart - A cart entity to display.
+     * @param {string} message - A message to display.
      */
-    render(cart) {
+    render(cart, message = '') {
         let containerElement = this.getElements('#cart__items')[0];
 
+        if(message) {
+            this.displayNotification(message);
+        }
 
         for (let cartProduct of cart.products) {
             let articleWrapper = this.createElement('article', {
