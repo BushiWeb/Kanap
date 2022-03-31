@@ -9,12 +9,14 @@ import { Product } from './Product';
      * @param {string} id - Product's ID.
      * @param {string} color - Product's color.
      * @param {number} quantity - Product's quantity.
+     * @param {string} name - Product's name.
      * @param {Product} product - Associated product entity. Defaults to undefined.
      */
-    constructor(id, color, quantity, product = undefined) {
+    constructor(id, color, quantity, name, product = undefined) {
         this._id = id;
         this._color = color;
         this._quantity = quantity;
+        this._name = name;
         this._product = product;
     }
 
@@ -63,6 +65,14 @@ import { Product } from './Product';
      */
     get quantity() {
         return this._quantity;
+    }
+
+    /**
+     * _name property getter.
+     * @return {number} Return the value of the _name property.
+     */
+    get name() {
+        return this._name;
     }
 
     /**

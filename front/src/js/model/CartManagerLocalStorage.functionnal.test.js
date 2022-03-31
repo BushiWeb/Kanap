@@ -17,17 +17,20 @@ describe('CartModel Unit Test Suite', () => {
             {
                 id: '1',
                 color: 'blue',
-                quantity: 3
+                quantity: 3,
+                name: 'name1'
             },
             {
                 id: '2',
                 color: 'pink',
-                quantity: 6
+                quantity: 6,
+                name: 'name2'
             },
             {
                 id: '3',
                 color: 'red',
-                quantity: 2
+                quantity: 2,
+                name: 'name3'
             }
         ];
     });
@@ -77,8 +80,8 @@ describe('CartModel Unit Test Suite', () => {
     describe('addProduct() Method Test Suite', () => {
         beforeEach(() => {
             cartManager.cart = new Cart([
-                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity),
-                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity)
+                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity, cartExample[0].name),
+                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity, cartExample[1].name)
             ]);
         });
         it('should add a product if the cart doesn\'t contain the product', () => {
@@ -119,7 +122,7 @@ describe('CartModel Unit Test Suite', () => {
             const cartProducts = cartManager.cart.products;
             expect(cartProducts.length).toBe(cartExample.length);
             for (let i = 0 ; i < cartProducts.length ; i++) {
-                expect(cartProducts[i]).toEqual(new CartProduct(cartExample[i].id, cartExample[i].color, cartExample[i].quantity));
+                expect(cartProducts[i]).toEqual(new CartProduct(cartExample[i].id, cartExample[i].color, cartExample[i].quantity, cartExample[i].name));
             }
         });
     });
@@ -132,6 +135,7 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartProductGen.id).toBe(cartExample[0].id);
             expect(cartProductGen.quantity).toBe(cartExample[0].quantity);
             expect(cartProductGen.color).toBe(cartExample[0].color);
+            expect(cartProductGen.name).toBe(cartExample[0].name);
         });
     });
 
@@ -140,9 +144,9 @@ describe('CartModel Unit Test Suite', () => {
         it('should return the data object', () => {
             cartManager.cart = new Cart();
             cartManager.cart.products = [
-                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity),
-                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity),
-                new CartProduct(cartExample[2].id, cartExample[2].color, cartExample[2].quantity)
+                new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity, cartExample[0].name),
+                new CartProduct(cartExample[1].id, cartExample[1].color, cartExample[1].quantity, cartExample[1].name),
+                new CartProduct(cartExample[2].id, cartExample[2].color, cartExample[2].quantity, cartExample[2].name)
             ]
             const dataGen = cartManager.generateDataFromCart();
             expect(dataGen).toEqual(cartExample);
@@ -152,7 +156,7 @@ describe('CartModel Unit Test Suite', () => {
 
     describe('generateDataFromCart() Method Test Suite', () => {
         it('should return the data object', () => {
-            const dataGen = cartManager.generateDataFromCartProduct(new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity));
+            const dataGen = cartManager.generateDataFromCartProduct(new CartProduct(cartExample[0].id, cartExample[0].color, cartExample[0].quantity, cartExample[0].name));
             expect(dataGen).toEqual(cartExample[0]);
         });
     });

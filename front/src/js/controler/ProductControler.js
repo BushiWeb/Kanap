@@ -30,8 +30,8 @@ export class ProductControler {
      */
     async initialize() {
         try {
-            this.productId = this.urlManager.getParameter('id');
-            const productData = await this.productManager.getProduct(this.productId);
+            const productId = this.urlManager.getParameter('id');
+            const productData = await this.productManager.getProduct(productId);
             this.view.render(productData);
             this.view.addAddToCartEventListener(this.addToCartEventHandler.bind(this));
         } catch (error) {
@@ -70,12 +70,23 @@ export class ProductControler {
         }
 
 
+        const productId = this.urlManager.getParameter('id');
+        let productName;
+        this.productManager.getProduct(productId).then((data) => {
+            productName = data.name;
+        }).catch((error) => {
+            error = true;
+        });
+
+
+
         if (error) {
             return;
         }
 
         this.addProductToCart({
-            id: this.productId,
+            id: productId,
+            name: productName,
             color: colorElement.value,
             quantity: parseInt(quantityElement.value)
         });
@@ -86,7 +97,7 @@ export class ProductControler {
 
     /**
      * Add a product to the cart.
-     * @param {{id:string, color: string, quantity: number}} productObject - The object containing the informations about the product
+     * @param {{id:string, name: string, color: string, quantity: number}} productObject - The object containing the informations about the product
      */
     addProductToCart(productObject) {
         this.cartManager.addProduct(productObject);

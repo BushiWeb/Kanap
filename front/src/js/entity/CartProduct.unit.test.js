@@ -7,6 +7,7 @@ describe('CartProduct Unit Test Suite', () => {
     const testProduct = {
         id: MOCKED_API_DATA[0]._id,
         color: MOCKED_API_DATA[0].colors[0],
+        name: MOCKED_API_DATA[0].name,
         quantity: 4
     }
 
@@ -22,16 +23,17 @@ describe('CartProduct Unit Test Suite', () => {
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of CartProduct with the right informations', () => {
-            const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+            const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProduct.name);
             expect(cartProductEntity._id).toBe(testProduct.id);
             expect(cartProductEntity._color).toBe(testProduct.color);
             expect(cartProductEntity._quantity).toBe(testProduct.quantity);
+            expect(cartProductEntity._name).toBe(testProduct.name);
         });
     });
 
 
     describe('Getters Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProductEntity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProduct.name, testProductEntity);
 
         it('should return the value of CartProduct._id', () => {
             expect(cartProductEntity.id).toBe(cartProductEntity._id);
@@ -45,6 +47,10 @@ describe('CartProduct Unit Test Suite', () => {
             expect(cartProductEntity.quantity).toBe(cartProductEntity._quantity);
         });
 
+        it('should return the value of CartProduct._name', () => {
+            expect(cartProductEntity.name).toBe(cartProductEntity._name);
+        });
+
         it('should return the value of CartProduct._quantity', () => {
             expect(cartProductEntity.product).toBe(cartProductEntity._product);
         });
@@ -52,7 +58,7 @@ describe('CartProduct Unit Test Suite', () => {
 
 
     describe('Setters Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProductEntity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProduct.name, testProductEntity);
 
         it('should set the value of CartProduct._quantity', () => {
             const newQuantity = 8;
@@ -78,7 +84,7 @@ describe('CartProduct Unit Test Suite', () => {
 
     describe('addToQuantity() Method Test Suite', () => {
         const testQuantity = 4;
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProduct.name);
 
         it('should add the test quantity to the current quantity', () => {
             cartProductEntity.addToQuantity(testQuantity);
@@ -88,8 +94,8 @@ describe('CartProduct Unit Test Suite', () => {
 
 
     describe('compare() Method Test Suite', () => {
-        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity);
-        const compareCartProduct = new CartProduct('id', 'color', 3);
+        const cartProductEntity = new CartProduct(testProduct.id, testProduct.color, testProduct.quantity, testProduct.name);
+        const compareCartProduct = new CartProduct('id', 'color', 3, 'name');
         it('should return true if both products are identical', () => {
             compareCartProduct._id = cartProductEntity.id;
             compareCartProduct._color = cartProductEntity.color;

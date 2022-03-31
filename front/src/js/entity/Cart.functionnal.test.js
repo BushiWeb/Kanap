@@ -8,18 +8,20 @@ describe('Cart Functionnal Test Suite', () => {
         {
             id: MOCKED_API_DATA[0]._id,
             color: MOCKED_API_DATA[0].colors[0],
+            name: MOCKED_API_DATA[0].name,
             quantity: 4
         },
         {
             id: MOCKED_API_DATA[1]._id,
             color: MOCKED_API_DATA[1].colors[0],
+            name: MOCKED_API_DATA[1].name,
             quantity: 4
         }
     ];
 
     const testCartProductEntities = [
-        new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity),
-        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity)
+        new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity, testProducts[0].name),
+        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity, testProducts[1].name)
     ]
 
     const testProductEntities = [
@@ -136,6 +138,24 @@ describe('Cart Functionnal Test Suite', () => {
             const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
             cartEntity.updateTotalQuantity();
             expect(cartEntity._totalQuantity).toBe(totalQuantity)
+        });
+    });
+
+
+    describe('updateTotals() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        it('should update the total quantity and price', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+            const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
+            const totalPrice = testCartProductEntities[0].quantity * testCartProductEntities[0].product._price + testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+
+            cartEntity.updateTotals();
+            expect(cartEntity._totalQuantity).toBe(totalQuantity);
+            expect(cartEntity._totalPrice).toBe(totalPrice);
         });
     });
 });

@@ -29,8 +29,7 @@ export class Cart {
             this._products[productIndex].addToQuantity(product.quantity);
         }
 
-        this.updateTotalPrice();
-        this.updateTotalQuantity();
+        this.updateTotals();
     }
 
 
@@ -82,6 +81,15 @@ export class Cart {
     }
 
 
+    /**
+     * Update the _totalQuantity and the _totalPrice values.
+     */
+    updateTotals() {
+        this.updateTotalPrice();
+        this.updateTotalQuantity();
+    }
+
+
     /********************************************
      * GETTERS
      ********************************************/
@@ -121,7 +129,7 @@ export class Cart {
      ********************************************/
     /**
      * Set the cart content
-     * @param {Cartproducts[]} products - Products in the cart.
+     * @param {CartProduct[]} products - Products in the cart.
      */
      set products(products) {
         this._products = products;

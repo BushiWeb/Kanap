@@ -50,7 +50,7 @@ export class CartManagerLocalStorage extends CartManager {
 
     /**
      * Add a product to the cart object.
-     * @param {{id:string, color: string, quantity: number}} productObject - An object containing the informations about the product.
+     * @param {{id:string, color: string, quantity: number, name: string}} productObject - An object containing the informations about the product.
      */
     addProduct(productObject) {
         this.getCart();
@@ -63,7 +63,7 @@ export class CartManagerLocalStorage extends CartManager {
 
     /**
      * Stores data into the cart property.
-     * @param {{id: string, color: string, quantity: number}[]} data - Data fetched by the DAO.
+     * @param {{id: string, color: string, quantity: number, name: string}[]} data - Data fetched by the DAO.
      */
     generateCartFromData(data) {
         const cartProducts = [];
@@ -78,17 +78,17 @@ export class CartManagerLocalStorage extends CartManager {
 
     /**
      * Create a CartProduct from the data.
-     * @param {{id: string, color: string, quantity: number}} data - Data fetched by the DAO.
+     * @param {{id: string, color: string, quantity: number, name: string}} data - Data fetched by the DAO.
      * @return {CartProduct} Return the generated CartProduct.
      */
     generateCartProductFromData(data) {
-        return new CartProduct(data.id, data.color, data.quantity)
+        return new CartProduct(data.id, data.color, data.quantity, data.name)
     }
 
 
     /**
      * Generate data to the right format from the cart. These data can then be passed to the DAO.
-     * @return {{id: string, color: string, quantity: number}[]} Return JSON data to give to the DAO.
+     * @return {{id: string, color: string, quantity: number, name: string}[]} Return JSON data to give to the DAO.
      */
     generateDataFromCart() {
         const returnData = [];
@@ -104,13 +104,14 @@ export class CartManagerLocalStorage extends CartManager {
     /**
      * Generate data to the right format from the cart. These data can then be passed to the DAO.
      * @param {CartProduct} cartProduct - CartProduct to generate the data from.
-     * @return {{id: string, color: string, quantity: number}} Return JSON data to give to the DAO.
+     * @return {{id: string, color: string, quantity: number, name: string}} Return JSON data to give to the DAO.
      */
     generateDataFromCartProduct(cartProduct) {
         return {
             id: cartProduct.id,
             color: cartProduct.color,
-            quantity: cartProduct.quantity
+            quantity: cartProduct.quantity,
+            name: cartProduct.name
         };
     }
 }

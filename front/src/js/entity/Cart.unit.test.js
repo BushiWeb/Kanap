@@ -32,16 +32,18 @@ describe('Cart Unit Test Suite', () => {
         {
             id: MOCKED_API_DATA[0]._id,
             color: MOCKED_API_DATA[0].colors[0],
+            name: MOCKED_API_DATA[0].name,
             quantity: 4
         },
         {
             id: MOCKED_API_DATA[1]._id,
             color: MOCKED_API_DATA[1].colors[0],
+            name: MOCKED_API_DATA[1].name,
             quantity: 4
         }
     ];
 
-    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity);
+    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity, testProducts[0].name);
 
     describe('Constructor Test Suite', () => {
         const productsSetterMock = jest.spyOn(Cart.prototype, 'products', 'set');
@@ -55,12 +57,10 @@ describe('Cart Unit Test Suite', () => {
         });
 
         it('should call the products setter', () => {
-
-
-            const cartProductEntity = new Cart(testProducts);
+            const cartProductEntity = new Cart([testCartProductEntity]);
 
             expect(productsSetterMock).toHaveBeenCalled();
-            expect(productsSetterMock).toHaveBeenCalledWith(testProducts);
+            expect(productsSetterMock).toHaveBeenCalledWith([testCartProductEntity]);
         });
     });
 
@@ -112,9 +112,9 @@ describe('Cart Unit Test Suite', () => {
         const cartEntity = new Cart();
 
         it('should set the value of Cart._products by calling the CartProduct constructor', () => {
-            cartEntity.products = testProducts;
+            cartEntity.products = [testCartProductEntity];
 
-            expect(cartEntity._products).toBe(testProducts);
+            expect(cartEntity._products).toEqual([testCartProductEntity]);
         });
     });
 
@@ -123,19 +123,16 @@ describe('Cart Unit Test Suite', () => {
         const cartEntity = new Cart();
 
         const searchProductMock = jest.spyOn(Cart.prototype, 'searchProduct');
-        const mockUpdatePrice = jest.spyOn(cartEntity, 'updateTotalPrice');
-        const mockUpdateQuantity = jest.spyOn(cartEntity, 'updateTotalQuantity');
+        const mockUpdateTotals = jest.spyOn(cartEntity, 'updateTotals');
 
         beforeEach(() => {
             searchProductMock.mockReset();
-            mockUpdatePrice.mockReset();
-            mockUpdateQuantity.mockReset();
+            mockUpdateTotals.mockReset();
         });
 
         afterAll(() => {
             searchProductMock.mockRestore();
-            mockUpdatePrice.mockRestore();
-            mockUpdateQuantity.mockRestore();
+            mockUpdateTotals.mockRestore();
         });
 
         it('should change the product\'s quantity if it is already in the cart', () => {
@@ -153,25 +150,18 @@ describe('Cart Unit Test Suite', () => {
             pushMock.mockRestore();
         });
 
-        it('should update the totalPrice', () => {
+        it('should update the totals', () => {
             searchProductMock.mockReturnValue(0);
             cartEntity._products = [new CartProduct()];
             cartEntity.addProduct(testCartProductEntity);
-            expect(mockUpdatePrice).toHaveBeenCalled();
-        });
-
-        it('should update the totalQuantity', () => {
-            searchProductMock.mockReturnValue(0);
-            cartEntity._products = [new CartProduct()];
-            cartEntity.addProduct(testCartProductEntity);
-            expect(mockUpdateQuantity).toHaveBeenCalled();
+            expect(mockUpdateTotals).toHaveBeenCalled();
         });
     });
 
 
     describe('searchProduct() Test Suite', () => {
-        const testProductToSearch = new CartProduct(MOCKED_API_DATA[0]._id, MOCKED_API_DATA[0].colors[0], 4);
-        const testProductToPopulate = new CartProduct(MOCKED_API_DATA[1]._id, MOCKED_API_DATA[1].colors[0], 4);
+        const testProductToSearch = new CartProduct(MOCKED_API_DATA[0]._id, MOCKED_API_DATA[0].colors[0], 4, MOCKED_API_DATA[0].name);
+        const testProductToPopulate = new CartProduct(MOCKED_API_DATA[1]._id, MOCKED_API_DATA[1].colors[0], 4, MOCKED_API_DATA[1].name);
         const cartEntity = new Cart();
 
         it('should return the index of the product', () => {
@@ -204,6 +194,35 @@ describe('Cart Unit Test Suite', () => {
             mockCompare.mockReturnValue(false);
             const searchResult = cartEntity.searchProduct(testProductToSearch);
             expect(searchResult).toBe(false);
+        });
+    });
+
+
+    describe('updateTotals() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        const mockUpdatePrice = jest.spyOn(cartEntity, 'updateTotalPrice');
+        const mockUpdateQuantity = jest.spyOn(cartEntity, 'updateTotalQuantity');
+
+        beforeEach(() => {
+            mockUpdatePrice.mockReset();
+            mockUpdateQuantity.mockReset();
+        });
+
+        afterAll(() => {
+            mockUpdatePrice.mockRestore();
+            mockUpdateQuantity.mockRestore();
+        });
+
+
+        it('should call the updateTotalPrice() method', () => {
+            cartEntity.updateTotals();
+            expect(mockUpdatePrice).toHaveBeenCalled();
+        });
+
+        it('should call the updateTotalQuantity() method', () => {
+            cartEntity.updateTotals();
+            expect(mockUpdateQuantity).toHaveBeenCalled();
         });
     });
 });

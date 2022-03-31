@@ -65,17 +65,20 @@ describe('CartModel Unit Test Suite', () => {
             {
                 id: '1',
                 color: 'blue',
-                quantity: 3
+                quantity: 3,
+                name: 'name1'
             },
             {
                 id: '2',
                 color: 'pink',
-                quantity: 6
+                quantity: 6,
+                name: 'name2'
             },
             {
                 id: '3',
                 color: 'red',
-                quantity: 2
+                quantity: 2,
+                name: 'name3'
             }
         ];
     });
