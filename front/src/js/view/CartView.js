@@ -14,6 +14,7 @@ export class CartView extends View {
     render(cart) {
         let containerElement = this.getElements('#cart__items')[0];
 
+
         for (let cartProduct of cart.products) {
             let articleWrapper = this.createElement('article', {
                 class: 'cart__item',

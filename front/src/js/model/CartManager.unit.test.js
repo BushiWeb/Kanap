@@ -20,10 +20,13 @@ jest.mock('../entity/Cart', () => {
 
 jest.mock('../entity/CartProduct', () => {
     return {
-        CartProduct: jest.fn().mockImplementation((id) => {
+        CartProduct: jest.fn().mockImplementation((id, color, quantity, name) => {
             return {
                 product : undefined,
-                id: id
+                id: id,
+                color: color,
+                quantity: quantity,
+                name: name
             };
         })
     }
@@ -54,7 +57,10 @@ describe('CartModel Unit Test Suite', () => {
 
     describe('setCartProductProductInfos() Method Test Suite', () => {
         let cartManager = new CartManager();
-        cartManager.cart.products.push(new CartProduct('21'), new CartProduct('12'));
+
+        beforeEach(() => {
+            cartManager.cart.products = [new CartProduct('21', 'blue', 2, 'name1'), new CartProduct('12', 'red', 1, 'name2')];
+        });
 
         it('should call the ProductManager.getProduct() method', async () => {
             await cartManager.setCartProductProductInfos(productManager);
@@ -64,15 +70,19 @@ describe('CartModel Unit Test Suite', () => {
         it('should give each CartProduct it\'s corresponding Product entity', async () => {
             const returnedProduct = new Product('1', 'name', 123, 'desc', 'url', 'alt', []);
             mockGetProduct.mockReturnValue(returnedProduct);
-            await cartManager.setCartProductProductInfos(productManager);
+            const errorArray = await cartManager.setCartProductProductInfos(productManager);
             expect(cartManager.cart.products[0].product).toBe(returnedProduct);
             expect(cartManager.cart.products[1].product).toBe(returnedProduct);
+            expect(errorArray.length).toBe(0);
         });
 
         it('should give each CartProduct an error if the Product entity can\'t be created', async () => {
             mockGetProduct.mockImplementation(() => { throw new Error(); });
-            await cartManager.setCartProductProductInfos(productManager);
+            const errorArray = await cartManager.setCartProductProductInfos(productManager);
             expect(cartManager.cart.products.length).toBe(0);
+            expect(errorArray.length).toBe(2);
+            expect(errorArray[0]).toMatch(new RegExp('.*name1.*'));
+            expect(errorArray[1]).toMatch(new RegExp('.*name2.*'));
         });
     });
 });

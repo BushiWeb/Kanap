@@ -20,13 +20,18 @@ export class CartManager {
      * @param {ProductManager} productManager - ProductManager instance to fetch product's informations.
      */
     async setCartProductProductInfos(productManager) {
+        const errorArray = [];
+
         for (let i = 0 ; i < this.cart.products.length ; i++) {
             try {
                 this.cart.products[i].product = await productManager.getProduct(this.cart.products[i].id);
             } catch (error) {
+                errorArray.push(`Le produit ${this.cart.products[i].name} n'existe pas / plus.`)
                 this.cart.products.splice(i, 1);
                 i--;
             }
         }
+
+        return errorArray;
     }
 }

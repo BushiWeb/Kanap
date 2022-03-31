@@ -18,12 +18,14 @@ describe('CartView Functionnal Test Suite', () => {
             MOCKED_PRODUCT_ENTITY_DATA[0].id,
             MOCKED_PRODUCT_ENTITY_DATA[0].colors[1],
             12,
+            MOCKED_PRODUCT_ENTITY_DATA[0].name,
             MOCKED_PRODUCT_ENTITY_DATA[0]
         ),
         new CartProduct(
             MOCKED_PRODUCT_ENTITY_DATA[1].id,
             MOCKED_PRODUCT_ENTITY_DATA[1].colors[1],
             12,
+            MOCKED_PRODUCT_ENTITY_DATA[1].name,
             MOCKED_PRODUCT_ENTITY_DATA[1]
         ),
     ]
