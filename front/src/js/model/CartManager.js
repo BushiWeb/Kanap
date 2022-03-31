@@ -18,6 +18,7 @@ export class CartManager {
     /**
      *
      * @param {ProductManager} productManager - ProductManager instance to fetch product's informations.
+     * @return {string[]} Return an array containing the names of the deleted products.
      */
     async setCartProductProductInfos(productManager) {
         const errorArray = [];
@@ -26,10 +27,14 @@ export class CartManager {
             try {
                 this.cart.products[i].product = await productManager.getProduct(this.cart.products[i].id);
             } catch (error) {
-                errorArray.push(`Le produit ${this.cart.products[i].name} n'existe pas / plus.`)
+                errorArray.push(this.cart.products[i].name);
                 this.cart.products.splice(i, 1);
                 i--;
             }
+        }
+
+        if (errorArray.length > 0) {
+            this.postCart();
         }
 
         return errorArray;

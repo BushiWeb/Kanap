@@ -12,9 +12,11 @@ import { MOCKED_PRODUCT_ENTITY_DATA } from './mockedProductEntityData';
 import { CONFIG } from '../config/config';
 
 global.fetch = jest.fn();
+CartManager.prototype.postCart = jest.fn();
 
 beforeEach(() => {
     global.fetch.mockReset();
+    CartManager.prototype.postCart.mockClear();
 })
 
 
@@ -35,7 +37,7 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartManager.cart._products.length).toBe(1);
             expect(cartManager.cart._products[0]._product).toEqual(MOCKED_PRODUCT_ENTITY_DATA[0]);
             expect(errorArray.length).toBe(1);
-            expect(errorArray[0]).toMatch(new RegExp('.*falseName.*'));
+            expect(errorArray[0]).toMatch(new RegExp('falseName'));
         });
     });
 });

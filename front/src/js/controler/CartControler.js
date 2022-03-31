@@ -26,7 +26,8 @@ export class CartControler {
      */
     async initialize() {
         const cartEntity = this.cartManager.getCart();
-        await this.cartManager.setCartProductProductInfos(this.productManager);
-        this.view.render(cartEntity);
+        const nameError = await this.cartManager.setCartProductProductInfos(this.productManager);
+        let errorMessage = (nameError.length === 0)? '' : ((nameError.length === 1)? `Le produit ${nameError[0]} n'existe pas/plus.` : `Les produits ${nameError.join(', ')} n'existent pas/plus.`);
+        this.view.render(cartEntity, errorMessage);
     }
 }

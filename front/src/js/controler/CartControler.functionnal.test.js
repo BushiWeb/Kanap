@@ -57,7 +57,6 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             await controlerTest.initialize();
 
-            const globalContainer = document.getElementById('cart__items');
             const articleElements = document.getElementsByClassName('cart__item');
             const articleElement = articleElements[0];
             const imageElement = articleElement.querySelector('.cart__item__img img');
@@ -68,8 +67,9 @@ describe('ProductControler Functionnal Test Suite', () => {
             const deleteSettingElement = articleElement.querySelector('.cart__item__content__settings__delete .deleteItem');
             const priceElt = document.getElementById('totalPrice');
             const quantityElt = document.getElementById('totalQuantity');
+            const notificationContainerElt = document.getElementById('notification-container');
 
-            expect(articleElements.length).toBe(MOCKED_CART_DATA.cartData.length);
+            expect(articleElements.length).toBe(MOCKED_CART_DATA.cartData.length - 2);
             expect(priceElt.textContent).toBe(MOCKED_CART_DATA.totalPrice.toString());
             expect(quantityElt.textContent).toBe(MOCKED_CART_DATA.totalQuantity.toString());
 
@@ -87,6 +87,10 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(nameElement).toHaveTextContent(MOCKED_API_DATA[0].name);
             expect(priceElement).toHaveTextContent(MOCKED_API_DATA[0].price);
             expect(colorElement).toHaveTextContent(MOCKED_API_DATA[0].colors[0]);
+
+            expect(notificationContainerElt).not.toBeNull();
+            expect(notificationContainerElt.textContent).toBe(`Les produits false name, false name 2 n'existent pas/plus.`);
+            expect(localStorage.getItem('cart')).toBe(JSON.stringify(MOCKED_CART_DATA.cartData.slice(0, -2)));
         });
     });
 });

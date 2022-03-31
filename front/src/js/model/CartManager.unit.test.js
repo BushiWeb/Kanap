@@ -43,11 +43,14 @@ jest.mock('./ProductManagerKanapApi', () => {
     }
 });
 
+CartManager.prototype.postCart = jest.fn();
+
 beforeEach(() => {
     Cart.mockClear();
     CartProduct.mockClear();
     mockGetProduct.mockReset();
     ProductManagerKanapApi.mockClear();
+    CartManager.prototype.postCart.mockClear();
 })
 
 
@@ -74,6 +77,7 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartManager.cart.products[0].product).toBe(returnedProduct);
             expect(cartManager.cart.products[1].product).toBe(returnedProduct);
             expect(errorArray.length).toBe(0);
+            expect(cartManager.postCart).not.toHaveBeenCalled();
         });
 
         it('should give each CartProduct an error if the Product entity can\'t be created', async () => {
@@ -81,8 +85,9 @@ describe('CartModel Unit Test Suite', () => {
             const errorArray = await cartManager.setCartProductProductInfos(productManager);
             expect(cartManager.cart.products.length).toBe(0);
             expect(errorArray.length).toBe(2);
-            expect(errorArray[0]).toMatch(new RegExp('.*name1.*'));
-            expect(errorArray[1]).toMatch(new RegExp('.*name2.*'));
+            expect(errorArray[0]).toMatch(new RegExp('name1'));
+            expect(errorArray[1]).toMatch(new RegExp('name2'));
+            expect(cartManager.postCart).toHaveBeenCalled();
         });
     });
 });
