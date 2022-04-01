@@ -11,6 +11,8 @@ import { CONFIG } from '../config/config';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 import { MOCKED_CART_DATA } from '../model/mockedCartData';
+import { Cart } from '../entity/Cart';
+import { CartProduct } from '../entity/CartProduct';
 
 describe('ProductControler Functionnal Test Suite', () => {
     let controlerTest;
@@ -91,6 +93,104 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(notificationContainerElt).not.toBeNull();
             expect(notificationContainerElt.textContent).toBe(`Les produits false name, false name 2 n'existent pas/plus.`);
             expect(localStorage.getItem('cart')).toBe(JSON.stringify(MOCKED_CART_DATA.cartData.slice(0, -2)));
+        });
+    });
+
+
+    describe('updateTotals() Method Test Suite', () => {
+        it('should update the total DOM elements with the values of the cart', () => {
+            const cartTest = new Cart();
+            cartTest.products = [
+                new CartProduct(
+                    MOCKED_API_DATA[0]._id,
+                    MOCKED_API_DATA[0].colors[0],
+                    12,
+                    MOCKED_API_DATA[0].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[0]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[1]._id,
+                    MOCKED_API_DATA[1].colors[0],
+                    12,
+                    MOCKED_API_DATA[1].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[1]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[2]._id,
+                    MOCKED_API_DATA[2].colors[0],
+                    12,
+                    MOCKED_API_DATA[2].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[2]
+                )
+            ];
+            cartTest.updateTotals();
+            controlerTest.cartManager.cart = cartTest;
+
+            controlerTest.updateTotals();
+
+            const totalPriceElt = document.getElementById('totalPrice');
+            const totalQuantityElt = document.getElementById('totalQuantity');
+
+            expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
+            expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
+        });
+    });
+
+
+    describe('deleteProductFromCart() Method Test Suite', () => {
+        it('should delete the product from the cart and visualy, and update the totals', async () => {
+            controlerTest.productManager.productsListComplete = true;
+            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+
+            const cartTest = new Cart();
+            cartTest.products = [
+                new CartProduct(
+                    MOCKED_API_DATA[0]._id,
+                    MOCKED_API_DATA[0].colors[0],
+                    12,
+                    MOCKED_API_DATA[0].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[0]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[1]._id,
+                    MOCKED_API_DATA[1].colors[0],
+                    12,
+                    MOCKED_API_DATA[1].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[1]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[2]._id,
+                    MOCKED_API_DATA[2].colors[0],
+                    12,
+                    MOCKED_API_DATA[2].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[2]
+                )
+            ];
+            cartTest.updateTotals();
+            controlerTest.cartManager.cart = cartTest;
+            controlerTest.cartManager.cartComplete = true;
+            const idToDelete = cartTest.products[0].id;
+            const colorToDelete = cartTest.products[0].color;
+            await controlerTest.initialize();
+
+            let articleElements = document.getElementsByTagName('article');
+
+            controlerTest.deleteProductFromCart(idToDelete, colorToDelete);
+
+            articleElements = document.getElementsByTagName('article');
+            const totalPriceElt = document.getElementById('totalPrice');
+            const totalQuantityElt = document.getElementById('totalQuantity');
+
+            expect(controlerTest.cartManager.cart.products[0].id !== idToDelete || controlerTest.cartManager.cart.products[0].color !== colorToDelete).toBeTruthy();
+
+            expect(articleElements.length).toBe(2);
+            for (let articleElement of articleElements) {
+                const difference =
+                expect(articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete).toBe(true);
+            }
+
+            expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
+            expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
         });
     });
 });

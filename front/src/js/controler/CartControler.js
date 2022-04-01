@@ -30,4 +30,26 @@ export class CartControler {
         let errorMessage = (nameError.length === 0)? '' : ((nameError.length === 1)? `Le produit ${nameError[0]} n'existe pas/plus.` : `Les produits ${nameError.join(', ')} n'existent pas/plus.`);
         this.view.render(cartEntity, errorMessage);
     }
+
+
+    /**
+     * Call the view methods to update the totals.
+     */
+    updateTotals() {
+        const currentCart = this.cartManager.getCart();
+        this.view.insertTotals(currentCart.totalPrice, currentCart.totalQuantity);
+    }
+
+
+    /**
+     * Delete a product from the cart.
+     * Remove the product's cart from the DOM.
+     * @param {string} id - ID of the product to delete.
+     * @param {string} color - Color of the product to delete.
+     */
+    deleteProductFromCart(id, color) {
+        this.cartManager.deleteProduct(id, color);
+        this.view.removeProductFromDom(id, color);
+        this.updateTotals();
+    }
 }
