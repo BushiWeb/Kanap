@@ -2,36 +2,38 @@
  * @jest-environment jsdom
  */
 
-import { CartManager } from "./CartManager";
-import { ProductManagerKanapApi } from "./ProductManagerKanapApi";
-import { Cart } from "../entity/Cart";
-import { CartProduct } from "../entity/CartProduct";
-import { Product } from "../entity/Product";
+import { CartManager } from './CartManager';
+import { ProductManagerKanapApi } from './ProductManagerKanapApi';
+import { Cart } from '../entity/Cart';
+import { CartProduct } from '../entity/CartProduct';
+import { Product } from '../entity/Product';
 
 const mockDeleteProduct = jest.fn();
+const mockUpdateProductQuantity = jest.fn();
 jest.mock('../entity/Cart', () => {
     return {
         Cart: jest.fn().mockImplementation(() => {
             return {
                 products: [],
-                deleteProduct: mockDeleteProduct
+                deleteProduct: mockDeleteProduct,
+                updateProductQuantity: mockUpdateProductQuantity,
             };
-        })
-    }
+        }),
+    };
 });
 
 jest.mock('../entity/CartProduct', () => {
     return {
         CartProduct: jest.fn().mockImplementation((id, color, quantity, name) => {
             return {
-                product : undefined,
+                product: undefined,
                 id: id,
                 color: color,
                 quantity: quantity,
-                name: name
+                name: name,
             };
-        })
-    }
+        }),
+    };
 });
 
 const mockGetProduct = jest.fn();
@@ -39,10 +41,10 @@ jest.mock('./ProductManagerKanapApi', () => {
     return {
         ProductManagerKanapApi: jest.fn().mockImplementation(() => {
             return {
-                getProduct: mockGetProduct
+                getProduct: mockGetProduct,
             };
-        })
-    }
+        }),
+    };
 });
 
 CartManager.prototype.postCart = jest.fn();
@@ -51,6 +53,7 @@ CartManager.prototype.generateCartProductFromData = jest.fn();
 
 beforeEach(() => {
     mockDeleteProduct.mockClear();
+    mockUpdateProductQuantity.mockClear();
     Cart.mockClear();
     CartProduct.mockClear();
     mockGetProduct.mockReset();
@@ -58,18 +61,19 @@ beforeEach(() => {
     CartManager.prototype.postCart.mockClear();
     CartManager.prototype.getCart.mockClear();
     CartManager.prototype.generateCartProductFromData.mockClear();
-})
-
+});
 
 describe('CartModel Unit Test Suite', () => {
     const productManager = new ProductManagerKanapApi();
-
 
     describe('setCartProductProductInfos() Method Test Suite', () => {
         let cartManager = new CartManager();
 
         beforeEach(() => {
-            cartManager.cart.products = [new CartProduct('21', 'blue', 2, 'name1'), new CartProduct('12', 'red', 1, 'name2')];
+            cartManager.cart.products = [
+                new CartProduct('21', 'blue', 2, 'name1'),
+                new CartProduct('12', 'red', 1, 'name2'),
+            ];
         });
 
         it('should call the ProductManager.getProduct() method', async () => {
@@ -77,7 +81,7 @@ describe('CartModel Unit Test Suite', () => {
             expect(mockGetProduct).toHaveBeenCalledTimes(2);
         });
 
-        it('should give each CartProduct it\'s corresponding Product entity', async () => {
+        it("should give each CartProduct it's corresponding Product entity", async () => {
             const returnedProduct = new Product('1', 'name', 123, 'desc', 'url', 'alt', []);
             mockGetProduct.mockReturnValue(returnedProduct);
             const errorArray = await cartManager.setCartProductProductInfos(productManager);
@@ -87,8 +91,10 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartManager.postCart).not.toHaveBeenCalled();
         });
 
-        it('should give each CartProduct an error if the Product entity can\'t be created', async () => {
-            mockGetProduct.mockImplementation(() => { throw new Error(); });
+        it("should give each CartProduct an error if the Product entity can't be created", async () => {
+            mockGetProduct.mockImplementation(() => {
+                throw new Error();
+            });
             const errorArray = await cartManager.setCartProductProductInfos(productManager);
             expect(cartManager.cart.products.length).toBe(0);
             expect(errorArray.length).toBe(2);
@@ -98,9 +104,45 @@ describe('CartModel Unit Test Suite', () => {
         });
     });
 
+    describe('updateProductQuantity() Method Test Suite', () => {
+        let cartManager = new CartManager();
+        const productToUpdate = new CartProduct('21', 'blue', 2, 'name1');
+        const mockDeleteProduct = jest.spyOn(cartManager, 'deleteProduct');
+
+        beforeEach(() => {
+            cartManager.cart.products = [productToUpdate, new CartProduct('12', 'red', 1, 'name2')];
+            mockDeleteProduct.mockReset();
+        });
+
+        afterAll(() => {
+            mockDeleteProduct.mockRestore();
+        });
+
+        it('should call the deleteProduct() method if the quantity is 0', async () => {
+            cartManager.updateProductQuantity(productToUpdate.id, productToUpdate.color, 0);
+            expect(cartManager.deleteProduct).toHaveBeenCalled();
+        });
+
+        it('should call the generateCartProductFromData() method', async () => {
+            cartManager.updateProductQuantity(productToUpdate.id, productToUpdate.color, 1);
+            expect(cartManager.generateCartProductFromData).toHaveBeenCalled();
+        });
+
+        it('should call the Cart.updateProductQuantity() method', async () => {
+            cartManager.updateProductQuantity(productToUpdate.id, productToUpdate.color, 1);
+            expect(mockUpdateProductQuantity).toHaveBeenCalled();
+        });
+
+        it('should call the postCart() method if the product existed', async () => {
+            mockUpdateProductQuantity.mockReturnValue(true);
+            cartManager.updateProductQuantity(productToUpdate.id, productToUpdate.color, 1);
+            expect(cartManager.postCart).toHaveBeenCalled();
+        });
+    });
 
     describe('deleteProduct() Method Test Suite', () => {
         let cartManager = new CartManager();
+        cartManager.cartComplete = true;
         const productToDelete = new CartProduct('21', 'blue', 2, 'name1');
 
         beforeEach(() => {

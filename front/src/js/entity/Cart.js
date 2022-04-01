@@ -1,4 +1,4 @@
-import { CartProduct } from "./CartProduct";
+import { CartProduct } from './CartProduct';
 
 /**
  * Class representing a product from the API.
@@ -13,7 +13,6 @@ export class Cart {
         this._totalPrice = undefined;
         this._totalQuantity = undefined;
     }
-
 
     /**
      * Add a product to the cart.
@@ -32,14 +31,13 @@ export class Cart {
         this.updateTotals();
     }
 
-
     /**
      * Check if the product is already in the cart (same id and same color).
      * @param {CartProduct} product - Product to check.
      * @return Return false if the product is not in the cart, it's index otherwise
      */
     searchProduct(product) {
-        for (let i = 0 ; i < this._products.length ; i++) {
+        for (let i = 0; i < this._products.length; i++) {
             if (this.products[i].compare(product)) {
                 return i;
             }
@@ -47,7 +45,6 @@ export class Cart {
 
         return false;
     }
-
 
     /**
      * Delete a CartProduct from the list.
@@ -64,7 +61,6 @@ export class Cart {
         this.updateTotals();
         return true;
     }
-
 
     /**
      * Change the quantity of a CartProdut.
@@ -87,7 +83,6 @@ export class Cart {
         return true;
     }
 
-
     /**
      * Update the _totalPrice value. If the price of one CartProduct is undefined, set _totalPrice to undefined.
      */
@@ -105,7 +100,6 @@ export class Cart {
         this._totalPrice = totalPrice;
     }
 
-
     /**
      * Update the _totalQuantity value.
      */
@@ -119,7 +113,6 @@ export class Cart {
         this._totalQuantity = totalQuantity;
     }
 
-
     /**
      * Update the _totalQuantity and the _totalPrice values.
      */
@@ -127,7 +120,6 @@ export class Cart {
         this.updateTotalPrice();
         this.updateTotalQuantity();
     }
-
 
     /********************************************
      * GETTERS
@@ -162,7 +154,6 @@ export class Cart {
         return this._totalQuantity;
     }
 
-
     /********************************************
      * SETTERS
      ********************************************/
@@ -170,7 +161,7 @@ export class Cart {
      * Set the cart content
      * @param {CartProduct[]} products - Products in the cart.
      */
-     set products(products) {
+    set products(products) {
         this._products = products;
     }
 }
