@@ -177,12 +177,58 @@ describe('Cart Functionnal Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should delete the product and update the total quantity and price and return true', () => {
+        it('should return false if the product doesn\'t exist', () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             cartEntity._products = [testCartProductEntities[1]];
 
             const result = cartEntity.deleteProduct(testCartProductEntities[0]);
+            expect(result).toBe(false);
+        });
+    });
+
+
+    describe('updateProductQuantity() Test Suite', () => {
+        const cartEntity = new Cart();
+
+        it('should delete the product and update the total quantity and price and return true if the quantity is 0', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+
+            const newQuantity = testCartProductEntities[1].quantity;
+            const newPrice = testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+
+            const result = cartEntity.updateProductQuantity(testCartProductEntities[0], 0);
+
+            expect(cartEntity._products).not.toContainEqual(testCartProductEntities[0]);
+            expect(cartEntity._totalQuantity).toBe(newQuantity);
+            expect(cartEntity._totalPrice).toBe(newPrice);
+            expect(result).toBe(true);
+        });
+
+        it('should update the product\'s quantity and update the total quantity and price and return true if the quantity is above 0', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
+
+            const newQuantity = testCartProductEntities[1].quantity + 1;
+            const newPrice = testCartProductEntities[1].quantity * testCartProductEntities[1].product._price + testCartProductEntities[0].product._price;
+
+            const result = cartEntity.updateProductQuantity(testCartProductEntities[0], 1);
+
+            expect(cartEntity._products[0]._quantity).toBe(1);
+            expect(cartEntity._totalQuantity).toBe(newQuantity);
+            expect(cartEntity._totalPrice).toBe(newPrice);
+            expect(result).toBe(true);
+        });
+
+        it('should return false if the product doesn\'t exist', () => {
+            testCartProductEntities[0].product = testProductEntities[0];
+            testCartProductEntities[1].product = testProductEntities[1];
+            cartEntity._products = [testCartProductEntities[1]];
+
+            const result = cartEntity.updateProductQuantity(testCartProductEntities[0], 1);
             expect(result).toBe(false);
         });
     });

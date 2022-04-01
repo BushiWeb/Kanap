@@ -154,6 +154,64 @@ describe('Cart Unit Test Suite', () => {
     });
 
 
+    describe('updateProductQuantity() Test Suite', () => {
+        const mockSearchProduct = jest.spyOn(Cart.prototype, 'searchProduct');
+        const mockUpdateTotals = jest.spyOn(Cart.prototype, 'updateTotals');
+        const mockDeleteProduct = jest.spyOn(Cart.prototype, 'deleteProduct');
+        const cartEntity = new Cart();
+
+        beforeEach(() => {
+            mockSearchProduct.mockReset();
+            mockUpdateTotals.mockReset();
+            mockDeleteProduct.mockReset();
+        });
+
+        afterAll(() => {
+            mockDeleteProduct.mockRestore();
+        });
+
+        it('should use the deleteProduct() method if the quantity is 0', () => {
+            cartEntity.updateProductQuantity(testCartProductEntity, 0);
+            expect(mockDeleteProduct).toHaveBeenCalled();
+        });
+
+        it('should use the searchProduct() method', () => {
+            cartEntity._products = [];
+            mockSearchProduct.mockReturnValue(false);
+            cartEntity.updateProductQuantity(testCartProductEntity, 1);
+            expect(mockSearchProduct).toHaveBeenCalled();
+        });
+
+        it('should update the right element in the products array if searchProduct returns a number', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            cartEntity.updateProductQuantity(testCartProductEntity, 1);
+            expect(cartEntity._products[0].quantity).toBe(1);
+        });
+
+        it('should use the updateTotals() method if searchProduct returns a number', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            cartEntity.updateProductQuantity(testCartProductEntity, 1);
+            expect(mockUpdateTotals).toHaveBeenCalled();
+        });
+
+        it('should return true if the product exists', () => {
+            cartEntity._products = [testCartProductEntity];
+            mockSearchProduct.mockReturnValue(0);
+            const result = cartEntity.updateProductQuantity(testCartProductEntity, 1);
+            expect(result).toBe(true);
+        });
+
+        it('should return false if the product doesn\'t exist', () => {
+            cartEntity._products = [];
+            mockSearchProduct.mockReturnValue(false);
+            const result = cartEntity.updateProductQuantity(testCartProductEntity, 1);
+            expect(result).toBe(false);
+        });
+    });
+
+
     describe('deleteProduct() Test Suite', () => {
         const mockSearchProduct = jest.spyOn(Cart.prototype, 'searchProduct');
         const mockUpdateTotals = jest.spyOn(Cart.prototype, 'updateTotals');

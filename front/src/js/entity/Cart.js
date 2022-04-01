@@ -67,6 +67,28 @@ export class Cart {
 
 
     /**
+     * Change the quantity of a CartProdut.
+     * @param {CartProduct} product - Product to update.
+     * @param {number} quantity - New product's quantity.
+     */
+    updateProductQuantity(product, quantity) {
+        if (quantity <= 0) {
+            return this.deleteProduct(product);
+        }
+
+        let productIndex = this.searchProduct(product);
+
+        if (productIndex === false) {
+            return false;
+        }
+
+        this.products[productIndex].quantity = quantity;
+        this.updateTotals();
+        return true;
+    }
+
+
+    /**
      * Update the _totalPrice value. If the price of one CartProduct is undefined, set _totalPrice to undefined.
      */
     updateTotalPrice() {
