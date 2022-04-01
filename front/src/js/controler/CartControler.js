@@ -29,6 +29,7 @@ export class CartControler {
         const nameError = await this.cartManager.setCartProductProductInfos(this.productManager);
         let errorMessage = (nameError.length === 0)? '' : ((nameError.length === 1)? `Le produit ${nameError[0]} n'existe pas/plus.` : `Les produits ${nameError.join(', ')} n'existent pas/plus.`);
         this.view.render(cartEntity, errorMessage);
+        this.view.addDeleteProductEventListener(this.deleteProductEventHandler.bind(this));
     }
 
 
@@ -38,6 +39,19 @@ export class CartControler {
     updateTotals() {
         const currentCart = this.cartManager.getCart();
         this.view.insertTotals(currentCart.totalPrice, currentCart.totalQuantity);
+    }
+
+
+    /**
+     * Event handler for the "Delete product from cart" event.
+     * Get the product informations from the page, delete the product from the cart.
+     * @param {Event} event - The event object
+     */
+     deleteProductEventHandler(event) {
+        const productCartElement = event.target.closest('[data-id][data-color]');
+        if (productCartElement !== null) {
+            this.deleteProductFromCart(productCartElement.dataset.id, productCartElement.dataset.color);
+        }
     }
 
 

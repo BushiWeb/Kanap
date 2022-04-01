@@ -3,6 +3,7 @@
  */
 
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 
 import { CartView } from "./CartView";
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
@@ -215,6 +216,25 @@ describe('CartView Functionnal Test Suite', () => {
                 const difference =
                 expect(articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete).toBe(true);
             }
+        });
+    });
+
+
+    describe('addDeleteProductEventListener() Method Test Suite', () => {
+        it('should execute the callback function when the button is clicked', () => {
+            const buttonElement = document.createElement('button');
+            buttonElement.type = 'button';
+            buttonElement.classList.add('deleteItem');
+            document.body.appendChild(buttonElement);
+
+            let clickResult = false;
+
+            cartViewTest.addDeleteProductEventListener(() => {
+                clickResult = true;
+            });
+
+            userEvent.click(buttonElement);
+            expect(clickResult).toBeTruthy();
         });
     });
 });

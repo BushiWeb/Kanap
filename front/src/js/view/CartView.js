@@ -146,4 +146,16 @@ export class CartView extends View {
             element.remove();
         }
     }
+
+
+    /**
+     * Create an event listener for the "delete" button.
+     * @param {Function} callback - The function to call when the event fires.
+     */
+     addDeleteProductEventListener(callback) {
+        const deleteCommands = this.getElements('.deleteItem');
+        for (let deleteCommand of deleteCommands) {
+            deleteCommand.addEventListener('click', callback);
+        }
+    }
 }
