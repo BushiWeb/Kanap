@@ -1,4 +1,4 @@
-import { Cart } from "./Cart";
+import { Cart } from './Cart';
 import { CartProduct } from './CartProduct';
 import { Product } from './Product';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
@@ -15,17 +15,17 @@ jest.mock('./CartProduct', () => {
                 quantity: quantity,
                 addToQuantity: mockAddToQuantity,
                 getData: mockGetData,
-                compare: mockCompare
+                compare: mockCompare,
             };
-        })
-    }
+        }),
+    };
 });
 
 beforeEach(() => {
     mockAddToQuantity.mockClear();
     mockGetData.mockClear();
     CartProduct.mockClear();
-})
+});
 
 describe('Cart Unit Test Suite', () => {
     const testProducts = [
@@ -33,17 +33,22 @@ describe('Cart Unit Test Suite', () => {
             id: MOCKED_API_DATA[0]._id,
             color: MOCKED_API_DATA[0].colors[0],
             name: MOCKED_API_DATA[0].name,
-            quantity: 4
+            quantity: 4,
         },
         {
             id: MOCKED_API_DATA[1]._id,
             color: MOCKED_API_DATA[1].colors[0],
             name: MOCKED_API_DATA[1].name,
-            quantity: 4
-        }
+            quantity: 4,
+        },
     ];
 
-    const testCartProductEntity = new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity, testProducts[0].name);
+    const testCartProductEntity = new CartProduct(
+        testProducts[0].id,
+        testProducts[0].color,
+        testProducts[0].quantity,
+        testProducts[0].name
+    );
 
     describe('Constructor Test Suite', () => {
         const productsSetterMock = jest.spyOn(Cart.prototype, 'products', 'set');
@@ -63,7 +68,6 @@ describe('Cart Unit Test Suite', () => {
             expect(productsSetterMock).toHaveBeenCalledWith([testCartProductEntity]);
         });
     });
-
 
     describe('Getters Test Suite', () => {
         const cartEntity = new Cart();
@@ -107,7 +111,6 @@ describe('Cart Unit Test Suite', () => {
         });
     });
 
-
     describe('Setters Test Suite', () => {
         const cartEntity = new Cart();
 
@@ -117,7 +120,6 @@ describe('Cart Unit Test Suite', () => {
             expect(cartEntity._products).toEqual([testCartProductEntity]);
         });
     });
-
 
     describe('addProduct() Test Suite', () => {
         const cartEntity = new Cart();
@@ -130,7 +132,7 @@ describe('Cart Unit Test Suite', () => {
             mockUpdateTotals.mockReset();
         });
 
-        it('should change the product\'s quantity if it is already in the cart', () => {
+        it("should change the product's quantity if it is already in the cart", () => {
             searchProductMock.mockReturnValue(0);
             cartEntity._products = [new CartProduct()];
             cartEntity.addProduct(testCartProductEntity);
@@ -152,7 +154,6 @@ describe('Cart Unit Test Suite', () => {
             expect(mockUpdateTotals).toHaveBeenCalled();
         });
     });
-
 
     describe('updateProductQuantity() Test Suite', () => {
         const mockSearchProduct = jest.spyOn(Cart.prototype, 'searchProduct');
@@ -203,14 +204,13 @@ describe('Cart Unit Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false if the product doesn\'t exist', () => {
+        it("should return false if the product doesn't exist", () => {
             cartEntity._products = [];
             mockSearchProduct.mockReturnValue(false);
             const result = cartEntity.updateProductQuantity(testCartProductEntity, 1);
             expect(result).toBe(false);
         });
     });
-
 
     describe('deleteProduct() Test Suite', () => {
         const mockSearchProduct = jest.spyOn(Cart.prototype, 'searchProduct');
@@ -253,7 +253,7 @@ describe('Cart Unit Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false if the product doesn\'t exist', () => {
+        it("should return false if the product doesn't exist", () => {
             cartEntity._products = [];
             mockSearchProduct.mockReturnValue(false);
             const result = cartEntity.deleteProduct(testCartProductEntity);
@@ -261,10 +261,19 @@ describe('Cart Unit Test Suite', () => {
         });
     });
 
-
     describe('searchProduct() Test Suite', () => {
-        const testProductToSearch = new CartProduct(MOCKED_API_DATA[0]._id, MOCKED_API_DATA[0].colors[0], 4, MOCKED_API_DATA[0].name);
-        const testProductToPopulate = new CartProduct(MOCKED_API_DATA[1]._id, MOCKED_API_DATA[1].colors[0], 4, MOCKED_API_DATA[1].name);
+        const testProductToSearch = new CartProduct(
+            MOCKED_API_DATA[0]._id,
+            MOCKED_API_DATA[0].colors[0],
+            4,
+            MOCKED_API_DATA[0].name
+        );
+        const testProductToPopulate = new CartProduct(
+            MOCKED_API_DATA[1]._id,
+            MOCKED_API_DATA[1].colors[0],
+            4,
+            MOCKED_API_DATA[1].name
+        );
         const cartEntity = new Cart();
 
         it('should return the index of the product', () => {
@@ -300,7 +309,6 @@ describe('Cart Unit Test Suite', () => {
         });
     });
 
-
     describe('updateTotals() Test Suite', () => {
         const cartEntity = new Cart();
 
@@ -316,7 +324,6 @@ describe('Cart Unit Test Suite', () => {
             mockUpdatePrice.mockRestore();
             mockUpdateQuantity.mockRestore();
         });
-
 
         it('should call the updateTotalPrice() method', () => {
             cartEntity.updateTotals();

@@ -1,13 +1,20 @@
-import { Product } from "./Product";
+import { Product } from './Product';
 
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('Product Unit Test Suite', () => {
-
     describe('Constructor Test Suite', () => {
         it('should create an instance of Product with the right informations', () => {
             const testProduct = MOCKED_API_DATA[0];
-            const productEntity = new Product(testProduct._id, testProduct.name, testProduct.price, testProduct.description, testProduct.imageUrl, testProduct.altTxt, testProduct.colors);
+            const productEntity = new Product(
+                testProduct._id,
+                testProduct.name,
+                testProduct.price,
+                testProduct.description,
+                testProduct.imageUrl,
+                testProduct.altTxt,
+                testProduct.colors
+            );
             expect(productEntity._id).toBe(testProduct._id);
             expect(productEntity._name).toBe(testProduct.name);
             expect(productEntity._price).toBe(testProduct.price);
@@ -18,10 +25,17 @@ describe('Product Unit Test Suite', () => {
         });
     });
 
-
     describe('Getters Test Suite', () => {
         const testProduct = MOCKED_API_DATA[0];
-        const productEntity = new Product(testProduct._id, testProduct.name, testProduct.price, testProduct.description, testProduct.imageUrl, testProduct.altTxt, testProduct.colors);
+        const productEntity = new Product(
+            testProduct._id,
+            testProduct.name,
+            testProduct.price,
+            testProduct.description,
+            testProduct.imageUrl,
+            testProduct.altTxt,
+            testProduct.colors
+        );
 
         it('should return the value of Product._id', () => {
             expect(productEntity.id).toBe(productEntity._id);

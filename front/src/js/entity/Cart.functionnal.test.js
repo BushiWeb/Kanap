@@ -1,6 +1,6 @@
-import { Cart } from "./Cart";
-import { CartProduct } from "./CartProduct";
-import { Product } from "./Product";
+import { Cart } from './Cart';
+import { CartProduct } from './CartProduct';
+import { Product } from './Product';
 import { MOCKED_API_DATA } from '../dao/mockedApiData';
 
 describe('Cart Functionnal Test Suite', () => {
@@ -9,20 +9,20 @@ describe('Cart Functionnal Test Suite', () => {
             id: MOCKED_API_DATA[0]._id,
             color: MOCKED_API_DATA[0].colors[0],
             name: MOCKED_API_DATA[0].name,
-            quantity: 4
+            quantity: 4,
         },
         {
             id: MOCKED_API_DATA[1]._id,
             color: MOCKED_API_DATA[1].colors[0],
             name: MOCKED_API_DATA[1].name,
-            quantity: 4
-        }
+            quantity: 4,
+        },
     ];
 
     const testCartProductEntities = [
         new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity, testProducts[0].name),
-        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity, testProducts[1].name)
-    ]
+        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity, testProducts[1].name),
+    ];
 
     const testProductEntities = [
         new Product(
@@ -42,8 +42,8 @@ describe('Cart Functionnal Test Suite', () => {
             MOCKED_API_DATA[1].imageUrl,
             MOCKED_API_DATA[1].altTxt,
             MOCKED_API_DATA[1].colors
-        )
-    ]
+        ),
+    ];
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of Cart with the right products', () => {
@@ -58,11 +58,10 @@ describe('Cart Functionnal Test Suite', () => {
         });
     });
 
-
     describe('addProduct() Test Suite', () => {
         const cartEntity = new Cart();
 
-        it('should change the product\'s quantity if it is already in the cart', () => {
+        it("should change the product's quantity if it is already in the cart", () => {
             cartEntity._products = [testCartProductEntities[0]];
             cartEntity.addProduct(testCartProductEntities[0]);
             expect(cartEntity._products[0].quantity).toBe(2 * testProducts[0].quantity);
@@ -74,7 +73,6 @@ describe('Cart Functionnal Test Suite', () => {
             expect(cartEntity._products[0]).toEqual(testCartProductEntities[0]);
         });
     });
-
 
     describe('searchProduct() Test Suite', () => {
         const cartEntity = new Cart();
@@ -108,7 +106,6 @@ describe('Cart Functionnal Test Suite', () => {
         });
     });
 
-
     describe('updateTotalPrice() Test Suite', () => {
         const cartEntity = new Cart();
 
@@ -116,9 +113,11 @@ describe('Cart Functionnal Test Suite', () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
-            const totalPrice = testCartProductEntities[0].quantity * testCartProductEntities[0].product._price + testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+            const totalPrice =
+                testCartProductEntities[0].quantity * testCartProductEntities[0].product._price +
+                testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
             cartEntity.updateTotalPrice();
-            expect(cartEntity._totalPrice).toBe(totalPrice)
+            expect(cartEntity._totalPrice).toBe(totalPrice);
         });
 
         it('should update the totalPrice to undefined if the CartProduct.product properties are missing', () => {
@@ -129,7 +128,6 @@ describe('Cart Functionnal Test Suite', () => {
         });
     });
 
-
     describe('updateTotalQuantity() Test Suite', () => {
         const cartEntity = new Cart();
 
@@ -137,10 +135,9 @@ describe('Cart Functionnal Test Suite', () => {
             cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
             const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
             cartEntity.updateTotalQuantity();
-            expect(cartEntity._totalQuantity).toBe(totalQuantity)
+            expect(cartEntity._totalQuantity).toBe(totalQuantity);
         });
     });
-
 
     describe('updateTotals() Test Suite', () => {
         const cartEntity = new Cart();
@@ -149,7 +146,9 @@ describe('Cart Functionnal Test Suite', () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             const totalQuantity = testCartProductEntities[0].quantity + testCartProductEntities[1].quantity;
-            const totalPrice = testCartProductEntities[0].quantity * testCartProductEntities[0].product._price + testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
+            const totalPrice =
+                testCartProductEntities[0].quantity * testCartProductEntities[0].product._price +
+                testCartProductEntities[1].quantity * testCartProductEntities[1].product._price;
             cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
 
             cartEntity.updateTotals();
@@ -157,7 +156,6 @@ describe('Cart Functionnal Test Suite', () => {
             expect(cartEntity._totalPrice).toBe(totalPrice);
         });
     });
-
 
     describe('deleteProduct() Test Suite', () => {
         const cartEntity = new Cart();
@@ -177,7 +175,7 @@ describe('Cart Functionnal Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false if the product doesn\'t exist', () => {
+        it("should return false if the product doesn't exist", () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             cartEntity._products = [testCartProductEntities[1]];
@@ -186,7 +184,6 @@ describe('Cart Functionnal Test Suite', () => {
             expect(result).toBe(false);
         });
     });
-
 
     describe('updateProductQuantity() Test Suite', () => {
         const cartEntity = new Cart();
@@ -207,13 +204,15 @@ describe('Cart Functionnal Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should update the product\'s quantity and update the total quantity and price and return true if the quantity is above 0', () => {
+        it("should update the product's quantity and update the total quantity and price and return true if the quantity is above 0", () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             cartEntity._products = [testCartProductEntities[0], testCartProductEntities[1]];
 
             const newQuantity = testCartProductEntities[1].quantity + 1;
-            const newPrice = testCartProductEntities[1].quantity * testCartProductEntities[1].product._price + testCartProductEntities[0].product._price;
+            const newPrice =
+                testCartProductEntities[1].quantity * testCartProductEntities[1].product._price +
+                testCartProductEntities[0].product._price;
 
             const result = cartEntity.updateProductQuantity(testCartProductEntities[0], 1);
 
@@ -223,7 +222,7 @@ describe('Cart Functionnal Test Suite', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false if the product doesn\'t exist', () => {
+        it("should return false if the product doesn't exist", () => {
             testCartProductEntities[0].product = testProductEntities[0];
             testCartProductEntities[1].product = testProductEntities[1];
             cartEntity._products = [testCartProductEntities[1]];

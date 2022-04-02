@@ -3,7 +3,7 @@ import { Product } from './Product';
 /**
  * Class representing a product from the API.
  */
- export class CartProduct {
+export class CartProduct {
     /**
      * Construct the product.
      * @param {string} id - Product's ID.
@@ -20,7 +20,6 @@ import { Product } from './Product';
         this._product = product;
     }
 
-
     /**
      * Add more product's quantity.
      * @param {number} quantity - Quantity to add.
@@ -28,7 +27,6 @@ import { Product } from './Product';
     addToQuantity(quantity) {
         this._quantity += quantity;
     }
-
 
     /**
      * Compare the current CartProduct with another one. Two products are identical if they have the same ID and the same color.
@@ -38,7 +36,6 @@ import { Product } from './Product';
     compare(cartProduct) {
         return cartProduct.id === this.id && cartProduct.color === this.color;
     }
-
 
     /********************************************
      * GETTERS
@@ -83,7 +80,6 @@ import { Product } from './Product';
         return this._product;
     }
 
-
     /********************************************
      * SETTERS
      ********************************************/
@@ -91,7 +87,7 @@ import { Product } from './Product';
      * _quantity property setter.
      * @param {number} quantity - The new product's quantity.
      */
-     set quantity(quantity) {
+    set quantity(quantity) {
         this._quantity = quantity;
     }
 
@@ -99,7 +95,7 @@ import { Product } from './Product';
      * _product property setter.
      * @param {Product} product - The new product's entity.
      */
-     set product(product) {
+    set product(product) {
         this._product = product;
     }
 }
