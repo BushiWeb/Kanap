@@ -27,11 +27,15 @@ export class CartControler {
     async initialize() {
         const cartEntity = this.cartManager.getCart();
         const nameError = await this.cartManager.setCartProductProductInfos(this.productManager);
-        let errorMessage = (nameError.length === 0)? '' : ((nameError.length === 1)? `Le produit ${nameError[0]} n'existe pas/plus.` : `Les produits ${nameError.join(', ')} n'existent pas/plus.`);
+        let errorMessage =
+            nameError.length === 0
+                ? ''
+                : nameError.length === 1
+                ? `Le produit ${nameError[0]} n'existe pas/plus.`
+                : `Les produits ${nameError.join(', ')} n'existent pas/plus.`;
         this.view.render(cartEntity, errorMessage);
         this.view.addDeleteProductEventListener(this.deleteProductEventHandler.bind(this));
     }
-
 
     /**
      * Call the view methods to update the totals.
@@ -41,19 +45,17 @@ export class CartControler {
         this.view.insertTotals(currentCart.totalPrice, currentCart.totalQuantity);
     }
 
-
     /**
      * Event handler for the "Delete product from cart" event.
      * Get the product informations from the page, delete the product from the cart.
      * @param {Event} event - The event object
      */
-     deleteProductEventHandler(event) {
+    deleteProductEventHandler(event) {
         const productCartElement = event.target.closest('[data-id][data-color]');
         if (productCartElement !== null) {
             this.deleteProductFromCart(productCartElement.dataset.id, productCartElement.dataset.color);
         }
     }
-
 
     /**
      * Delete a product from the cart.
@@ -64,6 +66,25 @@ export class CartControler {
     deleteProductFromCart(id, color) {
         this.cartManager.deleteProduct(id, color);
         this.view.removeProductFromDom(id, color);
+        this.updateTotals();
+    }
+
+
+    /**
+     * Change the quantity of a product in the cart.
+     * Update the totals on the page.
+     * If the quantity is 0, delete the product.
+     * @param {string} id - ID of the product to update
+     * @param {string} color - Color of the product to update
+     * @param {number} quantity - New quantity of product
+     */
+    updateProductQuantity(id, color, quantity) {
+        if (quantity <= 0) {
+            this.deleteProductFromCart(id, color);
+            return;
+        }
+
+        this.cartManager.updateProductQuantity(id, color, quantity);
         this.updateTotals();
     }
 }
