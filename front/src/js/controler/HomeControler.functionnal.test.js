@@ -21,13 +21,12 @@ describe('HomeControler Functionnal Test Suite', () => {
             const container = document.createElement('section');
             container.id = 'items';
             document.body.appendChild(container);
-        })
-
+        });
 
         it('should display the list of products, with the right number of cards', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA),
-                ok : true
+                ok: true,
             });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
@@ -37,10 +36,10 @@ describe('HomeControler Functionnal Test Suite', () => {
             expect(productsCardElements.length).toBe(MOCKED_API_DATA.length);
         });
 
-        it('should display the right produt\'s informations', async () => {
+        it("should display the right produt's informations", async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA),
-                ok : true
+                ok: true,
             });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
@@ -66,7 +65,7 @@ describe('HomeControler Functionnal Test Suite', () => {
         it('should save the data in the manager', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA),
-                ok : true
+                ok: true,
             });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
@@ -91,7 +90,6 @@ describe('HomeControler Functionnal Test Suite', () => {
 
             expect(consoleMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalled();
-
         });
     });
 });

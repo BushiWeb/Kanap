@@ -5,11 +5,11 @@
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
-import { CartView } from "./CartView";
+import { CartView } from './CartView';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 import { Cart } from '../entity/Cart';
 import { CartProduct } from '../entity/CartProduct';
-
+import { fireEvent } from '@testing-library/dom';
 
 describe('CartView Functionnal Test Suite', () => {
     let cartEntity = new Cart();
@@ -29,7 +29,7 @@ describe('CartView Functionnal Test Suite', () => {
             MOCKED_PRODUCT_ENTITY_DATA[1].name,
             MOCKED_PRODUCT_ENTITY_DATA[1]
         ),
-    ]
+    ];
 
     beforeEach(() => {
         document.body.innerHTML = '';
@@ -57,7 +57,7 @@ describe('CartView Functionnal Test Suite', () => {
         beforeEach(() => {
             cartEntity._totalPrice = undefined;
             cartEntity._totalQuantity = undefined;
-        })
+        });
 
         it('should create one product card with the right structure when passed a cart with one product', () => {
             cartEntity.products = [cartProductEntities[0]];
@@ -70,7 +70,9 @@ describe('CartView Functionnal Test Suite', () => {
             const nameElement = document.querySelector('.cart__item__content__description h2');
             const colorElement = document.querySelectorAll('.cart__item__content__description p')[0];
             const priceElement = document.querySelectorAll('.cart__item__content__description p')[1];
-            const quantitySettingElement = document.querySelector('.cart__item__content__settings__quantity .itemQuantity');
+            const quantitySettingElement = document.querySelector(
+                '.cart__item__content__settings__quantity .itemQuantity'
+            );
             const deleteSettingElement = document.querySelector('.cart__item__content__settings__delete .deleteItem');
 
             expect(globalContainer).toContainElement(articleElement);
@@ -90,7 +92,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(colorElement).toHaveTextContent(cartProductEntities[0]._color);
         });
 
-
         it('should create a list of product cards when passed a cart with multiple products', () => {
             cartEntity.products = cartProductEntities;
             cartViewTest.render(cartEntity);
@@ -103,7 +104,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(priceElt.textContent).toBe(cartEntity.totalPrice.toString());
             expect(quantityElt.textContent).toBe(cartEntity.totalQuantity.toString());
         });
-
 
         it('should create nothing when passed a cart with no product', () => {
             cartEntity.products = [];
@@ -118,7 +118,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(quantityElt.textContent).toBe('0');
         });
 
-
         it('should create a notification if messages are given', () => {
             cartEntity.products = cartProductEntities;
             const message = 'Message';
@@ -129,8 +128,7 @@ describe('CartView Functionnal Test Suite', () => {
             expect(notificationContainerElt.textContent).toBe(message);
         });
 
-
-        it('shouldn\'t create any notification if no messsages are given', () => {
+        it("shouldn't create any notification if no messsages are given", () => {
             cartEntity.products = cartProductEntities;
             cartViewTest.render(cartEntity, '');
 
@@ -138,7 +136,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(notificationContainerElt).toBeNull();
         });
     });
-
 
     describe('insertTotalQuantity() Method Test Suite', () => {
         it('should insert the righ value in the element', () => {
@@ -150,7 +147,6 @@ describe('CartView Functionnal Test Suite', () => {
         });
     });
 
-
     describe('insertTotalPrice() Method Test Suite', () => {
         it('should insert the righ value in the element', () => {
             cartViewTest.insertTotalPrice(10);
@@ -160,7 +156,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(priceElt.textContent).toBe('10');
         });
     });
-
 
     describe('insertTotals() Method Test Suite', () => {
         it('should insert the righ values in the elements', () => {
@@ -173,7 +168,6 @@ describe('CartView Functionnal Test Suite', () => {
             expect(quantityElt.textContent).toBe('10');
         });
     });
-
 
     describe('removeProductFromDom() Method Test Suite', () => {
         const idToDelete = '123';
@@ -202,7 +196,6 @@ describe('CartView Functionnal Test Suite', () => {
             cardContainer.appendChild(articleSameColor);
             cardContainer.appendChild(articleSameId);
             cardContainer.appendChild(articleToDelete);
-
         });
 
         it('should remove the product cart corresponding to the right ID and color', () => {
@@ -213,12 +206,12 @@ describe('CartView Functionnal Test Suite', () => {
             expect(articleElements.length).toBe(3);
 
             for (let articleElement of articleElements) {
-                const difference =
-                expect(articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete).toBe(true);
+                const difference = expect(
+                    articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete
+                ).toBe(true);
             }
         });
     });
-
 
     describe('addDeleteProductEventListener() Method Test Suite', () => {
         it('should execute the callback function when the button is clicked', () => {
@@ -235,6 +228,25 @@ describe('CartView Functionnal Test Suite', () => {
 
             userEvent.click(buttonElement);
             expect(clickResult).toBeTruthy();
+        });
+    });
+
+    describe('addUpdateProductQuantityEventHandler() Method Test Suite', () => {
+        it('should execute the callback function when the button is clicked', () => {
+            const numberElement = document.createElement('input');
+            numberElement.type = 'number';
+            numberElement.classList.add('itemQuantity');
+            document.body.appendChild(numberElement);
+
+            let clickResult = 0;
+
+            cartViewTest.addUpdateProductQuantityEventListener((e) => {
+                clickResult = e.target.value;
+            });
+
+            numberElement.value = '4';
+            fireEvent['change'](numberElement);
+            expect(clickResult).toBe('4');
         });
     });
 });

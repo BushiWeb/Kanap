@@ -21,7 +21,6 @@ describe('ProductControler Functionnal Test Suite', () => {
     const consoleMock = jest.spyOn(global.console, 'error');
     const alertMock = jest.spyOn(window, 'alert');
 
-
     beforeEach(() => {
         window.location.href = testUrl;
         controlerTest = new ProductControler(CONFIG);
@@ -79,13 +78,12 @@ describe('ProductControler Functionnal Test Suite', () => {
         document.body.appendChild(addToCartButton);
     });
 
-
     describe('initialize() Method Test Suite', () => {
-        it('should display the product\'s informations', async () => {
+        it("should display the product's informations", async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
-                ok: true
-            })
+                ok: true,
+            });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
 
@@ -104,7 +102,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(titleElt).toHaveTextContent(MOCKED_API_DATA[0].name);
             expect(priceElt).toHaveTextContent(MOCKED_API_DATA[0].price);
             expect(descriptionElt).toHaveTextContent(MOCKED_API_DATA[0].description);
-            for (let i = 1 ; i < optionElts.length ; i++) {
+            for (let i = 1; i < optionElts.length; i++) {
                 expect(selectElt).toContainElement(optionElts[i]);
                 expect(optionElts[i]).toHaveAttribute('value', MOCKED_API_DATA[0].colors[i - 1]);
                 expect(optionElts[i]).toHaveTextContent(MOCKED_API_DATA[0].colors[i - 1]);
@@ -114,8 +112,8 @@ describe('ProductControler Functionnal Test Suite', () => {
         it('should save the data to the manager', async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
-                ok: true
-            })
+                ok: true,
+            });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
 
@@ -141,8 +139,8 @@ describe('ProductControler Functionnal Test Suite', () => {
             const controlerTestUrlError = new ProductControler(CONFIG);
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
-                ok: true
-            })
+                ok: true,
+            });
             controlerTest.productManager.productsListComplete = false;
             controlerTest.productManager.products = [];
 
@@ -150,39 +148,36 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             expect(consoleMock).toHaveBeenCalled();
             expect(alertMock).toHaveBeenCalled();
-
         });
     });
-
 
     describe('Add to cart Event Test Suite', () => {
         const cartExample = [
             {
                 id: '1',
                 color: 'blue',
-                quantity: 3
+                quantity: 3,
             },
             {
                 id: '2',
                 color: 'pink',
-                quantity: 6
+                quantity: 6,
             },
             {
                 id: '3',
                 color: 'red',
-                quantity: 2
-            }
+                quantity: 2,
+            },
         ];
 
         beforeEach(async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
-                ok: true
-            })
+                ok: true,
+            });
 
             await controlerTest.initialize();
         });
-
 
         it('should alert an error if the color is not selected', () => {
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
@@ -191,7 +186,10 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it('should alert an error if the quantity is invalid', () => {
-            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.selectOptions(
+                getByLabelText(document.body, 'Color'),
+                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+            );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '-3');
             userEvent.click(getByText(document.body, 'Add to cart'));
             expect(document.getElementById('quantity').nextElementSibling).toHaveClass('error');
@@ -200,7 +198,10 @@ describe('ProductControler Functionnal Test Suite', () => {
         it('should remove the error if the fields are valid', () => {
             userEvent.click(getByText(document.body, 'Add to cart'));
 
-            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.selectOptions(
+                getByLabelText(document.body, 'Color'),
+                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+            );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '3');
 
             userEvent.click(getByText(document.body, 'Add to cart'));
@@ -215,10 +216,13 @@ describe('ProductControler Functionnal Test Suite', () => {
             const addedProduct = {
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
-                quantity: 10
-            }
+                quantity: 10,
+            };
 
-            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.selectOptions(
+                getByLabelText(document.body, 'Color'),
+                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+            );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
 
@@ -232,17 +236,20 @@ describe('ProductControler Functionnal Test Suite', () => {
             const doubleProductCartValue = cartExample.concat({
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
-                quantity: 2
+                quantity: 2,
             });
             localStorage.setItem('cart', JSON.stringify(doubleProductCartValue));
 
             const modifiedProduct = {
                 id: MOCKED_API_DATA[0]._id,
                 color: MOCKED_API_DATA[0].colors[0],
-                quantity: 12
+                quantity: 12,
             };
 
-            userEvent.selectOptions(getByLabelText(document.body, 'Color'), getByText(document.body, MOCKED_API_DATA[0].colors[0]));
+            userEvent.selectOptions(
+                getByLabelText(document.body, 'Color'),
+                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+            );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
             userEvent.click(getByText(document.body, 'Add to cart'));
 

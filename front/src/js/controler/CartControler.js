@@ -2,6 +2,7 @@ import { CartView } from '../view/CartView';
 import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { CartManagerFactory } from '../factories/CartManagerFactory';
 import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
+import { FormValidator } from '../form/FormValidator';
 
 /**
  * Class representing the entry point of the cart page.
@@ -35,6 +36,7 @@ export class CartControler {
                 : `Les produits ${nameError.join(', ')} n'existent pas/plus.`;
         this.view.render(cartEntity, errorMessage);
         this.view.addDeleteProductEventListener(this.deleteProductEventHandler.bind(this));
+        this.view.addUpdateProductQuantityEventListener(this.updateProductQuantityEventHandler.bind(this));
     }
 
     /**
@@ -69,6 +71,34 @@ export class CartControler {
         this.updateTotals();
     }
 
+    /**
+     * Event handler for the "update product's quantity" event.
+     * @param {Event} event - The event object.
+     */
+    updateProductQuantityEventHandler(event) {
+        if (typeof FormValidator.validateFormField(event.target, { required: true }) === 'string') {
+            this.view.createFormFieldError(
+                event.target,
+                'Merci de choisir une quantité de produit valide, entre ' +
+                    event.target.getAttribute('min') +
+                    ' et ' +
+                    event.target.getAttribute('max') +
+                    '.'
+            );
+            return;
+        }
+
+        this.view.deleteFormFieldError(event.target);
+
+        const productCartElement = event.target.closest('[data-id][data-color]');
+        if (productCartElement !== null) {
+            this.updateProductQuantity(
+                productCartElement.dataset.id,
+                productCartElement.dataset.color,
+                parseInt(event.target.value)
+            );
+        }
+    }
 
     /**
      * Change the quantity of a product in the cart.

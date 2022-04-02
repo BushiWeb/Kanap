@@ -36,10 +36,11 @@ export class ProductControler {
             this.view.addAddToCartEventListener(this.addToCartEventHandler.bind(this));
         } catch (error) {
             console.error(error);
-            this.view.alert('Un problème a eu lieu lors de la récupération des informations sur le produit. Veuillez nous excuser pour le dérangement.');
+            this.view.alert(
+                'Un problème a eu lieu lors de la récupération des informations sur le produit. Veuillez nous excuser pour le dérangement.'
+            );
         }
     }
-
 
     /**
      * Event handler for the "Add to cart event".
@@ -51,34 +52,41 @@ export class ProductControler {
         let quantityElement = this.view.getQuantity();
         let error = false;
 
-        if (typeof FormValidator.validateFormField(colorElement, {
-            required: true
-        }) === 'string') {
-            this.view.createFormFieldError(colorElement, 'Merci de choisir une couleur avant d\'ajouter votre produit au panier.');
+        if (
+            typeof FormValidator.validateFormField(colorElement, {
+                required: true,
+            }) === 'string'
+        ) {
+            this.view.createFormFieldError(
+                colorElement,
+                "Merci de choisir une couleur avant d'ajouter votre produit au panier."
+            );
             error = true;
         } else {
             this.view.deleteFormFieldError(colorElement);
         }
 
-        if (typeof FormValidator.validateFormField(quantityElement, {
-            required: true
-        }) === 'string') {
+        if (
+            typeof FormValidator.validateFormField(quantityElement, {
+                required: true,
+            }) === 'string'
+        ) {
             this.view.createFormFieldError(quantityElement, 'Merci de choisir une quantité de produit valide.');
             error = true;
         } else {
             this.view.deleteFormFieldError(quantityElement);
         }
 
-
         const productId = this.urlManager.getParameter('id');
         let productName;
-        this.productManager.getProduct(productId).then((data) => {
-            productName = data.name;
-        }).catch((error) => {
-            error = true;
-        });
-
-
+        this.productManager
+            .getProduct(productId)
+            .then((data) => {
+                productName = data.name;
+            })
+            .catch((error) => {
+                error = true;
+            });
 
         if (error) {
             return;
@@ -88,12 +96,11 @@ export class ProductControler {
             id: productId,
             name: productName,
             color: colorElement.value,
-            quantity: parseInt(quantityElement.value)
+            quantity: parseInt(quantityElement.value),
         });
 
-        this.view.displayNotification('Le produit a bien été ajouté au panier.')
+        this.view.displayNotification('Le produit a bien été ajouté au panier.');
     }
-
 
     /**
      * Add a product to the cart.

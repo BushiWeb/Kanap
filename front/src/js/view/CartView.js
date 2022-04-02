@@ -1,5 +1,5 @@
-import { View } from "./View";
-import { Cart } from "../entity/Cart";
+import { View } from './View';
+import { Cart } from '../entity/Cart';
 
 /**
  * Class managing the rendering and the interactions with the content of the cart page.
@@ -15,7 +15,7 @@ export class CartView extends View {
     render(cart, message = '') {
         let containerElement = this.getElements('#cart__items')[0];
 
-        if(message) {
+        if (message) {
             this.displayNotification(message);
         }
 
@@ -23,27 +23,27 @@ export class CartView extends View {
             let articleWrapper = this.createElement('article', {
                 class: 'cart__item',
                 'data-id': cartProduct.id,
-                'data-color': cartProduct.color
+                'data-color': cartProduct.color,
             });
 
             //Image element
             let imageWrapper = this.createElement('div', {
-                class: 'cart__item__img'
+                class: 'cart__item__img',
             });
             let imageElement = this.createElement('img', {
                 src: cartProduct.product.imageSource,
-                alt: cartProduct.product.imageAltText
+                alt: cartProduct.product.imageAltText,
             });
             imageWrapper.appendChild(imageElement);
 
             //Content
             let contentWrapper = this.createElement('div', {
-                class: 'cart__item__content'
+                class: 'cart__item__content',
             });
 
             //Description
             let descriptionWrapper = this.createElement('div', {
-                class: 'cart__item__content__description'
+                class: 'cart__item__content__description',
             });
             let nameElement = this.createElement('h2');
             nameElement.textContent = cartProduct.product.name;
@@ -57,12 +57,12 @@ export class CartView extends View {
 
             //Settings
             let settingsWrapper = this.createElement('div', {
-                class: 'cart__item__content__settings'
+                class: 'cart__item__content__settings',
             });
 
             //Quantity
             let quantitySettingWrapper = this.createElement('div', {
-                class: 'cart__item__content__settings__quantity'
+                class: 'cart__item__content__settings__quantity',
             });
             let quantityLabelElement = this.createElement('p');
             quantityLabelElement.textContent = 'Qté : ';
@@ -72,17 +72,17 @@ export class CartView extends View {
                 name: 'itemQuantity',
                 min: '1',
                 max: '100',
-                value: cartProduct.quantity
+                value: cartProduct.quantity,
             });
             quantitySettingWrapper.appendChild(quantityLabelElement);
             quantitySettingWrapper.appendChild(quantityInputElement);
 
             //Delete
             let deleteSettingWrapper = this.createElement('div', {
-                class: 'cart__item__content__settings__delete'
+                class: 'cart__item__content__settings__delete',
             });
             let deleteTextElement = this.createElement('p', {
-                class: 'deleteItem'
+                class: 'deleteItem',
             });
             deleteTextElement.textContent = 'Supprimer';
             deleteSettingWrapper.appendChild(deleteTextElement);
@@ -100,10 +100,9 @@ export class CartView extends View {
         }
 
         let totalPrice = cart.totalPrice;
-        let totalQuantity = cart.totalQuantity
-        this.insertTotals((totalPrice === undefined)? 0 : totalPrice, (totalQuantity === undefined)? 0 : totalQuantity);
+        let totalQuantity = cart.totalQuantity;
+        this.insertTotals(totalPrice === undefined ? 0 : totalPrice, totalQuantity === undefined ? 0 : totalQuantity);
     }
-
 
     /**
      * Insert the total quantity in the page.
@@ -111,9 +110,7 @@ export class CartView extends View {
      */
     insertTotalQuantity(quantity) {
         this.getElements('#totalQuantity')[0].textContent = quantity;
-
     }
-
 
     /**
      * Insert the total price in the page.
@@ -122,7 +119,6 @@ export class CartView extends View {
     insertTotalPrice(price) {
         this.getElements('#totalPrice')[0].textContent = price;
     }
-
 
     /**
      * Insert the total price and quantity in the page.
@@ -133,7 +129,6 @@ export class CartView extends View {
         this.insertTotalPrice(price);
         this.insertTotalQuantity(quantity);
     }
-
 
     /**
      * Delete a product cart corresponding to the given data.
@@ -147,15 +142,25 @@ export class CartView extends View {
         }
     }
 
-
     /**
      * Create an event listener for the "delete" button.
      * @param {Function} callback - The function to call when the event fires.
      */
-     addDeleteProductEventListener(callback) {
+    addDeleteProductEventListener(callback) {
         const deleteCommands = this.getElements('.deleteItem');
         for (let deleteCommand of deleteCommands) {
             deleteCommand.addEventListener('click', callback);
+        }
+    }
+
+    /**
+     * Create an event listener for the "quantity" number input, on change.
+     * @param {Function} callback - The function to call when the event fires.
+     */
+    addUpdateProductQuantityEventListener(callback) {
+        const quantityCommands = this.getElements('.itemQuantity');
+        for (let quantityCommand of quantityCommands) {
+            quantityCommand.addEventListener('change', callback);
         }
     }
 }

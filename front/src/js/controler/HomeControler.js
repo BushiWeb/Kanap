@@ -26,7 +26,9 @@ export class HomeControler {
             this.view.render(productsData);
         } catch (error) {
             console.error(error);
-            this.view.alert('Un problème a eu lieu lors de la récupération des produits, nous ne pouvons pas afficher le catalogue. Veuillez nous excuser pour le dérangement.');
+            this.view.alert(
+                'Un problème a eu lieu lors de la récupération des produits, nous ne pouvons pas afficher le catalogue. Veuillez nous excuser pour le dérangement.'
+            );
         }
     }
 }

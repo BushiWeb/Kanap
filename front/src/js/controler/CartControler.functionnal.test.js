@@ -3,7 +3,7 @@
  */
 
 import '@testing-library/jest-dom';
-import { getByLabelText, getByText, queries } from '@testing-library/dom';
+import { fireEvent } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 
 import { CartControler } from './CartControler';
@@ -230,7 +230,9 @@ describe('ProductControler Functionnal Test Suite', () => {
             const colorToUpdate = cartTest.products[0].color;
             await controlerTest.initialize();
 
-            const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${idToUpdate}"]`);
+            const articleElements = document.getElementsByTagName('article');
+
+            const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
 
             controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 0);
 
@@ -282,8 +284,6 @@ describe('ProductControler Functionnal Test Suite', () => {
             const idToUpdate = cartTest.products[0].id;
             const colorToUpdate = cartTest.products[0].color;
             await controlerTest.initialize();
-
-            const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${idToUpdate}"]`);
 
             controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 1);
 
@@ -338,7 +338,6 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             userEvent.click(deleteButton);
 
-            const articleElements = document.getElementsByTagName('article');
             const totalPriceElt = document.getElementById('totalPrice');
             const totalQuantityElt = document.getElementById('totalQuantity');
 
@@ -355,7 +354,7 @@ describe('ProductControler Functionnal Test Suite', () => {
     });
 
     describe('updateProductQuantity Event Test Suite', () => {
-        it('should delete the product from the cart and visualy, and update the totals, if the quantity is 0', async () => {
+        it('should add an error message if the value is invalid', async () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
@@ -390,22 +389,59 @@ describe('ProductControler Functionnal Test Suite', () => {
             const colorToUpdate = cartTest.products[0].color;
             await controlerTest.initialize();
 
-            const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${idToUpdate}"]`);
+            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
+            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
 
-            controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 0);
+            quantityInput.value = '-1';
+            fireEvent['change'](quantityInput);
 
-            const totalPriceElt = document.getElementById('totalPrice');
-            const totalQuantityElt = document.getElementById('totalQuantity');
+            expect(quantityInput.nextElementSibling).toHaveClass('error');
+        });
 
-            expect(
-                controlerTest.cartManager.cart.products[0].id !== idToUpdate ||
-                    controlerTest.cartManager.cart.products[0].color !== colorToUpdate
-            ).toBeTruthy();
+        it('should remove the error if the value is valid', async () => {
+            controlerTest.productManager.productsListComplete = true;
+            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
-            expect(document.body).not.toContainElement(articleToDelete);
+            const cartTest = new Cart();
+            cartTest.products = [
+                new CartProduct(
+                    MOCKED_API_DATA[0]._id,
+                    MOCKED_API_DATA[0].colors[0],
+                    12,
+                    MOCKED_API_DATA[0].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[0]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[1]._id,
+                    MOCKED_API_DATA[1].colors[0],
+                    12,
+                    MOCKED_API_DATA[1].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[1]
+                ),
+                new CartProduct(
+                    MOCKED_API_DATA[2]._id,
+                    MOCKED_API_DATA[2].colors[0],
+                    12,
+                    MOCKED_API_DATA[2].name,
+                    MOCKED_PRODUCT_ENTITY_DATA[2]
+                ),
+            ];
+            cartTest.updateTotals();
+            controlerTest.cartManager.cart = cartTest;
+            controlerTest.cartManager.cartComplete = true;
+            const idToUpdate = cartTest.products[0].id;
+            const colorToUpdate = cartTest.products[0].color;
+            await controlerTest.initialize();
 
-            expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
-            expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
+            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
+            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
+
+            quantityInput.value = '-1';
+            fireEvent['change'](quantityInput);
+            quantityInput.value = '1';
+            fireEvent['change'](quantityInput);
+
+            expect(quantityInput.nextElementSibling === null || !quantityInput.nextElementSibling.classList.contains('error')).toBeTruthy();
         });
 
         it('should update the product\'s quantity and update the totals if the quantity is greater than 0', async () => {
@@ -443,9 +479,11 @@ describe('ProductControler Functionnal Test Suite', () => {
             const colorToUpdate = cartTest.products[0].color;
             await controlerTest.initialize();
 
-            const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${idToUpdate}"]`);
+            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
+            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
 
-            controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 1);
+            quantityInput.value = '1';
+            fireEvent['change'](quantityInput);
 
             const totalPriceElt = document.getElementById('totalPrice');
             const totalQuantityElt = document.getElementById('totalQuantity');
