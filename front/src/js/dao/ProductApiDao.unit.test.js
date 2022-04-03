@@ -2,11 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { ProductApiDao } from "./ProductApiDao";
-import { MOCKED_API_DATA } from "./mockedApiData";
-import { CONFIG_TEST, TEST_URL } from "../config/mocked-configuration";
+import { ProductApiDao } from './ProductApiDao';
+import { MOCKED_API_DATA } from './mockedApiData';
+import { CONFIG_TEST, TEST_URL } from '../config/mocked-configuration';
 import { ConfigManager } from '../config/ConfigManager';
-
 
 describe('ProductApiDao Unit Test Suite', () => {
     global.fetch = jest.fn().mockImplementation();
@@ -17,8 +16,7 @@ describe('ProductApiDao Unit Test Suite', () => {
     beforeEach(() => {
         global.fetch.mockReset();
         getApiUrlMock.mockReset();
-    })
-
+    });
 
     describe('Constructor Test Suite', () => {
         it('should contain the right API URL', () => {
@@ -26,12 +24,11 @@ describe('ProductApiDao Unit Test Suite', () => {
         });
     });
 
-
     describe('sendRequest() Method Test Suite', () => {
         it('should call the fetch() function', async () => {
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(['test']),
-                ok : true
+                ok: true,
             });
             const data = await testApiDao.sendRequest();
             expect(global.fetch).toHaveBeenCalled();
@@ -41,7 +38,7 @@ describe('ProductApiDao Unit Test Suite', () => {
         it('should call the fetch() function with the specified route', async () => {
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(['test']),
-                ok : true
+                ok: true,
             });
             const requestRoute = 'test';
             const fullRequestUrl = TEST_URL + requestRoute;
@@ -51,13 +48,39 @@ describe('ProductApiDao Unit Test Suite', () => {
             expect(global.fetch).toHaveBeenCalledWith(fullRequestUrl);
         });
 
+        it('should call the fetch() function with the data if we use the post method', async () => {
+            global.fetch.mockResolvedValueOnce({
+                json: () => Promise.resolve(['test']),
+                ok: true,
+            });
+            const requestRoute = 'test';
+            const fullRequestUrl = TEST_URL + requestRoute;
+            const sentData = {
+                id: 'id',
+                name: 'name',
+            };
+            const fetchPostParameter = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(sentData),
+            };
+
+            const data = await testApiDao.sendRequest(requestRoute, true, sentData);
+            expect(global.fetch).toHaveBeenCalled();
+            expect(global.fetch.mock.calls[0][0]).toEqual(fullRequestUrl);
+            expect(global.fetch.mock.calls[0][1]).toEqual(fetchPostParameter);
+        });
+
         it('should return the data from the API', async () => {
             const testData = {
-                test: 'OK'
-            }
+                test: 'OK',
+            };
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(testData),
-                ok : true
+                ok: true,
             });
             const data = await testApiDao.sendRequest();
             expect(data).toEqual(testData);
@@ -65,12 +88,12 @@ describe('ProductApiDao Unit Test Suite', () => {
 
         it('should throw an error if the status is not ok', async () => {
             global.fetch.mockResolvedValueOnce({
-                ok : false,
-                status : 404,
-                statusText : 'Error'
+                ok: false,
+                status: 404,
+                statusText: 'Error',
             });
             await expect(async () => {
-                await testApiDao.sendRequest()
+                await testApiDao.sendRequest();
             }).rejects.toThrow();
         });
 
@@ -78,11 +101,10 @@ describe('ProductApiDao Unit Test Suite', () => {
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
             await expect(async () => {
-                await testApiDao.sendRequest()
+                await testApiDao.sendRequest();
             }).rejects.toThrow();
         });
-    })
-
+    });
 
     describe('getAllProducts() Method Test Suite', () => {
         const sendRequestMock = jest.spyOn(testApiDao, 'sendRequest');
@@ -93,7 +115,7 @@ describe('ProductApiDao Unit Test Suite', () => {
 
         it('should call the ProductApiDao.sendRequest() method', async () => {
             sendRequestMock.mockReturnValue({
-                data: 'test'
+                data: 'test',
             });
             await testApiDao.getAllProducts();
             expect(sendRequestMock).toHaveBeenCalled();
@@ -112,7 +134,6 @@ describe('ProductApiDao Unit Test Suite', () => {
         });
     });
 
-
     describe('getProduct() Method Test Suite', () => {
         const sendRequestMock = jest.spyOn(testApiDao, 'sendRequest');
 
@@ -120,9 +141,9 @@ describe('ProductApiDao Unit Test Suite', () => {
             sendRequestMock.mockReset();
         });
 
-        it('should call the ProductApiDao.sendRequest() method with the product\'s ID', async () => {
+        it("should call the ProductApiDao.sendRequest() method with the product's ID", async () => {
             sendRequestMock.mockReturnValue({
-                data: 'test'
+                data: 'test',
             });
             await testApiDao.getProduct(MOCKED_API_DATA[0]._id);
             expect(sendRequestMock).toHaveBeenCalled();
@@ -135,4 +156,50 @@ describe('ProductApiDao Unit Test Suite', () => {
             expect(data).toEqual(MOCKED_API_DATA[0]);
         });
     });
-})
+
+    describe('sendOrder() Method Test Suite', () => {
+        const sendRequestMock = jest.spyOn(testApiDao, 'sendRequest');
+        const orderData = {
+            contact: {
+                firstName: 'Flam',
+                lastName: 'Captain',
+                address: 'Moon',
+                city: 'Space',
+                email: 'captainflam@hero.gal',
+            },
+            products: [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id],
+        };
+        const returnedOrderData = {
+            contact: orderData.contact,
+            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[1]],
+            orderId: '123',
+        };
+
+        beforeEach(() => {
+            sendRequestMock.mockReset();
+        });
+
+        it("should call the ProductApiDao.sendRequest() method with the order's data", async () => {
+            sendRequestMock.mockReturnValue({
+                data: 'test',
+            });
+            await testApiDao.sendOrder(orderData);
+            expect(sendRequestMock).toHaveBeenCalled();
+            expect(sendRequestMock).toHaveBeenCalledWith('order', true, orderData);
+        });
+
+        it('should return the data from the API', async () => {
+            sendRequestMock.mockReturnValue(returnedOrderData);
+            const data = await testApiDao.sendOrder(orderData);
+            expect(data).toEqual(returnedOrderData);
+        });
+
+        it("should throw an error if the data don't have the right format", async () => {
+            let badData = JSON.parse(JSON.stringify(orderData));
+            delete badData.contact;
+            await expect(async () => {
+                await testApiDao.sendOrder(badData);
+            }).rejects.toThrow();
+        });
+    });
+});

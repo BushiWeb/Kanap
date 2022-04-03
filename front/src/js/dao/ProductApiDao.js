@@ -1,4 +1,4 @@
-import { ConfigManager } from "../config/ConfigManager";
+import { ConfigManager } from '../config/ConfigManager';
 
 /**
  * Class managing communication with the API
@@ -13,24 +13,35 @@ export class ProductApiDao {
         this.apiUrl = configuration.getApiUrl();
     }
 
-
     /**
      * Send a request to the API.
      * @param {string} apiRoute - request's route to append to the URL. Defaults to no route.
+     * @param {boolean} post - Boolean indicating if we use the POST method.
+     * @param {Object} data - Data to send if we use the post method.
      * @return {Object} Return the request response data, in JSON format.
      * @throws Throw an arror if the request fails or if the status is not ok.
      */
-    async sendRequest(apiRoute = '') {
-        const requestUrl = (/.+\/$/.test(this.apiUrl))? this.apiUrl + apiRoute : this.apiUrl + '/' + apiRoute;
-
-        let response = await fetch(requestUrl);
+    async sendRequest(apiRoute = '', post = false, data = undefined) {
+        const requestUrl = /.+\/$/.test(this.apiUrl) ? this.apiUrl + apiRoute : this.apiUrl + '/' + apiRoute;
+        let response;
+        if (post) {
+            response = await fetch(requestUrl, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+        } else {
+            response = await fetch(requestUrl);
+        }
         if (!response.ok) {
             throw new Error('Erreur HTTP ! statut : ' + response.status + ' ' + response.statusText);
         }
 
         return await response.json();
     }
-
 
     /**
      * Fetch all products from the API.
@@ -44,7 +55,6 @@ export class ProductApiDao {
         return data;
     }
 
-
     /**
      * Fetch one product from the API.
      * @param {string} productId - The id of the product.
@@ -52,6 +62,27 @@ export class ProductApiDao {
      */
     async getProduct(productId) {
         let data = await this.sendRequest(productId);
+        return data;
+    }
+
+    /**
+     * Send an order to the API.
+     * @param {{contact: {firstName: string, lastName: string, address: string, city: string, email: string}, products: string[]}} orderData - The order's data.
+     * @returns {Object} Return an object containing the data of the order, including the order id and the ordered products.
+     */
+    async sendOrder(orderData) {
+        if (
+            orderData.contact.firstName === undefined ||
+            orderData.contact.lastName === undefined ||
+            orderData.contact.address === undefined ||
+            orderData.contact.city === undefined ||
+            orderData.contact.email === undefined ||
+            orderData.products === undefined
+        ) {
+            throw new Error('Erreur: les données envoyées ne sont pas au bon format.');
+        }
+
+        let data = await this.sendRequest('order', true, orderData);
         return data;
     }
 }
