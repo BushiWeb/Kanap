@@ -16,7 +16,6 @@ export class UrlManager {
         }
     }
 
-
     /**
      * Change the URL of the URL object.
      * @param {string} newUrl - The new URL to give to the object.
@@ -24,7 +23,6 @@ export class UrlManager {
     setUrl(newUrl) {
         this.url.href = newUrl;
     }
-
 
     /**
      * Add a parameter to the URL.
@@ -36,7 +34,6 @@ export class UrlManager {
         this.parameters[parameterName] = parameterValue;
     }
 
-
     /**
      * Get a parameter from the URL.
      * @param {string} parameterName - The name of the parameter.
@@ -44,13 +41,20 @@ export class UrlManager {
      * @throws Throw an error if the parameter doesn't exist.
      */
     getParameter(parameterName) {
-        if(this.parameters[parameterName] === undefined) {
+        if (this.parameters[parameterName] === undefined) {
             if (!this.url.searchParams.has(parameterName)) {
-                throw new Error(`The parameter ${parameterName} doesn't exist`)
+                throw new Error(`The parameter ${parameterName} doesn't exist`);
             }
             this.parameters[parameterName] = this.url.searchParams.get(parameterName);
         }
 
         return this.parameters[parameterName];
+    }
+
+    /**
+     * Redirect the page to the manager's url.
+     */
+    redirect() {
+        window.location.assign(this.url.href);
     }
 }

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { UrlManager } from "./UrlManager";
+import { UrlManager } from './UrlManager';
 
 describe('UrlManager Functionnal Test Suite', () => {
     const testUrl = 'http://test.com/';
@@ -10,9 +10,8 @@ describe('UrlManager Functionnal Test Suite', () => {
     const testParameterValue = 'testValue';
     const testParameterObject = {
         name1: 'value',
-        name2: 'value'
-    }
-
+        name2: 'value',
+    };
 
     describe('constructor() Test Suite', () => {
         it('should create a URL object with the current page URL', () => {
@@ -36,7 +35,6 @@ describe('UrlManager Functionnal Test Suite', () => {
         });
     });
 
-
     describe('setUrl() Method Test Suite', () => {
         it('should change the URL of the URL object', () => {
             const urlManagerTest = new UrlManager();
@@ -44,7 +42,6 @@ describe('UrlManager Functionnal Test Suite', () => {
             expect(urlManagerTest.url.href).toBe(testUrl);
         });
     });
-
 
     describe('addParameter() Method Test Suite', () => {
         it('should add a new parameter to the URL with the right value', () => {
@@ -55,7 +52,6 @@ describe('UrlManager Functionnal Test Suite', () => {
         });
     });
 
-
     describe('getParameter() Method Test Suite', () => {
         it('should return the value of the parameter', () => {
             const urlManagerTest = new UrlManager(testUrl);
@@ -64,12 +60,27 @@ describe('UrlManager Functionnal Test Suite', () => {
             expect(parameterValue).toBe(testParameterValue);
         });
 
-
-        it('should throw an error if the parameter doesn\'t exist', () => {
+        it("should throw an error if the parameter doesn't exist", () => {
             const urlManagerTest = new UrlManager(testUrl);
             expect(() => {
                 urlManagerTest.getParameter('test');
             }).toThrow();
+        });
+    });
+
+    describe('redirect() Method Test Suite', () => {
+        const cartUrl = 'http://localhost/cart.html';
+        delete window.location;
+        window.location = new URL(cartUrl);
+        window.location.assign = function (url) {
+            this.href = url;
+        };
+
+        it('should update window.location.href', () => {
+            const urlManagerTest = new UrlManager(testUrl);
+            urlManagerTest.addParameter(testParameterName, testParameterValue);
+            urlManagerTest.redirect();
+            expect(window.location.href).toBe(testUrl + '?' + testParameterName + '=' + testParameterValue);
         });
     });
 });

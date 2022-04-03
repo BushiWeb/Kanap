@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { UrlManager } from "./UrlManager";
+import { UrlManager } from './UrlManager';
 
 describe('UrlManager Unit Test Suite', () => {
     const testUrl = 'http://test.com/';
@@ -10,8 +10,8 @@ describe('UrlManager Unit Test Suite', () => {
     const testParameterValue = 'testValue';
     const testParameterObject = {
         name1: 'value',
-        name2: 'value'
-    }
+        name2: 'value',
+    };
 
     const urlSearchParamsAppendMock = jest.spyOn(URLSearchParams.prototype, 'append');
     const urlSearchParamsGetMock = jest.spyOn(URLSearchParams.prototype, 'get');
@@ -23,8 +23,7 @@ describe('UrlManager Unit Test Suite', () => {
         urlSearchParamsGetMock.mockReset();
         urlSearchParamsHasMock.mockReset();
         urlHrefMock.mockReset();
-    })
-
+    });
 
     describe('constructor() Test Suite', () => {
         const urlConstructorMock = jest.spyOn(global, 'URL');
@@ -40,7 +39,7 @@ describe('UrlManager Unit Test Suite', () => {
             urlManagerAddParameter.mockRestore();
         });
 
-        it('should call the URL constructor with the current page\'s URL', () => {
+        it("should call the URL constructor with the current page's URL", () => {
             const urlManagerTest = new UrlManager();
             expect(urlConstructorMock).toHaveBeenCalled();
             expect(urlConstructorMock).toHaveBeenCalledWith(window.location.href);
@@ -58,7 +57,6 @@ describe('UrlManager Unit Test Suite', () => {
         });
     });
 
-
     describe('setUrl() Method Test Suite', () => {
         it('should call the URL.href setter', () => {
             const urlManagerTest = new UrlManager();
@@ -67,7 +65,6 @@ describe('UrlManager Unit Test Suite', () => {
             expect(urlHrefMock).toHaveBeenCalledWith(testUrl);
         });
     });
-
 
     describe('addParameter() Method Test Suite', () => {
         it('should call the URL.serachParams.append() method with the right parameters', () => {
@@ -83,7 +80,6 @@ describe('UrlManager Unit Test Suite', () => {
             expect(urlManagerTest.parameters[testParameterName]).toBeDefined();
         });
     });
-
 
     describe('getParameter() Method Test Suite', () => {
         it('should return the value of the parameter if the parameter is in the manager', () => {
@@ -109,8 +105,7 @@ describe('UrlManager Unit Test Suite', () => {
             expect(urlManagerTest.parameters[testParameterName]).toBeDefined();
         });
 
-
-        it('should throw an error if the parameter doesn\'t exist', () => {
+        it("should throw an error if the parameter doesn't exist", () => {
             const urlManagerTest = new UrlManager(testUrl);
             urlSearchParamsHasMock.mockReturnValue(false);
             expect(() => {
