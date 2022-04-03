@@ -49,8 +49,108 @@ describe('CartView Functionnal Test Suite', () => {
         priceParagraphElt.appendChild(priceInline);
         priceElt.appendChild(priceParagraphElt);
 
+        let formElement = document.createElement('form');
+        formElement.method = 'get';
+        formElement.classList.add('cart__order__form');
+
+        let firstNameContainerElement = document.createElement('div');
+        firstNameContainerElement.classList.add('cart__order__form__question');
+        let firstNameLabelElement = document.createElement('label');
+        firstNameLabelElement.setAttribute('for', 'firstName');
+        firstNameLabelElement.textContent = 'Prénom: ';
+        let firstNameInputElement = document.createElement('input');
+        firstNameInputElement.type = 'text';
+        firstNameInputElement.name = 'firstName';
+        firstNameInputElement.id = 'firstName';
+        firstNameInputElement.required = true;
+        let firstNameErrorElement = document.createElement('p');
+        firstNameErrorElement.id = 'firstNameErrorMsg';
+        firstNameContainerElement.appendChild(firstNameLabelElement);
+        firstNameContainerElement.appendChild(firstNameInputElement);
+        firstNameContainerElement.appendChild(firstNameErrorElement);
+
+        let lastNameContainerElement = document.createElement('div');
+        lastNameContainerElement.classList.add('cart__order__form__question');
+        let lastNameLabelElement = document.createElement('label');
+        lastNameLabelElement.setAttribute('for', 'lastName');
+        lastNameLabelElement.textContent = 'Nom: ';
+        let lastNameInputElement = document.createElement('input');
+        lastNameInputElement.type = 'text';
+        lastNameInputElement.name = 'lastName';
+        lastNameInputElement.id = 'lastName';
+        lastNameInputElement.required = true;
+        let lastNameErrorElement = document.createElement('p');
+        lastNameErrorElement.id = 'lastNameErrorMsg';
+        lastNameContainerElement.appendChild(lastNameLabelElement);
+        lastNameContainerElement.appendChild(lastNameInputElement);
+        lastNameContainerElement.appendChild(lastNameErrorElement);
+
+        let addressContainerElement = document.createElement('div');
+        addressContainerElement.classList.add('cart__order__form__question');
+        let addressLabelElement = document.createElement('label');
+        addressLabelElement.setAttribute('for', 'address');
+        addressLabelElement.textContent = 'Adresse: ';
+        let addressInputElement = document.createElement('input');
+        addressInputElement.type = 'text';
+        addressInputElement.name = 'address';
+        addressInputElement.id = 'address';
+        addressInputElement.required = true;
+        let addressErrorElement = document.createElement('p');
+        addressErrorElement.id = 'addressErrorMsg';
+        addressContainerElement.appendChild(addressLabelElement);
+        addressContainerElement.appendChild(addressInputElement);
+        addressContainerElement.appendChild(addressErrorElement);
+
+        let cityContainerElement = document.createElement('div');
+        cityContainerElement.classList.add('cart__order__form__question');
+        let cityLabelElement = document.createElement('label');
+        cityLabelElement.setAttribute('for', 'city');
+        cityLabelElement.textContent = 'Ville: ';
+        let cityInputElement = document.createElement('input');
+        cityInputElement.type = 'text';
+        cityInputElement.name = 'city';
+        cityInputElement.id = 'city';
+        cityInputElement.required = true;
+        let cityErrorElement = document.createElement('p');
+        cityErrorElement.id = 'cityErrorMsg';
+        cityContainerElement.appendChild(cityLabelElement);
+        cityContainerElement.appendChild(cityInputElement);
+        cityContainerElement.appendChild(cityErrorElement);
+
+        let emailContainerElement = document.createElement('div');
+        emailContainerElement.classList.add('cart__order__form__question');
+        let emailLabelElement = document.createElement('label');
+        emailLabelElement.setAttribute('for', 'email');
+        emailLabelElement.textContent = 'Email: ';
+        let emailInputElement = document.createElement('input');
+        emailInputElement.type = 'email';
+        emailInputElement.name = 'email';
+        emailInputElement.id = 'email';
+        emailInputElement.required = true;
+        let emailErrorElement = document.createElement('p');
+        emailErrorElement.id = 'emailErrorMsg';
+        emailContainerElement.appendChild(emailLabelElement);
+        emailContainerElement.appendChild(emailInputElement);
+        emailContainerElement.appendChild(emailErrorElement);
+
+        let submitContainerElement = document.createElement('div');
+        submitContainerElement.classList.add('cart__order__form__submit');
+        let submitInputelement = document.createElement('input');
+        emailInputElement.type = 'submit';
+        emailInputElement.value = 'Commander !';
+        emailInputElement.id = 'order';
+        submitContainerElement.appendChild(submitInputelement);
+
+        formElement.appendChild(firstNameContainerElement);
+        formElement.appendChild(lastNameContainerElement);
+        formElement.appendChild(addressContainerElement);
+        formElement.appendChild(cityContainerElement);
+        formElement.appendChild(emailContainerElement);
+        formElement.appendChild(submitContainerElement);
+
         document.body.appendChild(sectionElt);
         document.body.appendChild(priceElt);
+        document.body.appendChild(formElement);
     });
 
     describe('render() Method Test Suite', () => {
@@ -210,6 +310,38 @@ describe('CartView Functionnal Test Suite', () => {
                     articleElement.dataset.id !== idToDelete || articleElement.dataset.color !== colorToDelete
                 ).toBe(true);
             }
+        });
+    });
+
+    describe('displayContactFormError() Method Test Suite', () => {
+        const errorObject = {
+            lastName: 'Cet élément est obligatoire',
+            email: "Cet élément doit avoir le format d'un email",
+        };
+        const errorObject2 = {
+            firstName: 'Cet élément est obligatoire',
+            city: 'Cet élément ne doit pas contenir de chiffre',
+        };
+
+        it('should insert error messages underneath invalid form fields', () => {
+            cartViewTest.displayContactFormError(errorObject);
+
+            expect(document.getElementById('firstNameErrorMsg').textContent).toBe('');
+            expect(document.getElementById('lastNameErrorMsg').textContent).toBe(errorObject.lastName);
+            expect(document.getElementById('addressErrorMsg').textContent).toBe('');
+            expect(document.getElementById('cityErrorMsg').textContent).toBe('');
+            expect(document.getElementById('emailErrorMsg').textContent).toBe(errorObject.email);
+        });
+
+        it('should insert error messages underneath invalid form fields only when the form is modified', () => {
+            cartViewTest.displayContactFormError(errorObject);
+            cartViewTest.displayContactFormError(errorObject2);
+
+            expect(document.getElementById('firstNameErrorMsg').textContent).toBe(errorObject2.firstName);
+            expect(document.getElementById('lastNameErrorMsg').textContent).toBe('');
+            expect(document.getElementById('addressErrorMsg').textContent).toBe('');
+            expect(document.getElementById('cityErrorMsg').textContent).toBe(errorObject2.city);
+            expect(document.getElementById('emailErrorMsg').textContent).toBe('');
         });
     });
 

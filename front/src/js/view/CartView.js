@@ -131,6 +131,25 @@ export class CartView extends View {
     }
 
     /**
+     * Display error to the invalide fields, and delete erros for the valid fields of the contact form.
+     * @param {Object} errors - Object containing one property per invalide field, containing the error text.
+     */
+    displayContactFormError(errors) {
+        const formElement = this.getElements('.cart__order__form')[0];
+
+        for (let inputElement of formElement.elements) {
+            let fieldName = inputElement.name;
+            if (errors[fieldName] === undefined) {
+                errors[fieldName] = '';
+            }
+            let errorElement = document.getElementById(fieldName + 'ErrorMsg');
+            if (errorElement !== null) {
+                errorElement.textContent = errors[fieldName];
+            }
+        }
+    }
+
+    /**
      * Delete a product cart corresponding to the given data.
      * @param {string} id - ID of the product.
      * @param {string} color - Color of the product.
