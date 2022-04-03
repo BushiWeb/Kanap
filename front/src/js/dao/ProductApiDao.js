@@ -68,7 +68,8 @@ export class ProductApiDao {
     /**
      * Send an order to the API.
      * @param {{contact: {firstName: string, lastName: string, address: string, city: string, email: string}, products: string[]}} orderData - The order's data.
-     * @returns {Object} Return an object containing the data of the order, including the order id and the ordered products.
+     * @returns {{contact: {firstName: string, lastName: string, address: string, city: string, email: string}, products: Object[], orderId: string}} Return an object containing the data of the order, including the order id and the ordered products.
+     * @throws Throw an error if the data don't have the right format.
      */
     async sendOrder(orderData) {
         if (

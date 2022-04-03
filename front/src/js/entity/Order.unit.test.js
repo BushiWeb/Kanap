@@ -1,5 +1,6 @@
 import { Order } from './Order';
 import { Contact } from './Contact';
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 
 jest.mock('./Contact', () => {
     return {
@@ -17,13 +18,23 @@ beforeEach(() => {
 
 describe('Order Unit Test Suite', () => {
     describe('Constructor Test Suite', () => {
-        it('should create an instance of Order with the right informations', () => {
-            const testContact = new Contact('John');
-            const testIdArray = ['1', '2', '3'];
+        const testContact = new Contact('John');
+        const testIdArray = ['1', '2', '3'];
+        const testOrderId = '123';
+        const testProductEntities = [MOCKED_PRODUCT_ENTITY_DATA[0], MOCKED_PRODUCT_ENTITY_DATA[1]];
+
+        it("should create an instance of Order with the right informations, no ID and product's IDs only", () => {
             const orderEntity = new Order(testContact, testIdArray);
             expect(orderEntity._contact).toEqual(testContact);
             expect(orderEntity._productIds).toEqual(testIdArray);
             expect(orderEntity._orderId).toBeUndefined();
+        });
+
+        it('should create an instance of Order with the right informations, with order ID and Products', () => {
+            const orderEntity = new Order(testContact, testProductEntities, testOrderId);
+            expect(orderEntity._contact).toEqual(testContact);
+            expect(orderEntity._productIds).toEqual(testProductEntities);
+            expect(orderEntity._orderId).toEqual(testOrderId);
         });
     });
 

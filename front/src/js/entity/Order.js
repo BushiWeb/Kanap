@@ -1,4 +1,5 @@
 import { Contact } from './Contact';
+import { Product } from './Product';
 
 /**
  * Class representing an order
@@ -7,12 +8,13 @@ export class Order {
     /**
      * Construct the order.
      * @param {Contact} contact - Contact ordering.
-     * @param {string[]} productIds - IDs of ordered products.
+     * @param {string[] | Product[]} productIds - IDs of ordered products or Product entities.
+     * @param {string} orderId - Order's ID.
      */
-    constructor(contact, productIds) {
+    constructor(contact, productIds, orderId = undefined) {
         this._contact = contact;
         this._productIds = [...productIds];
-        this._orderId = undefined;
+        this._orderId = orderId;
     }
 
     /********************************************
@@ -28,7 +30,7 @@ export class Order {
 
     /**
      * _productIds property getter.
-     * @return {string} Return the value of the _productIds property.
+     * @return {string[] | Product[]} Return the value of the _productIds property.
      */
     get productIds() {
         return this._productIds;

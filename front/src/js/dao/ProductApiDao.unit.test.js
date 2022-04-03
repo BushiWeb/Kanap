@@ -5,6 +5,7 @@
 import { ProductApiDao } from './ProductApiDao';
 import { MOCKED_API_DATA } from './mockedApiData';
 import { CONFIG_TEST, TEST_URL } from '../config/mocked-configuration';
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 import { ConfigManager } from '../config/ConfigManager';
 
 describe('ProductApiDao Unit Test Suite', () => {
@@ -171,7 +172,7 @@ describe('ProductApiDao Unit Test Suite', () => {
         };
         const returnedOrderData = {
             contact: orderData.contact,
-            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[1]],
+            products: [MOCKED_PRODUCT_ENTITY_DATA[0], MOCKED_PRODUCT_ENTITY_DATA[1]],
             orderId: '123',
         };
 
