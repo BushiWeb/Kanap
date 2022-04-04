@@ -6,7 +6,7 @@ import { FormValidator } from '../form/FormValidator';
 import { CartManagerFactory } from '../factories/CartManagerFactory';
 
 /**
- * Class representing the entry point of the home page.
+ * Class representing the entry point of the confirmation page.
  * Serve as a mediator between the data and the rendering.
  * Manage the events fired from the page by providing the event handlers.
  */
@@ -23,7 +23,7 @@ export class ProductControler {
     }
 
     /**
-     * Activate when the Cart page loads.
+     * Activate when the Confirmation page loads.
      * Fetch the data and display them.
      * If an error occurs while fetching the data, display the error in a modal box (alert).
      * Add the event listeners on the page.
