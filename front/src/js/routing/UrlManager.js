@@ -56,5 +56,6 @@ export class UrlManager {
      */
     redirect() {
         window.location.assign(this.url.href);
+        console.log(window.location.href);
     }
 }

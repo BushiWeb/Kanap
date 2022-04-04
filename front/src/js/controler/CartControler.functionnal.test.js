@@ -13,6 +13,9 @@ import { MOCKED_PRODUCT_ENTITY_DATA } from '../model/mockedProductEntityData';
 import { MOCKED_CART_DATA } from '../model/mockedCartData';
 import { Cart } from '../entity/Cart';
 import { CartProduct } from '../entity/CartProduct';
+import { Order } from '../entity/Order';
+import { OrderManager } from '../model/OrderManager';
+import { OrderManagerKanapApi } from '../model/OrderManagerKanapApi';
 
 describe('ProductControler Functionnal Test Suite', () => {
     let controlerTest;
@@ -46,8 +49,108 @@ describe('ProductControler Functionnal Test Suite', () => {
         priceParagraphElt.appendChild(priceInline);
         priceElt.appendChild(priceParagraphElt);
 
+        let formElement = document.createElement('form');
+        formElement.method = 'get';
+        formElement.classList.add('cart__order__form');
+
+        let firstNameContainerElement = document.createElement('div');
+        firstNameContainerElement.classList.add('cart__order__form__question');
+        let firstNameLabelElement = document.createElement('label');
+        firstNameLabelElement.setAttribute('for', 'firstName');
+        firstNameLabelElement.textContent = 'Prénom: ';
+        let firstNameInputElement = document.createElement('input');
+        firstNameInputElement.type = 'text';
+        firstNameInputElement.name = 'firstName';
+        firstNameInputElement.id = 'firstName';
+        firstNameInputElement.required = true;
+        let firstNameErrorElement = document.createElement('p');
+        firstNameErrorElement.id = 'firstNameErrorMsg';
+        firstNameContainerElement.appendChild(firstNameLabelElement);
+        firstNameContainerElement.appendChild(firstNameInputElement);
+        firstNameContainerElement.appendChild(firstNameErrorElement);
+
+        let lastNameContainerElement = document.createElement('div');
+        lastNameContainerElement.classList.add('cart__order__form__question');
+        let lastNameLabelElement = document.createElement('label');
+        lastNameLabelElement.setAttribute('for', 'lastName');
+        lastNameLabelElement.textContent = 'Nom: ';
+        let lastNameInputElement = document.createElement('input');
+        lastNameInputElement.type = 'text';
+        lastNameInputElement.name = 'lastName';
+        lastNameInputElement.id = 'lastName';
+        lastNameInputElement.required = true;
+        let lastNameErrorElement = document.createElement('p');
+        lastNameErrorElement.id = 'lastNameErrorMsg';
+        lastNameContainerElement.appendChild(lastNameLabelElement);
+        lastNameContainerElement.appendChild(lastNameInputElement);
+        lastNameContainerElement.appendChild(lastNameErrorElement);
+
+        let addressContainerElement = document.createElement('div');
+        addressContainerElement.classList.add('cart__order__form__question');
+        let addressLabelElement = document.createElement('label');
+        addressLabelElement.setAttribute('for', 'address');
+        addressLabelElement.textContent = 'Adresse: ';
+        let addressInputElement = document.createElement('input');
+        addressInputElement.type = 'text';
+        addressInputElement.name = 'address';
+        addressInputElement.id = 'address';
+        addressInputElement.required = true;
+        let addressErrorElement = document.createElement('p');
+        addressErrorElement.id = 'addressErrorMsg';
+        addressContainerElement.appendChild(addressLabelElement);
+        addressContainerElement.appendChild(addressInputElement);
+        addressContainerElement.appendChild(addressErrorElement);
+
+        let cityContainerElement = document.createElement('div');
+        cityContainerElement.classList.add('cart__order__form__question');
+        let cityLabelElement = document.createElement('label');
+        cityLabelElement.setAttribute('for', 'city');
+        cityLabelElement.textContent = 'Ville: ';
+        let cityInputElement = document.createElement('input');
+        cityInputElement.type = 'text';
+        cityInputElement.name = 'city';
+        cityInputElement.id = 'city';
+        cityInputElement.required = true;
+        let cityErrorElement = document.createElement('p');
+        cityErrorElement.id = 'cityErrorMsg';
+        cityContainerElement.appendChild(cityLabelElement);
+        cityContainerElement.appendChild(cityInputElement);
+        cityContainerElement.appendChild(cityErrorElement);
+
+        let emailContainerElement = document.createElement('div');
+        emailContainerElement.classList.add('cart__order__form__question');
+        let emailLabelElement = document.createElement('label');
+        emailLabelElement.setAttribute('for', 'email');
+        emailLabelElement.textContent = 'Email: ';
+        let emailInputElement = document.createElement('input');
+        emailInputElement.type = 'email';
+        emailInputElement.name = 'email';
+        emailInputElement.id = 'email';
+        emailInputElement.required = true;
+        let emailErrorElement = document.createElement('p');
+        emailErrorElement.id = 'emailErrorMsg';
+        emailContainerElement.appendChild(emailLabelElement);
+        emailContainerElement.appendChild(emailInputElement);
+        emailContainerElement.appendChild(emailErrorElement);
+
+        let submitContainerElement = document.createElement('div');
+        submitContainerElement.classList.add('cart__order__form__submit');
+        let submitInputElement = document.createElement('input');
+        submitInputElement.type = 'submit';
+        submitInputElement.value = 'Commander !';
+        submitInputElement.id = 'order';
+        submitContainerElement.appendChild(submitInputElement);
+
+        formElement.appendChild(firstNameContainerElement);
+        formElement.appendChild(lastNameContainerElement);
+        formElement.appendChild(addressContainerElement);
+        formElement.appendChild(cityContainerElement);
+        formElement.appendChild(emailContainerElement);
+        formElement.appendChild(submitContainerElement);
+
         document.body.appendChild(sectionElt);
         document.body.appendChild(priceElt);
+        document.body.appendChild(formElement);
     });
 
     describe('initialize() Method Test Suite', () => {
@@ -571,6 +674,113 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
+        });
+    });
+
+    describe('submitOrder Event Test Suite', () => {
+        const cartUrl = 'http://localhost/cart.html';
+        delete window.location;
+        window.location = new URL(cartUrl);
+        window.location.assign = function (url) {
+            this.href = url;
+        };
+
+        const contactInfos = {
+            firstName: 'Kal',
+            lastName: 'El',
+            address: 'Fortress of solitude',
+            city: 'Arctic',
+            email: 'superman@justice-league.com',
+        };
+        const productsIds = [
+            MOCKED_CART_DATA.cartData[0].id,
+            MOCKED_CART_DATA.cartData[1].id,
+            MOCKED_CART_DATA.cartData[2].id,
+            MOCKED_CART_DATA.cartData[3].id,
+        ];
+        const returnedOrderData = {
+            contact: contactInfos,
+            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[0], MOCKED_API_DATA[3], MOCKED_API_DATA[2]],
+            orderId: '123',
+        };
+
+        let firstNameInput, lastNameInput, emailInput, addressInput, cityInput, submitInput;
+
+        const mockSubmitOrder = jest.spyOn(CartControler.prototype, 'submitOrder');
+
+        beforeEach(async () => {
+            mockSubmitOrder.mockReset();
+
+            delete window.location;
+            window.location = new URL(cartUrl);
+            window.location.assign = function (url) {
+                this.href = url;
+            };
+
+            controlerTest.productManager.productsListComplete = true;
+            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+
+            await controlerTest.initialize();
+
+            firstNameInput = document.getElementById('firstName');
+            lastNameInput = document.getElementById('lastName');
+            addressInput = document.getElementById('address');
+            cityInput = document.getElementById('city');
+            emailInput = document.getElementById('email');
+            submitInput = document.getElementById('order');
+        });
+
+        it('should display errors if the form is invalid', async () => {
+            firstNameInput.value = 'Bruce-';
+            lastNameInput.value = 'Wayne';
+            addressInput.value = 'Wayne Manor';
+            cityInput.value = 'Gotham  City';
+            emailInput.value = 'iamnotbatmanoracle.bat';
+
+            userEvent.click(submitInput);
+
+            expect(firstNameInput.nextElementSibling.textContent).not.toBe('');
+            expect(lastNameInput.nextElementSibling.textContent).toBe('');
+            expect(emailInput.nextElementSibling.textContent).not.toBe('');
+            expect(addressInput.nextElementSibling.textContent).toBe('');
+            expect(cityInput.nextElementSibling.textContent).not.toBe('');
+        });
+
+        it('should display errors if the form is corrected but sill invalid', async () => {
+            firstNameInput.value = 'Bruce-';
+            lastNameInput.value = 'Wayne';
+            addressInput.value = 'Wayne Manor';
+            cityInput.value = 'Gotham  City';
+            emailInput.value = 'iamnotbatmanoracle.bat';
+
+            userEvent.click(submitInput);
+
+            firstNameInput.value = 'Bruce';
+            lastNameInput.value = 'Wayn1e';
+            addressInput.value = 'Wayne Manor';
+            cityInput.value = 'Gotham City';
+            emailInput.value = 'iamnotbatman@';
+
+            userEvent.click(submitInput);
+
+            expect(firstNameInput.nextElementSibling.textContent).toBe('');
+            expect(lastNameInput.nextElementSibling.textContent).not.toBe('');
+            expect(emailInput.nextElementSibling.textContent).not.toBe('');
+            expect(addressInput.nextElementSibling.textContent).toBe('');
+            expect(cityInput.nextElementSibling.textContent).toBe('');
+        });
+
+        it('should call submitOrder()', async () => {
+            firstNameInput.value = contactInfos.firstName;
+            lastNameInput.value = contactInfos.lastName;
+            addressInput.value = contactInfos.address;
+            cityInput.value = contactInfos.city;
+            emailInput.value = contactInfos.email;
+
+            userEvent.click(submitInput);
+
+            expect(mockSubmitOrder).toHaveBeenCalled();
+            expect(mockSubmitOrder).toHaveBeenCalledWith(contactInfos, productsIds);
         });
     });
 });

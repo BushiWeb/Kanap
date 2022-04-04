@@ -42,6 +42,7 @@ export class CartControler {
         this.view.render(cartEntity, errorMessage);
         this.view.addDeleteProductEventListener(this.deleteProductEventHandler.bind(this));
         this.view.addUpdateProductQuantityEventListener(this.updateProductQuantityEventHandler.bind(this));
+        this.view.addSubmitOrderFormEventListener(this.submitOrderEventHandler.bind(this));
     }
 
     /**
@@ -121,6 +122,37 @@ export class CartControler {
 
         this.cartManager.updateProductQuantity(id, color, quantity);
         this.updateTotals();
+    }
+
+    /**
+     * Event handler for the "submit order" event.
+     * Validates the form and send it.
+     * @param {Event} event - The event object.
+     */
+    submitOrderEventHandler(event) {
+        event.preventDefault();
+
+        const validationResult = FormValidator.validateForm(event.target);
+        if (!validationResult.valid) {
+            this.view.displayContactFormError(validationResult.fields);
+            return;
+        }
+
+        let fields = event.target.elements;
+
+        let contactData = {
+            firstName: fields['firstName'].value,
+            lastName: fields['lastName'].value,
+            address: fields['address'].value,
+            city: fields['city'].value,
+            email: fields['email'].value,
+        };
+        let productsData = [];
+        for (let product of this.cartManager.getCart().products) {
+            productsData.push(product.id);
+        }
+
+        this.submitOrder(contactData, productsData);
     }
 
     /**

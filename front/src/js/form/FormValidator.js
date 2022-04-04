@@ -5,11 +5,12 @@ export class FormValidator {
     /**
      * Validate an entire form or a list of inputs.
      * @param {HTMLElement | HTMLElement[]} formFields - The HTML Form element or an array of form inputs elements to validate.
-     * @return {Object} Return an object whose properties are the fields' name and their value the error message (empty if valid).
+     * @return {{valid:boolean, fields:Object}} Return an object containing a boolean and another object whose properties are the fields' name and their value the error message (empty if valid).
      */
     static validateForm(formFields) {
         let formFieldsCollection = formFields;
         let resultObject = {};
+        let valid = true;
 
         if (!Array.isArray(formFieldsCollection)) {
             formFieldsCollection = formFieldsCollection.elements;
@@ -17,10 +18,15 @@ export class FormValidator {
 
         for (let i = 0; i < formFieldsCollection.length; i++) {
             let validationResult = this.validateFormField(formFieldsCollection[i]);
-            resultObject[formFieldsCollection[i].name] = typeof validationResult === 'string' ? validationResult : '';
+            if (typeof validationResult === 'string') {
+                resultObject[formFieldsCollection[i].name] = validationResult;
+                valid = false;
+            } else {
+                resultObject[formFieldsCollection[i].name] = '';
+            }
         }
 
-        return resultObject;
+        return { valid: valid, fields: resultObject };
     }
 
     /**

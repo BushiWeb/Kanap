@@ -135,11 +135,11 @@ describe('CartView Functionnal Test Suite', () => {
 
         let submitContainerElement = document.createElement('div');
         submitContainerElement.classList.add('cart__order__form__submit');
-        let submitInputelement = document.createElement('input');
-        emailInputElement.type = 'submit';
-        emailInputElement.value = 'Commander !';
-        emailInputElement.id = 'order';
-        submitContainerElement.appendChild(submitInputelement);
+        let submitInputElement = document.createElement('input');
+        submitInputElement.type = 'submit';
+        submitInputElement.value = 'Commander !';
+        submitInputElement.id = 'order';
+        submitContainerElement.appendChild(submitInputElement);
 
         formElement.appendChild(firstNameContainerElement);
         formElement.appendChild(lastNameContainerElement);

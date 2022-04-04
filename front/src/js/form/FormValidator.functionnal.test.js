@@ -79,14 +79,15 @@ describe('FormValidator Functionnal Test Suite', () => {
 
         const validationResult = FormValidator.validateForm(formElt);
 
-        expect(validationResult.name).toMatch(/.+/);
-        expect(validationResult.secondName).toBe('');
-        expect(validationResult.firstName).toMatch(/.+/);
-        expect(validationResult.lastName).toMatch(/.+/);
-        expect(validationResult.city).toMatch(/.+/);
-        expect(validationResult.email).toMatch(/.+/);
-        expect(validationResult.experience).toMatch(/.+/);
-        expect(validationResult.child).toMatch(/.+/);
+        expect(validationResult.valid).toBeFalsy();
+        expect(validationResult.fields.name).toMatch(/.+/);
+        expect(validationResult.fields.secondName).toBe('');
+        expect(validationResult.fields.firstName).toMatch(/.+/);
+        expect(validationResult.fields.lastName).toMatch(/.+/);
+        expect(validationResult.fields.city).toMatch(/.+/);
+        expect(validationResult.fields.email).toMatch(/.+/);
+        expect(validationResult.fields.experience).toMatch(/.+/);
+        expect(validationResult.fields.child).toMatch(/.+/);
     });
 
     it('should return an array of validation, all fields valid', () => {
@@ -102,13 +103,14 @@ describe('FormValidator Functionnal Test Suite', () => {
 
         const validationResult = FormValidator.validateForm(formElt);
 
-        expect(validationResult.name).toBe('');
-        expect(validationResult.secondName).toBe('');
-        expect(validationResult.firstName).toBe('');
-        expect(validationResult.lastName).toBe('');
-        expect(validationResult.city).toBe('');
-        expect(validationResult.email).toBe('');
-        expect(validationResult.experience).toBe('');
-        expect(validationResult.child).toBe('');
+        expect(validationResult.valid).toBeTruthy();
+        expect(validationResult.fields.name).toBe('');
+        expect(validationResult.fields.secondName).toBe('');
+        expect(validationResult.fields.firstName).toBe('');
+        expect(validationResult.fields.lastName).toBe('');
+        expect(validationResult.fields.city).toBe('');
+        expect(validationResult.fields.email).toBe('');
+        expect(validationResult.fields.experience).toBe('');
+        expect(validationResult.fields.child).toBe('');
     });
 });

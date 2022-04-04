@@ -705,10 +705,11 @@ describe('FormValidator Unit Test Suite', () => {
 
             const validationResult = FormValidator.validateForm(testFormElement);
 
-            expect(validationResult.first).toBe('');
-            expect(validationResult.second).toBe('false');
-            expect(validationResult.third).toBe('');
-            expect(validationResult.fourth).toBe('false');
+            expect(validationResult.valid).toBeFalsy();
+            expect(validationResult.fields.first).toBe('');
+            expect(validationResult.fields.second).toBe('false');
+            expect(validationResult.fields.third).toBe('');
+            expect(validationResult.fields.fourth).toBe('false');
         });
 
         it('should return an array of four object, with the second and fourth field being invalid, if the input is a form with four fields inside of multiple fieldsets, the second and the fourth being invalid', () => {
@@ -724,10 +725,10 @@ describe('FormValidator Unit Test Suite', () => {
 
             const validationResult = FormValidator.validateForm(testFormElement);
 
-            expect(validationResult.first).toBe('');
-            expect(validationResult.second).toBe('false');
-            expect(validationResult.third).toBe('');
-            expect(validationResult.fourth).toBe('false');
+            expect(validationResult.fields.first).toBe('');
+            expect(validationResult.fields.second).toBe('false');
+            expect(validationResult.fields.third).toBe('');
+            expect(validationResult.fields.fourth).toBe('false');
         });
 
         it('should return an array of four object, with the second and fourth field being invalid, if the input is an array with four form field elements, the second and the fourth being invalid', () => {
@@ -735,10 +736,10 @@ describe('FormValidator Unit Test Suite', () => {
 
             const validationResult = FormValidator.validateForm(testArrayElement);
 
-            expect(validationResult.first).toBe('');
-            expect(validationResult.second).toBe('false');
-            expect(validationResult.third).toBe('');
-            expect(validationResult.fourth).toBe('false');
+            expect(validationResult.fields.first).toBe('');
+            expect(validationResult.fields.second).toBe('false');
+            expect(validationResult.fields.third).toBe('');
+            expect(validationResult.fields.fourth).toBe('false');
         });
     });
 });
