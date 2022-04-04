@@ -5,29 +5,23 @@ export class FormValidator {
     /**
      * Validate an entire form or a list of inputs.
      * @param {HTMLElement | HTMLElement[]} formFields - The HTML Form element or an array of form inputs elements to validate.
-     * @return {{formField:HTMLElement,valid:boolean,message:string}[]} Return an array of objects containing the element object, a boolean indicating its validity and an optionnal message to display.
+     * @return {Object} Return an object whose properties are the fields' name and their value the error message (empty if valid).
      */
     static validateForm(formFields) {
         let formFieldsCollection = formFields;
-        let resultArray = [];
+        let resultObject = {};
 
         if (!Array.isArray(formFieldsCollection)) {
             formFieldsCollection = formFieldsCollection.elements;
         }
 
-        for (let i = 0 ; i < formFieldsCollection.length ; i++) {
+        for (let i = 0; i < formFieldsCollection.length; i++) {
             let validationResult = this.validateFormField(formFieldsCollection[i]);
-            let validationObject = {
-                formField: formFieldsCollection[i],
-                valid: (typeof validationResult === 'boolean' && validationResult),
-                message: (typeof validationResult === 'string')? validationResult : ''
-            }
-            resultArray.push(validationObject);
+            resultObject[formFieldsCollection[i].name] = typeof validationResult === 'string' ? validationResult : '';
         }
 
-        return resultArray;
+        return resultObject;
     }
-
 
     /**
      * Validate a form field.
@@ -48,7 +42,6 @@ export class FormValidator {
         return true;
     }
 
-
     /**
      * Validate an input element.
      * The function doesn't check that the element is an input element.
@@ -59,12 +52,8 @@ export class FormValidator {
      * @param {Object} Options - An object containing validations options like requirement, boundaries, text lengths... Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
-    static validateInput(formField, options = {
-        required: null,
-        min: null,
-        max: null
-    }) {
-        if ((options && options.required) ||formField.required) {
+    static validateInput(formField, options = {}) {
+        if ((options && options.required) || formField.required) {
             const requiredValidationResult = this.validateRequired(formField);
             if (typeof requiredValidationResult === 'string') {
                 return requiredValidationResult;
@@ -72,15 +61,28 @@ export class FormValidator {
         }
 
         if (formField.type === 'number') {
-            const numberValidationResult = this.validateNumber(formField, options)
+            const numberValidationResult = this.validateNumber(formField, options);
             if (typeof numberValidationResult === 'string') {
                 return numberValidationResult;
             }
         }
 
+        if (formField.type === 'text') {
+            const textValidationResult = this.validateText(formField, options);
+            if (typeof textValidationResult === 'string') {
+                return textValidationResult;
+            }
+        }
+
+        if (formField.type === 'email') {
+            const emailValidationResult = this.validateEmail(formField, options);
+            if (typeof emailValidationResult === 'string') {
+                return emailValidationResult;
+            }
+        }
+
         return true;
     }
-
 
     /**
      * Validate a select element.
@@ -91,9 +93,12 @@ export class FormValidator {
      * @param {{required:boolean}} Options - An object containing validations options like requirement. Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
-    static validateSelect(formField, options = {
-        required: false
-    }) {
+    static validateSelect(
+        formField,
+        options = {
+            required: false,
+        }
+    ) {
         if ((options && options.required) || formField.required) {
             const requiredValidation = this.validateRequired(formField);
             if (typeof requiredValidation === 'string') {
@@ -104,7 +109,6 @@ export class FormValidator {
         return true;
     }
 
-
     /**
      * Validate a number input element.
      * The function doesn't check that the element is a number input element.
@@ -114,11 +118,15 @@ export class FormValidator {
      * @param {{min:number, max:number}} options - An object containing validations options like min and max. Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
-    static validateNumber(formField, options = {
-        min: null,
-        max: null
-    }) {
-        let minBound = null, maxBound = null;
+    static validateNumber(
+        formField,
+        options = {
+            min: null,
+            max: null,
+        }
+    ) {
+        let minBound = null,
+            maxBound = null;
 
         if (!formField.value) {
             return true;
@@ -149,6 +157,61 @@ export class FormValidator {
         return true;
     }
 
+    /**
+     * Validate an email input element.
+     * The function doesn't check that the element is an email input element.
+     * @param {HTMLInputElement} formField - The input field to validate.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
+     */
+    static validateEmail(formField) {
+        if (!formField.value) {
+            return true;
+        }
+
+        return formField.value.match(
+            /^[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*@[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*$/
+        ) !== null
+            ? true
+            : `La valeur doit être un email valide`;
+    }
+
+    /**
+     * Validate a text input element.
+     * The function doesn't check that the element is a text input element.
+     * Validate if the content is a name or a city
+     * @param {HTMLInputElement} formField - The input field to validate.
+     * @param {{name:boolean, city:boolean}} options - An object containing validations options. Override the value of the attributes.
+     * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
+     */
+    static validateText(
+        formField,
+        options = {
+            name: false,
+            city: false,
+        }
+    ) {
+        if (!formField.value) {
+            return true;
+        }
+
+        if (options && options.name) {
+            return this.validateName(formField);
+        }
+
+        if (options && options.city) {
+            return this.validateCity(formField);
+        }
+
+        switch (formField.name.toLowerCase()) {
+            case 'firstname':
+            case 'lastname':
+                return this.validateName(formField);
+            case 'city':
+                return this.validateCity(formField);
+            default:
+                return 3;
+        }
+    }
 
     /**
      * Check that a field possesses a value different than:
@@ -160,9 +223,8 @@ export class FormValidator {
      * @return {boolean | string} Return true if the field is valid against requirement, a string containing the problem otherwise.
      */
     static validateRequired(formField) {
-        return (formField.value)? true : 'Ce champ doit être complété.';
+        return formField.value ? true : 'Ce champ doit être complété.';
     }
-
 
     /**
      * Validate that the value of an input number is inside of the boundaries.
@@ -173,22 +235,20 @@ export class FormValidator {
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateBoundaries(formField, min = null, max = null) {
-        let minValidation = (min !== null)? this.validateMin(formField, min) : true;
-        let maxValidation = (max !== null)? this.validateMax(formField, max) : true;
-        let errorMessage = ''
+        let minValidation = min !== null ? this.validateMin(formField, min) : true;
+        let maxValidation = max !== null ? this.validateMax(formField, max) : true;
+        let errorMessage = '';
 
         if (typeof minValidation === 'string') {
             errorMessage = minValidation;
         }
 
         if (typeof maxValidation === 'string') {
-            errorMessage = (errorMessage)? `La valeur doit être comprise entre ${min} et ${max}` : maxValidation;
+            errorMessage = errorMessage ? `La valeur doit être comprise entre ${min} et ${max}` : maxValidation;
         }
 
-        return (errorMessage)? errorMessage : true;
+        return errorMessage ? errorMessage : true;
     }
-
-
 
     /**
      * Validate that the value of an input if above a lower boundary.
@@ -199,10 +259,8 @@ export class FormValidator {
     static validateMin(formField, min) {
         const parsedValue = parseFloat(formField.value);
 
-        return (parsedValue >= min)? true : `La valeur doit être supérieure à ${min}`;
+        return parsedValue >= min ? true : `La valeur doit être supérieure à ${min}`;
     }
-
-
 
     /**
      * Validate that the value of an input if bellow an upper boundary.
@@ -213,6 +271,28 @@ export class FormValidator {
     static validateMax(formField, max) {
         const parsedValue = parseFloat(formField.value);
 
-        return (parsedValue <= max)? true : `La valeur doit être supérieure à ${max}`;
+        return parsedValue <= max ? true : `La valeur doit être supérieure à ${max}`;
+    }
+
+    /**
+     * Validate that the value of an input is a name.
+     * @param {HTMLInputElement} formField - The field element to validate.
+     * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
+     */
+    static validateName(formField) {
+        return formField.value.match(/^(?:[\p{L}]+[ -])*[\p{L}]+$/u) !== null
+            ? true
+            : `La valeur doit être un prénom valide`;
+    }
+
+    /**
+     * Validate that the value of an input is a city name.
+     * @param {HTMLInputElement} formField - The field element to validate.
+     * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
+     */
+    static validateCity(formField, max) {
+        return formField.value.match(/^(?:[\p{L}]+[ -])*[\p{L}]+$/u) !== null
+            ? true
+            : `La valeur doit être un nom de ville valide`;
     }
 }

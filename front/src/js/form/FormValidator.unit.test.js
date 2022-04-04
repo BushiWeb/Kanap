@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { FormValidator } from "./FormValidator";
+import { FormValidator } from './FormValidator';
 
 describe('FormValidator Unit Test Suite', () => {
     describe('validateRequired() Test Suite', () => {
@@ -22,7 +22,6 @@ describe('FormValidator Unit Test Suite', () => {
             expect(typeof validationResult).toBe('string');
         });
     });
-
 
     describe('validateMin() Method Test Suite', () => {
         const numberInput = document.createElement('input');
@@ -46,7 +45,6 @@ describe('FormValidator Unit Test Suite', () => {
         });
     });
 
-
     describe('validateMax() Method Test Suite', () => {
         const numberInput = document.createElement('input');
         numberInput.type = 'number';
@@ -69,7 +67,6 @@ describe('FormValidator Unit Test Suite', () => {
         });
     });
 
-
     describe('validateBoundaries() Method Test Suite', () => {
         const numberInput = document.createElement('input');
         numberInput.type = 'number';
@@ -84,7 +81,7 @@ describe('FormValidator Unit Test Suite', () => {
             validateMaxMock.mockReset();
         });
 
-        it('should\'nt call the min and max validation methods if there are no boundaries', () => {
+        it("should'nt call the min and max validation methods if there are no boundaries", () => {
             FormValidator.validateBoundaries(numberInput, null, null);
             expect(validateMaxMock).not.toHaveBeenCalled();
             expect(validateMinMock).not.toHaveBeenCalled();
@@ -122,25 +119,120 @@ describe('FormValidator Unit Test Suite', () => {
         it('should return true if both the min and max validations return true', () => {
             validateMinMock.mockReturnValue(true);
             validateMaxMock.mockReturnValue(true);
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1, inputValue + 1);
+            const boundariesValidarionResult = FormValidator.validateBoundaries(
+                numberInput,
+                inputValue - 1,
+                inputValue + 1
+            );
             expect(boundariesValidarionResult).toBe(true);
         });
 
         it('should return an error message if the min validation fails', () => {
             validateMinMock.mockReturnValue('error');
             validateMaxMock.mockReturnValue(true);
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue + 1, inputValue + 1);
+            const boundariesValidarionResult = FormValidator.validateBoundaries(
+                numberInput,
+                inputValue + 1,
+                inputValue + 1
+            );
             expect(typeof boundariesValidarionResult).toBe('string');
         });
 
         it('should return an error message if the max validation fails', () => {
             validateMinMock.mockReturnValue(true);
             validateMaxMock.mockReturnValue('error');
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1, inputValue - 1);
+            const boundariesValidarionResult = FormValidator.validateBoundaries(
+                numberInput,
+                inputValue - 1,
+                inputValue - 1
+            );
             expect(typeof boundariesValidarionResult).toBe('string');
         });
     });
 
+    describe('validateName() Method Test Suite', () => {
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+
+        it('should return true if the field is valid', () => {
+            nameInput.value = 'Jean';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return a string if the field contains trailing dashes', () => {
+            nameInput.value = 'Jean--Pierre';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field contains trailing spaces', () => {
+            nameInput.value = 'Jean  Pierre';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field starts with a dash', () => {
+            nameInput.value = '-Jean-Pierre';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field ends with a dash', () => {
+            nameInput.value = 'Jean-Pierre-';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field contains a number', () => {
+            nameInput.value = 'Jean1-Pierre';
+            const validationResult = FormValidator.validateName(nameInput);
+            expect(typeof validationResult).toBe('string');
+        });
+    });
+
+    describe('validateCity() Method Test Suite', () => {
+        const cityInput = document.createElement('input');
+        cityInput.type = 'text';
+
+        it('should return true if the field is valid', () => {
+            cityInput.value = 'Aix-les-Bains';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return a string if the field contains trailing dashes', () => {
+            cityInput.value = 'Saint--Pierre';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field contains trailing spaces', () => {
+            cityInput.value = 'Les  Adrets';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field starts with a dash', () => {
+            cityInput.value = '-Grenoble';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field ends with a dash', () => {
+            cityInput.value = 'Corenc-';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the field contains a number', () => {
+            cityInput.value = '4nnecy';
+            const validationResult = FormValidator.validateCity(cityInput);
+            expect(typeof validationResult).toBe('string');
+        });
+    });
 
     describe('validateSelect() Test Suite', () => {
         const selectElt = document.createElement('select');
@@ -176,14 +268,14 @@ describe('FormValidator Unit Test Suite', () => {
         });
 
         it('should return true if the validateRequired() method returns true', () => {
-            validateRequiredMock.mockReturnValue(true)
+            validateRequiredMock.mockReturnValue(true);
             const validationResult = FormValidator.validateSelect(selectElt, { required: true });
             expect(typeof validationResult).toBe('boolean');
             expect(validationResult).toBe(true);
         });
 
         it('should return a string if the validateRequired() fails', () => {
-            validateRequiredMock.mockReturnValue('test')
+            validateRequiredMock.mockReturnValue('test');
             const validationResult = FormValidator.validateSelect(selectElt, { required: true });
             expect(typeof validationResult).toBe('string');
         });
@@ -251,31 +343,160 @@ describe('FormValidator Unit Test Suite', () => {
         });
 
         it('should return true if the validateBoundaries() method returns true', () => {
-            validateBoundariesMock.mockReturnValue(true)
+            validateBoundariesMock.mockReturnValue(true);
             const validationResult = FormValidator.validateNumber(numberInput, { min: inputValue - 1 });
             expect(typeof validationResult).toBe('boolean');
             expect(validationResult).toBe(true);
         });
 
         it('should return a string if the validateBoundaries() method returns a string', () => {
-            validateBoundariesMock.mockReturnValue('test')
+            validateBoundariesMock.mockReturnValue('test');
             const validationResult = FormValidator.validateNumber(numberInput, { min: inputValue + 1 });
             expect(typeof validationResult).toBe('string');
         });
     });
 
+    describe('validateText() Method Test Suite', () => {
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+
+        const mockValidateName = jest.spyOn(FormValidator, 'validateName');
+        const mockValidateCity = jest.spyOn(FormValidator, 'validateCity');
+
+        beforeEach(() => {
+            mockValidateCity.mockReset();
+            mockValidateName.mockReset();
+        });
+
+        it('should call the validateName() method if the element is named lastName', () => {
+            textInput.name = 'lastName';
+            textInput.value = 'test';
+            FormValidator.validateText(textInput);
+            expect(mockValidateName).toHaveBeenCalled();
+        });
+
+        it('should call the validateName() method if the element is named firstName', () => {
+            textInput.name = 'firstName';
+            textInput.value = 'test';
+            FormValidator.validateText(textInput);
+            expect(mockValidateName).toHaveBeenCalled();
+        });
+
+        it('should call the validateName() method if there is a name in the options', () => {
+            textInput.name = 'other';
+            textInput.value = 'test';
+            FormValidator.validateText(textInput, { name: true });
+            expect(mockValidateName).toHaveBeenCalled();
+        });
+
+        it('should call the validateCity() method if the element is named city', () => {
+            textInput.name = 'city';
+            textInput.value = 'test';
+            FormValidator.validateText(textInput);
+            expect(mockValidateCity).toHaveBeenCalled();
+        });
+
+        it('should call the validateCity() method if there is a city in the options', () => {
+            textInput.name = 'other';
+            textInput.value = 'test';
+            FormValidator.validateText(textInput, { city: true });
+            expect(mockValidateCity).toHaveBeenCalled();
+        });
+
+        it('should return true if there is no value', () => {
+            textInput.value = '';
+            const validationResult = FormValidator.validateText(textInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return true if the value is a valid name', () => {
+            textInput.name = 'firstName';
+            textInput.value = 'Kate';
+            mockValidateName.mockReturnValueOnce(true);
+            const validationResult = FormValidator.validateText(textInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return true if value is a valid city', () => {
+            textInput.name = 'city';
+            textInput.value = 'Jarrie';
+            mockValidateCity.mockReturnValueOnce(true);
+            const validationResult = FormValidator.validateText(textInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return a string if the value is an invalid name', () => {
+            textInput.name = 'firstName';
+            textInput.value = '--Kate';
+            mockValidateName.mockReturnValueOnce('test');
+            const validationResult = FormValidator.validateText(textInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the value is an invalid city', () => {
+            textInput.name = 'city';
+            textInput.value = 'Lyon3';
+            mockValidateCity.mockReturnValueOnce('test');
+            const validationResult = FormValidator.validateText(textInput);
+            expect(typeof validationResult).toBe('string');
+        });
+    });
+
+    describe('validateEmail() Method Test Suite', () => {
+        const textInput = document.createElement('input');
+        textInput.type = 'email';
+
+        it('should return true if there is no value', () => {
+            textInput.value = '';
+            const validationResult = FormValidator.validateEmail(textInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return true if the value is a valid email', () => {
+            textInput.value = 'michael.jackson+woohoo@music.com';
+            const validationResult = FormValidator.validateEmail(textInput);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return a string if the value is an invalid email, without @', () => {
+            textInput.value = 'michael.jackson+woohoomusic.com';
+            const validationResult = FormValidator.validateEmail(textInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the value is an invalid email, without domain', () => {
+            textInput.value = 'michael.jackson+woohoo@';
+            const validationResult = FormValidator.validateEmail(textInput);
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the value is an invalid email, without username', () => {
+            textInput.value = '@music.com';
+            const validationResult = FormValidator.validateEmail(textInput);
+            expect(typeof validationResult).toBe('string');
+        });
+    });
 
     describe('validateInput() Method Test Suite', () => {
         const inputElt = document.createElement('input');
 
         const validateRequiredMock = jest.spyOn(FormValidator, 'validateRequired');
         const validateNumberMock = jest.spyOn(FormValidator, 'validateNumber');
+        const validateTextMock = jest.spyOn(FormValidator, 'validateText');
+        const validateEmailMock = jest.spyOn(FormValidator, 'validateEmail');
 
         beforeEach(() => {
             validateRequiredMock.mockReset();
             validateNumberMock.mockReset();
+            validateTextMock.mockReset();
+            validateEmailMock.mockReset();
             inputElt.required = false;
-            inputElt.type = 'text';
+            inputElt.type = '';
         });
 
         it('should call the validateRequired() method if the field is required', () => {
@@ -295,11 +516,23 @@ describe('FormValidator Unit Test Suite', () => {
             expect(validateNumberMock).toHaveBeenCalled();
         });
 
+        it('should call the validateText() method if the input is of type text', () => {
+            inputElt.type = 'text';
+            FormValidator.validateInput(inputElt);
+            expect(validateTextMock).toHaveBeenCalled();
+        });
+
+        it('should call the validateEmail() method if the input is of type email', () => {
+            inputElt.type = 'email';
+            FormValidator.validateInput(inputElt);
+            expect(validateEmailMock).toHaveBeenCalled();
+        });
+
         it('should call the validateNumber() method with boundaries options if the input is of type number and the options contain boundaries', () => {
             inputElt.type = 'number';
             const optionsTest = {
                 min: 7,
-                max: null
+                max: null,
             };
             FormValidator.validateInput(inputElt, optionsTest);
             expect(validateNumberMock).toHaveBeenCalled();
@@ -320,8 +553,24 @@ describe('FormValidator Unit Test Suite', () => {
         });
 
         it('should return true if the validateNumber() method returns true', () => {
-            validateRequiredMock.mockReturnValue(true);
+            validateNumberMock.mockReturnValue(true);
             inputElt.type = 'number';
+            const validationResult = FormValidator.validateInput(inputElt, {});
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return true if the validateText() method returns true', () => {
+            validateTextMock.mockReturnValue(true);
+            inputElt.type = 'text';
+            const validationResult = FormValidator.validateInput(inputElt, {});
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
+        });
+
+        it('should return true if the validateEmail() method returns true', () => {
+            validateEmailMock.mockReturnValue(true);
+            inputElt.type = 'email';
             const validationResult = FormValidator.validateInput(inputElt, {});
             expect(typeof validationResult).toBe('boolean');
             expect(validationResult).toBe(true);
@@ -342,8 +591,23 @@ describe('FormValidator Unit Test Suite', () => {
             const validationResult = FormValidator.validateInput(inputElt, { required: true });
             expect(typeof validationResult).toBe('string');
         });
-    });
 
+        it('should return a string if the validateText() method returns a string', () => {
+            validateRequiredMock.mockReturnValue(true);
+            validateTextMock.mockReturnValue('test');
+            inputElt.type = 'text';
+            const validationResult = FormValidator.validateInput(inputElt, { required: true });
+            expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return a string if the validateEmail() method returns a string', () => {
+            validateRequiredMock.mockReturnValue(true);
+            validateEmailMock.mockReturnValue('test');
+            inputElt.type = 'email';
+            const validationResult = FormValidator.validateInput(inputElt, { required: true });
+            expect(typeof validationResult).toBe('string');
+        });
+    });
 
     describe('validateFormField() Method Test Suite', () => {
         const validateInputMock = jest.spyOn(FormValidator, 'validateInput');
@@ -357,24 +621,23 @@ describe('FormValidator Unit Test Suite', () => {
         selectElt.appendChild(optionNull);
         selectElt.appendChild(optionValid);
         const selectOptions = {
-            required: true
-        }
+            required: true,
+        };
 
         const inputElt = document.createElement('input');
         const inputOptions = {
             required: true,
             min: 10,
-            max: 15
-        }
-
+            max: 15,
+        };
 
         beforeEach(() => {
             validateInputMock.mockReset();
             validateSelectMock.mockReset();
-       });
+        });
 
         it('should call the validateSelect() method with the right parameters if the input is a select element', () => {
-            FormValidator.validateFormField(selectElt, selectOptions)
+            FormValidator.validateFormField(selectElt, selectOptions);
             expect(validateSelectMock).toHaveBeenCalled();
             expect(validateSelectMock).toHaveBeenCalledWith(selectElt, selectOptions);
         });
@@ -393,7 +656,7 @@ describe('FormValidator Unit Test Suite', () => {
         });
 
         it('should call the validateInput() method with the right parameters if the input is an input element', () => {
-            FormValidator.validateFormField(inputElt, inputOptions)
+            FormValidator.validateFormField(inputElt, inputOptions);
             expect(validateInputMock).toHaveBeenCalled();
             expect(validateInputMock).toHaveBeenCalledWith(inputElt, inputOptions);
         });
@@ -412,18 +675,25 @@ describe('FormValidator Unit Test Suite', () => {
         });
     });
 
-
     describe('validateForm() Method Test Suite', () => {
         const firstFieldValid = document.createElement('input');
+        firstFieldValid.name = 'first';
         const secondFieldInvalid = document.createElement('input');
+        secondFieldInvalid.name = 'second';
         const thirdFieldValid = document.createElement('input');
+        thirdFieldValid.name = 'third';
         const fourthFieldInvalid = document.createElement('input');
+        fourthFieldInvalid.name = 'fourth';
 
         const validateFormFieldMock = jest.spyOn(FormValidator, 'validateFormField');
 
         beforeEach(() => {
             validateFormFieldMock.mockReset();
-            validateFormFieldMock.mockReturnValueOnce(true).mockReturnValueOnce('false').mockReturnValueOnce(true).mockReturnValueOnce('false');
+            validateFormFieldMock
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce('false')
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce('false');
         });
 
         it('should return an array of four object, with the second and fourth field being invalid, if the input is a form with four fields, the second and the fourth being invalid', () => {
@@ -435,19 +705,11 @@ describe('FormValidator Unit Test Suite', () => {
 
             const validationResult = FormValidator.validateForm(testFormElement);
 
-            expect(validationResult[0].formField).toBe(firstFieldValid);
-            expect(validationResult[0].valid).toBe(true);
-            expect(validationResult[0].message).toBe('');
-            expect(validationResult[1].formField).toBe(secondFieldInvalid);
-            expect(validationResult[1].valid).toBe(false);
-            expect(validationResult[1].message).toBe('false');
-            expect(validationResult[2].formField).toBe(thirdFieldValid);
-            expect(validationResult[2].valid).toBe(true);
-            expect(validationResult[2].message).toBe('');
-            expect(validationResult[3].formField).toBe(fourthFieldInvalid);
-            expect(validationResult[3].valid).toBe(false);
-            expect(validationResult[3].message).toBe('false');
-        })
+            expect(validationResult.first).toBe('');
+            expect(validationResult.second).toBe('false');
+            expect(validationResult.third).toBe('');
+            expect(validationResult.fourth).toBe('false');
+        });
 
         it('should return an array of four object, with the second and fourth field being invalid, if the input is a form with four fields inside of multiple fieldsets, the second and the fourth being invalid', () => {
             const testFormElement = document.createElement('form');
@@ -462,37 +724,21 @@ describe('FormValidator Unit Test Suite', () => {
 
             const validationResult = FormValidator.validateForm(testFormElement);
 
-            expect(validationResult[0].formField).toBe(firstFieldValid);
-            expect(validationResult[0].valid).toBe(true);
-            expect(validationResult[0].message).toBe('');
-            expect(validationResult[1].formField).toBe(secondFieldInvalid);
-            expect(validationResult[1].valid).toBe(false);
-            expect(validationResult[1].message).toBe('false');
-            expect(validationResult[2].formField).toBe(thirdFieldValid);
-            expect(validationResult[2].valid).toBe(true);
-            expect(validationResult[2].message).toBe('');
-            expect(validationResult[3].formField).toBe(fourthFieldInvalid);
-            expect(validationResult[3].valid).toBe(false);
-            expect(validationResult[3].message).toBe('false');
-        })
+            expect(validationResult.first).toBe('');
+            expect(validationResult.second).toBe('false');
+            expect(validationResult.third).toBe('');
+            expect(validationResult.fourth).toBe('false');
+        });
 
         it('should return an array of four object, with the second and fourth field being invalid, if the input is an array with four form field elements, the second and the fourth being invalid', () => {
             const testArrayElement = [firstFieldValid, secondFieldInvalid, thirdFieldValid, fourthFieldInvalid];
 
             const validationResult = FormValidator.validateForm(testArrayElement);
 
-            expect(validationResult[0].formField).toBe(firstFieldValid);
-            expect(validationResult[0].valid).toBe(true);
-            expect(validationResult[0].message).toBe('');
-            expect(validationResult[1].formField).toBe(secondFieldInvalid);
-            expect(validationResult[1].valid).toBe(false);
-            expect(validationResult[1].message).toBe('false');
-            expect(validationResult[2].formField).toBe(thirdFieldValid);
-            expect(validationResult[2].valid).toBe(true);
-            expect(validationResult[2].message).toBe('');
-            expect(validationResult[3].formField).toBe(fourthFieldInvalid);
-            expect(validationResult[3].valid).toBe(false);
-            expect(validationResult[3].message).toBe('false');
-        })
+            expect(validationResult.first).toBe('');
+            expect(validationResult.second).toBe('false');
+            expect(validationResult.third).toBe('');
+            expect(validationResult.fourth).toBe('false');
+        });
     });
 });
