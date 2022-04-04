@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { CartManagerLocalStorage } from "./CartManagerLocalStorage";
-import { LocalStorageDao } from "../dao/LocalStorageDao";
-import { Cart } from "../entity/Cart";
-import { CartProduct } from "../entity/CartProduct";
+import { CartManagerLocalStorage } from './CartManagerLocalStorage';
+import { LocalStorageDao } from '../dao/LocalStorageDao';
+import { Cart } from '../entity/Cart';
+import { CartProduct } from '../entity/CartProduct';
 
 const mockGetData = jest.fn();
 const mockSetData = jest.fn();
@@ -14,10 +14,10 @@ jest.mock('../dao/LocalStorageDao', () => {
         LocalStorageDao: jest.fn().mockImplementation(() => {
             return {
                 getData: mockGetData,
-                setData: mockSetData
+                setData: mockSetData,
             };
-        })
-    }
+        }),
+    };
 });
 
 const mockGetEntityData = jest.fn();
@@ -28,20 +28,18 @@ jest.mock('../entity/Cart', () => {
             return {
                 products: [],
                 getData: mockGetEntityData,
-                addProduct: mockAddProduct
+                addProduct: mockAddProduct,
             };
-        })
-    }
+        }),
+    };
 });
 
 jest.mock('../entity/CartProduct', () => {
     return {
         CartProduct: jest.fn().mockImplementation(() => {
-            return {
-
-            };
-        })
-    }
+            return {};
+        }),
+    };
 });
 
 beforeEach(() => {
@@ -52,8 +50,7 @@ beforeEach(() => {
     LocalStorageDao.mockClear();
     Cart.mockClear();
     CartProduct.mockClear();
-})
-
+});
 
 describe('CartModel Unit Test Suite', () => {
     let cartExample;
@@ -66,23 +63,22 @@ describe('CartModel Unit Test Suite', () => {
                 id: '1',
                 color: 'blue',
                 quantity: 3,
-                name: 'name1'
+                name: 'name1',
             },
             {
                 id: '2',
                 color: 'pink',
                 quantity: 6,
-                name: 'name2'
+                name: 'name2',
             },
             {
                 id: '3',
                 color: 'red',
                 quantity: 2,
-                name: 'name3'
-            }
+                name: 'name3',
+            },
         ];
     });
-
 
     describe('getCart() Method Test Suite', () => {
         const generateCartFromDataMock = jest.spyOn(cartManager, 'generateCartFromData');
@@ -119,37 +115,13 @@ describe('CartModel Unit Test Suite', () => {
             expect(cartData).toEqual(cartManager.cart);
         });
 
-        it('should return the cart\'s data if the cart is in the manager', () => {
+        it("should return the cart's data if the cart is in the manager", () => {
             cartManager.cartComplete = true;
             mockGetEntityData.mockReturnValue(cartExample);
             const cartData = cartManager.getCart();
             expect(cartData).toEqual(cartManager.cart);
         });
     });
-
-
-    describe('postCart() Method Test Suite', () => {
-        const generateDataFromCartMock = jest.spyOn(cartManager, 'generateDataFromCart');
-
-        beforeEach(() => {
-            generateDataFromCartMock.mockReset();
-        });
-
-        afterAll(() => {
-            generateDataFromCartMock.mockRestore();
-        });
-
-        it('should call the localStorageDao.setData() method with the right key and the cart object', () => {
-            cartManager.postCart();
-            expect(mockSetData).toHaveBeenCalled();
-        });
-
-        it('should call the Cart.getData() method', () => {
-            cartManager.postCart();
-            expect(generateDataFromCartMock).toHaveBeenCalled();
-        });
-    });
-
 
     describe('addProduct() Method Test Suite', () => {
         const getCartMock = jest.spyOn(cartManager, 'getCart');
@@ -180,6 +152,50 @@ describe('CartModel Unit Test Suite', () => {
         it('should call the CartManagerLocalStorage.postCart() method with the cart', () => {
             cartManager.addProduct(cartExample[0]);
             expect(postCartMock).toHaveBeenCalled();
+        });
+    });
+
+    describe('resetCart() Method Test Suite', () => {
+        const mockPostCart = jest.spyOn(cartManager, 'postCart');
+
+        beforeEach(() => {
+            mockPostCart.mockReset();
+        });
+
+        afterAll(() => {
+            mockPostCart.mockRestore();
+        });
+
+        it('should call the Cart constructor', () => {
+            cartManager.resetCart();
+            expect(Cart).toHaveBeenCalled();
+        });
+
+        it('should call the postCart() method', () => {
+            cartManager.resetCart();
+            expect(mockPostCart).toHaveBeenCalled();
+        });
+    });
+
+    describe('postCart() Method Test Suite', () => {
+        const generateDataFromCartMock = jest.spyOn(cartManager, 'generateDataFromCart');
+
+        beforeEach(() => {
+            generateDataFromCartMock.mockReset();
+        });
+
+        afterAll(() => {
+            generateDataFromCartMock.mockRestore();
+        });
+
+        it('should call the localStorageDao.setData() method with the right key and the cart object', () => {
+            cartManager.postCart();
+            expect(mockSetData).toHaveBeenCalled();
+        });
+
+        it('should call the Cart.getData() method', () => {
+            cartManager.postCart();
+            expect(generateDataFromCartMock).toHaveBeenCalled();
         });
     });
 });

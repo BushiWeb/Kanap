@@ -18,7 +18,6 @@ export class CartManagerLocalStorage extends CartManager {
         this.dao = new LocalStorageDao();
     }
 
-
     /**
      * Return the cart's data. If the property is empty and the cart is incomplete, fetches the data from the localStorage and saves them.
      * @return {Cart} Return the cart entity.
@@ -39,7 +38,6 @@ export class CartManagerLocalStorage extends CartManager {
         return this.cart;
     }
 
-
     /**
      * Create or modify the cart object in the localStorage.
      */
@@ -47,6 +45,13 @@ export class CartManagerLocalStorage extends CartManager {
         this.dao.setData(this.storageName, this.generateDataFromCart());
     }
 
+    /**
+     * Empty the cart.
+     */
+    resetCart() {
+        this.cart = new Cart();
+        this.postCart();
+    }
 
     /**
      * Add a product to the cart object.
@@ -60,7 +65,6 @@ export class CartManagerLocalStorage extends CartManager {
         this.postCart();
     }
 
-
     /**
      * Stores data into the cart property.
      * @param {{id: string, color: string, quantity: number, name: string}[]} data - Data fetched by the DAO.
@@ -68,13 +72,12 @@ export class CartManagerLocalStorage extends CartManager {
     generateCartFromData(data) {
         const cartProducts = [];
 
-        for (let i = 0 ; i < data.length ; i++) {
+        for (let i = 0; i < data.length; i++) {
             cartProducts.push(this.generateCartProductFromData(data[i]));
         }
 
         this.cart.products = cartProducts;
     }
-
 
     /**
      * Create a CartProduct from the data.
@@ -82,9 +85,8 @@ export class CartManagerLocalStorage extends CartManager {
      * @return {CartProduct} Return the generated CartProduct.
      */
     generateCartProductFromData(data) {
-        return new CartProduct(data.id, data.color, data.quantity, data.name)
+        return new CartProduct(data.id, data.color, data.quantity, data.name);
     }
-
 
     /**
      * Generate data to the right format from the cart. These data can then be passed to the DAO.
@@ -100,7 +102,6 @@ export class CartManagerLocalStorage extends CartManager {
         return returnData;
     }
 
-
     /**
      * Generate data to the right format from the cart. These data can then be passed to the DAO.
      * @param {CartProduct} cartProduct - CartProduct to generate the data from.
@@ -111,7 +112,7 @@ export class CartManagerLocalStorage extends CartManager {
             id: cartProduct.id,
             color: cartProduct.color,
             quantity: cartProduct.quantity,
-            name: cartProduct.name
+            name: cartProduct.name,
         };
     }
 }

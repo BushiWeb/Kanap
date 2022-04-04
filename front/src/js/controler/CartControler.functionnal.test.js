@@ -782,5 +782,18 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(mockSubmitOrder).toHaveBeenCalled();
             expect(mockSubmitOrder).toHaveBeenCalledWith(contactInfos, productsIds);
         });
+
+        it('should reset the cart', async () => {
+            firstNameInput.value = contactInfos.firstName;
+            lastNameInput.value = contactInfos.lastName;
+            addressInput.value = contactInfos.address;
+            cityInput.value = contactInfos.city;
+            emailInput.value = contactInfos.email;
+
+            userEvent.click(submitInput);
+
+            expect(controlerTest.cartManager.cart).toEqual(new Cart());
+            expect(JSON.parse(localStorage.getItem('cart'))).toEqual([]);
+        });
     });
 });

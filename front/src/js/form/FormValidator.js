@@ -175,7 +175,7 @@ export class FormValidator {
         }
 
         return formField.value.match(
-            /^[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*@[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*$/
+            /^[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*@[!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)+$/
         ) !== null
             ? true
             : `La valeur doit être un email valide`;

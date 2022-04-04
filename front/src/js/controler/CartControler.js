@@ -153,6 +153,8 @@ export class CartControler {
         }
 
         this.submitOrder(contactData, productsData);
+
+        this.cartManager.resetCart();
     }
 
     /**
