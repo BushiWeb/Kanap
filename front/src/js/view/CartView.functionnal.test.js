@@ -381,4 +381,25 @@ describe('CartView Functionnal Test Suite', () => {
             expect(clickResult).toBe('4');
         });
     });
+
+    describe('addSubmitOrderFormEventHandler() Method Test Suite', () => {
+        it('should execute the callback function when the button is clicked', () => {
+            const numberElement = document.createElement('input');
+            numberElement.type = 'number';
+            numberElement.classList.add('itemQuantity');
+            document.body.appendChild(numberElement);
+
+            let submitResult = false;
+
+            cartViewTest.addSubmitOrderFormEventListener((e) => {
+                submitResult = true;
+                e.preventDefault();
+            });
+
+            let formElement = document.getElementsByClassName('cart__order__form')[0];
+
+            fireEvent['submit'](formElement);
+            expect(submitResult).toBeTruthy();
+        });
+    });
 });

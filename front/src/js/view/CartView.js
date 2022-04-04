@@ -182,4 +182,15 @@ export class CartView extends View {
             quantityCommand.addEventListener('change', callback);
         }
     }
+
+    /**
+     * Create an event listener for the "quantity" number input, on change.
+     * @param {Function} callback - The function to call when the event fires.
+     */
+    addSubmitOrderFormEventListener(callback) {
+        const orderFormElements = this.getElements('.cart__order__form');
+        for (let formElement of orderFormElements) {
+            formElement.addEventListener('submit', callback);
+        }
+    }
 }
