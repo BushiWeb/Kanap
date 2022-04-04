@@ -2,7 +2,11 @@ import { CartView } from '../view/CartView';
 import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { CartManagerFactory } from '../factories/CartManagerFactory';
 import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
+import { OrderManagerFactory } from '../factories/OrderManagerFactory';
+import { OrderManagerKanapApi } from '../model/OrderManagerKanapApi';
 import { FormValidator } from '../form/FormValidator';
+import { Order } from '../entity/Order';
+import { UrlManager } from '../routing/UrlManager';
 
 /**
  * Class representing the entry point of the cart page.
@@ -18,6 +22,7 @@ export class CartControler {
         this.view = new CartView();
         this.productManager = ProductManagerFactory.createProductManager('KanapApi', config);
         this.cartManager = CartManagerFactory.createCartManager('LocalStorage');
+        this.orderManager = OrderManagerFactory.createOrderManager('KanapApi', config);
     }
 
     /**
@@ -116,5 +121,28 @@ export class CartControler {
 
         this.cartManager.updateProductQuantity(id, color, quantity);
         this.updateTotals();
+    }
+
+    /**
+     * Send an order to the API and redirect to the confirmation page.
+     * @param {{firstName: string, lastName: string, address: string, city: string, email: string}} contactData - Data of the contact form.
+     * @param {string[]} productsData - Ids of the ordered products.
+     */
+    async submitOrder(contactData, productsData) {
+        try {
+            const orderEntity = await this.orderManager.sendOrder({
+                contact: contactData,
+                products: productsData,
+            });
+
+            let newUrl = window.location.href.replace(/cart\.html/, 'confirmation.html');
+
+            const urlManager = new UrlManager(newUrl, { orderId: orderEntity.orderId });
+
+            urlManager.redirect();
+        } catch (error) {
+            console.error(error);
+            this.view.alert("Un problème est survenu lors de l'envoi des données. Veuillez réessayer.");
+        }
     }
 }

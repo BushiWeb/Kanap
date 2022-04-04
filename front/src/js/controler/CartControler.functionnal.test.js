@@ -250,7 +250,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
         });
 
-        it('should update the product\'s quantity and update the totals if the quantity is greater than 0', async () => {
+        it("should update the product's quantity and update the totals if the quantity is greater than 0", async () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
@@ -294,6 +294,82 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
+        });
+    });
+
+    describe('submitOrder() Method Test Suite', () => {
+        const cartUrl = 'http://localhost/cart.html';
+        delete window.location;
+        window.location = new URL(cartUrl);
+        window.location.assign = function (url) {
+            this.href = url;
+        };
+
+        const contactInfos = {
+            firstName: 'Kal',
+            lastName: 'El',
+            address: 'Fortress of solitude',
+            city: 'Arctic',
+            email: 'superman@justice-league.com',
+        };
+        const productsIds = [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id];
+        const returnedOrderData = {
+            contact: contactInfos,
+            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[1]],
+            orderId: '123',
+        };
+
+        beforeEach(() => {
+            delete window.location;
+            window.location = new URL(cartUrl);
+            window.location.assign = function (url) {
+                this.href = url;
+            };
+        });
+
+        it('should send the data to the API', async () => {
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ contact: contactInfos, products: productsIds }),
+            };
+            global.fetch.mockResolvedValueOnce({
+                json: () => Promise.resolve(returnedOrderData),
+                ok: true,
+            });
+            await controlerTest.submitOrder(contactInfos, productsIds);
+            expect(global.fetch).toHaveBeenCalled();
+            expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000/api/products/order', fetchOptions);
+        });
+
+        it('should redirect the user to the confirmation page', async () => {
+            global.fetch.mockResolvedValueOnce({
+                json: () => Promise.resolve(returnedOrderData),
+                ok: true,
+            });
+            await controlerTest.submitOrder(contactInfos, productsIds);
+            expect(window.location.href).toMatch(/.*\/confirmation\.html\?orderId=123/);
+        });
+
+        it('should display an error if the request fails', async () => {
+            global.fetch.mockRejectedValueOnce(new Error());
+            await controlerTest.submitOrder(contactInfos, productsIds);
+            expect(alertMock).toHaveBeenCalled();
+            expect(consoleMock).toHaveBeenCalled();
+        });
+
+        it('should display an error if the request send an error status', async () => {
+            global.fetch.mockResolvedValueOnce({
+                ok: false,
+                status: 400,
+                statusText: 'Error',
+            });
+            await controlerTest.submitOrder(contactInfos, productsIds);
+            expect(alertMock).toHaveBeenCalled();
+            expect(consoleMock).toHaveBeenCalled();
         });
     });
 
@@ -441,10 +517,13 @@ describe('ProductControler Functionnal Test Suite', () => {
             quantityInput.value = '1';
             fireEvent['change'](quantityInput);
 
-            expect(quantityInput.nextElementSibling === null || !quantityInput.nextElementSibling.classList.contains('error')).toBeTruthy();
+            expect(
+                quantityInput.nextElementSibling === null ||
+                    !quantityInput.nextElementSibling.classList.contains('error')
+            ).toBeTruthy();
         });
 
-        it('should update the product\'s quantity and update the totals if the quantity is greater than 0', async () => {
+        it("should update the product's quantity and update the totals if the quantity is greater than 0", async () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 

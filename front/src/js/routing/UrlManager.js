@@ -5,7 +5,7 @@ export class UrlManager {
     /**
      * Create a new URL object and set it up
      * @param {string} url - The URL to give to the URL Object.
-     * @param {{name:string, value:string}[]} parameters - The URL parameters to add to the URL.
+     * @param {Object} parameters - The URL parameters to add to the URL. It's properties are the parameter's name, and the value the parameter's value.
      */
     constructor(url = window.location.href, parameters) {
         this.url = new URL(url);
