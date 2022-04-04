@@ -138,6 +138,17 @@ export class CartControler {
             return;
         }
 
+        let productsData = [];
+        for (let product of this.cartManager.getCart().products) {
+            productsData.push(product.id);
+        }
+        if (productsData.length === 0) {
+            this.view.displayNotification(
+                "Vous n'avez aucun article à commander. Faites votre choix avant de passer commande"
+            );
+            return;
+        }
+
         let fields = event.target.elements;
 
         let contactData = {
@@ -147,10 +158,6 @@ export class CartControler {
             city: fields['city'].value,
             email: fields['email'].value,
         };
-        let productsData = [];
-        for (let product of this.cartManager.getCart().products) {
-            productsData.push(product.id);
-        }
 
         this.submitOrder(contactData, productsData);
 

@@ -795,5 +795,21 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(controlerTest.cartManager.cart).toEqual(new Cart());
             expect(JSON.parse(localStorage.getItem('cart'))).toEqual([]);
         });
+
+        it('should display a notification and return if the cart is empty', async () => {
+            firstNameInput.value = contactInfos.firstName;
+            lastNameInput.value = contactInfos.lastName;
+            addressInput.value = contactInfos.address;
+            cityInput.value = contactInfos.city;
+            emailInput.value = contactInfos.email;
+
+            controlerTest.cartManager.cart = new Cart();
+
+            userEvent.click(submitInput);
+
+            const notificationContainerElt = document.getElementById('notification-container');
+            expect(notificationContainerElt).not.toBeNull();
+            expect(mockSubmitOrder).not.toHaveBeenCalled();
+        });
     });
 });
