@@ -15,6 +15,7 @@ export class ProductApiDao {
 
     /**
      * Send a request to the API.
+     * Manage response errors.
      * @param {string} apiRoute - request's route to append to the URL. Defaults to no route.
      * @param {boolean} post - Boolean indicating if we use the POST method.
      * @param {Object} data - Data to send if we use the post method.

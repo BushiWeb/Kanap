@@ -1,4 +1,4 @@
-import { View } from "./View";
+import { View } from './View';
 
 /**
  * Class managing the rendering and the interactions with the content of the product page.
@@ -8,7 +8,6 @@ export class ProductView extends View {
     /**
      * Render the dynamic content of the product page.
      * Insert the products informations in the page.
-     * Add the event listeners.
      * @param {Product[]} product - The object containing the product's data.
      */
     render(product) {
@@ -20,7 +19,7 @@ export class ProductView extends View {
 
         const imageElement = this.createElement('img', {
             src: product.imageSource,
-            alt: product.imageAltText
+            alt: product.imageAltText,
         });
         imageContainerElement.appendChild(imageElement);
 
@@ -32,13 +31,12 @@ export class ProductView extends View {
 
         for (const color of product.colors) {
             const optionElt = this.createElement('option', {
-                value: color
+                value: color,
             });
             optionElt.textContent = color;
             selectColorsElement.appendChild(optionElt);
         }
     }
-
 
     /**
      * Create an event listener for the "add to cart" button.
@@ -49,7 +47,6 @@ export class ProductView extends View {
         addToCartButton.addEventListener('click', callback);
     }
 
-
     /**
      * Send the color selection element back.
      * @return{HTMLSelectElement} Return the color select element.
@@ -57,7 +54,6 @@ export class ProductView extends View {
     getColor() {
         return this.getElements('#colors')[0];
     }
-
 
     /**
      * Send the quantity selector back.

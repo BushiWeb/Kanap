@@ -1,6 +1,6 @@
-import { ProductApiDao } from "../dao/ProductApiDao";
-import { Product } from "../entity/Product";
-import { ProductManager } from "./ProductManager";
+import { ProductApiDao } from '../dao/ProductApiDao';
+import { Product } from '../entity/Product';
+import { ProductManager } from './ProductManager';
 
 /**
  * Class managing products data.
@@ -14,7 +14,6 @@ export class ProductManagerKanapApi extends ProductManager {
         super();
         this.dao = new ProductApiDao(config);
     }
-
 
     /**
      * Fetch all the products.
@@ -30,7 +29,6 @@ export class ProductManagerKanapApi extends ProductManager {
         return this.products;
     }
 
-
     /**
      * Fetch one product.
      * If the product is stored in the products property, use those data.
@@ -44,17 +42,15 @@ export class ProductManagerKanapApi extends ProductManager {
         let productIndex = this.checkProduct(productId);
         if (productIndex === false) {
             if (this.productsListComplete) {
-                throw new Error('Erreur : le produit demandé n\'existe pas');
+                throw new Error("Erreur : le produit demandé n'existe pas");
             }
 
             const productData = await this.dao.getProduct(productId);
             let productSave = this.saveProducts([productData]);
             productIndex = productSave[0];
-
         }
         return this.products[productIndex];
     }
-
 
     /**
      * Fetch a list of products.
@@ -76,14 +72,13 @@ export class ProductManagerKanapApi extends ProductManager {
         return returnedProducts;
     }
 
-
     /**
      * Check if the product is already in the products property and send back it's index.
      * @param {string} productId - Product's ID to search.
      * @return Return the index of the product. Return false if the product isn't in the list.
      */
     checkProduct(productId) {
-        for (let i = 0 ; i < this.products.length ; i++) {
+        for (let i = 0; i < this.products.length; i++) {
             if (this.products[i].id === productId) {
                 return i;
             }
@@ -91,7 +86,6 @@ export class ProductManagerKanapApi extends ProductManager {
 
         return false;
     }
-
 
     /**
      * Save products to the products property.
@@ -108,18 +102,20 @@ export class ProductManagerKanapApi extends ProductManager {
             this.productsListComplete = true;
         }
 
-        for (let i = 0 ; i < productsList.length ; i++) {
-            const productCheck = this.checkProduct(productsList[i]._id)
+        for (let i = 0; i < productsList.length; i++) {
+            const productCheck = this.checkProduct(productsList[i]._id);
             if (productCheck === false) {
-                this.products.push(new Product(
-                    productsList[i]._id,
-                    productsList[i].name,
-                    productsList[i].price,
-                    productsList[i].description,
-                    productsList[i].imageUrl,
-                    productsList[i].altTxt,
-                    productsList[i].colors
-                    ));
+                this.products.push(
+                    new Product(
+                        productsList[i]._id,
+                        productsList[i].name,
+                        productsList[i].price,
+                        productsList[i].description,
+                        productsList[i].imageUrl,
+                        productsList[i].altTxt,
+                        productsList[i].colors
+                    )
+                );
                 returnIndexList.push(this.products.length - 1);
             } else {
                 returnIndexList.push(productCheck);

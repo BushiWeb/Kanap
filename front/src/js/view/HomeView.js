@@ -1,4 +1,4 @@
-import { View } from "./View";
+import { View } from './View';
 
 /**
  * Class managing the rendering and the interactions with the content of the home page.
@@ -13,20 +13,20 @@ export class HomeView extends View {
     render(products) {
         let containerElement = this.getElements('#items')[0];
 
-        for (let i = 0 ; i < products.length ; i++) {
+        for (let i = 0; i < products.length; i++) {
             let linkWrapperElement = this.createElement('a', {
-                href : `./product.html?id=${products[i].id}`
+                href: `./product.html?id=${products[i].id}`,
             });
             let articleElement = this.createElement('article');
             let imageElement = this.createElement('img', {
                 src: `${products[i].imageSource}`,
-                alt : `${products[i].imageAltText}`
+                alt: `${products[i].imageAltText}`,
             });
             let nameElement = this.createElement('h3', {
-                class: 'productName'
+                class: 'productName',
             });
             let descriptionElement = this.createElement('p', {
-                class: 'productDescription'
+                class: 'productDescription',
             });
 
             nameElement.textContent = `${products[i].name}`;
@@ -38,6 +38,5 @@ export class HomeView extends View {
             linkWrapperElement.appendChild(articleElement);
             containerElement.appendChild(linkWrapperElement);
         }
-
     }
 }

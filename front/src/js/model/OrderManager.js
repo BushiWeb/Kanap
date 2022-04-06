@@ -1,5 +1,3 @@
-import { Order } from '../entity/Order';
-
 /**
  * Parent class for all Order managers.
  */

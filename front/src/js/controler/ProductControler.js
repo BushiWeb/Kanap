@@ -1,18 +1,17 @@
 import { ProductView } from '../view/ProductView';
 import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { UrlManager } from '../routing/UrlManager';
-import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
 import { FormValidator } from '../form/FormValidator';
 import { CartManagerFactory } from '../factories/CartManagerFactory';
 
 /**
- * Class representing the entry point of the confirmation page.
+ * Class representing the entry point of the product page.
  * Serve as a mediator between the data and the rendering.
  * Manage the events fired from the page by providing the event handlers.
  */
 export class ProductControler {
     /**
-     * Create the view and the model
+     * Create the view and the model.
      * @param {Object | string} config - Configuration object or string to use.
      */
     constructor(config) {

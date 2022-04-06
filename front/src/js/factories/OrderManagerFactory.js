@@ -2,7 +2,7 @@ import { OrderManager } from '../model/OrderManager';
 import { OrderManagerKanapApi } from '../model/OrderManagerKanapApi';
 
 /**
- * Class managing the instanciation of ProductManager. Allows for easy modification of the model.
+ * Class managing the instanciation of OrderManager. Allows for easy modification of the model.
  */
 export class OrderManagerFactory {
     /**

@@ -1,6 +1,6 @@
 import { ProductApiDao } from '../../js/dao/ProductApiDao';
 import { ProductManagerKanapApi } from '../../js/model/ProductManagerKanapApi';
-import { MOCKED_API_DATA } from '../../js/dao/mockedApiData';
+import { MOCKED_API_DATA } from '../data/mockedApiData';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
 import { CONFIG_TEST } from '../data/mocked-configuration';
 

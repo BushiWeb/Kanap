@@ -1,7 +1,7 @@
 import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
 
 /**
- * Class managing the instanciation of ProductManager. Allows for easy modification of the model.
+ * Class managing the instanciation of CartManager. Allows for easy modification of the model.
  */
 export class CartManagerFactory {
     /**
@@ -10,9 +10,8 @@ export class CartManagerFactory {
      * @returns Return an instance of the right CartManager.
      */
     static createCartManager(dao) {
-        return this["createCartManager" + dao]();
+        return this['createCartManager' + dao]();
     }
-
 
     /**
      * Create an instance of CartManagerLocalStorage.

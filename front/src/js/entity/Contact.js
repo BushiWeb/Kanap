@@ -1,5 +1,5 @@
 /**
- * Class representing a contact
+ * Class representing a contact.
  */
 export class Contact {
     /**
@@ -10,7 +10,7 @@ export class Contact {
      * @param {string} city - Contact's city.
      * @param {string} email - Contact's email.
      */
-     constructor(firstName, lastName, adress, city, email) {
+    constructor(firstName, lastName, adress, city, email) {
         this._firstName = firstName;
         this._lastName = lastName;
         this._address = adress;
@@ -25,7 +25,7 @@ export class Contact {
      * _firstName property getter.
      * @return {string} Return the value of the _firstName property.
      */
-     get firstName() {
+    get firstName() {
         return this._firstName;
     }
 

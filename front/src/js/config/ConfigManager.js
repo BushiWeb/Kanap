@@ -7,7 +7,7 @@ export class ConfigManager {
      * @param {Object | string} data - Configuration object. Can also be a stringifyed version of the object.
      */
     constructor(data) {
-        this.data = (typeof data === "string")? JSON.parse(data) : data;
+        this.data = typeof data === 'string' ? JSON.parse(data) : data;
     }
 
     /**
@@ -16,10 +16,10 @@ export class ConfigManager {
      */
     getApiUrl() {
         let url = '';
-        url += (this.data.url.protocol)? this.data.url.protocol + '://' : '';
-        url += (this.data.url.domain)? this.data.url.domain : this.data.url.ip;
-        url += (this.data.url.port)? ':' + this.data.url.port : '';
-        url += (this.data.url.path)? '/' + this.data.url.path : '';
+        url += this.data.url.protocol ? this.data.url.protocol + '://' : '';
+        url += this.data.url.domain ? this.data.url.domain : this.data.url.ip;
+        url += this.data.url.port ? ':' + this.data.url.port : '';
+        url += this.data.url.path ? '/' + this.data.url.path : '';
         return url;
     }
 }

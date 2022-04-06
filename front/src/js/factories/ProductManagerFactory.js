@@ -11,9 +11,8 @@ export class ProductManagerFactory {
      * @returns Return an instance of the right ProductManager.
      */
     static createProductManager(dao, config) {
-        return this["createProductManager" + dao](config);
+        return this['createProductManager' + dao](config);
     }
-
 
     /**
      * Create an instance of ProductManagerKanapApi.

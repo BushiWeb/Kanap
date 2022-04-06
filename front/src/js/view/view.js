@@ -10,9 +10,9 @@ export class View {
         window.alert(message);
     }
 
-
     /**
      * Create a notification and display it.
+     * If the notification already exists, remove it, change it's content and reinsert it.
      * @param {string} message - The message of the notification.
      */
     displayNotification(message) {
@@ -21,7 +21,7 @@ export class View {
 
         if (notificationContainer === undefined) {
             notificationContainer = this.createElement('p', {
-                id: notificationContainerId
+                id: notificationContainerId,
             });
         } else {
             notificationContainer.remove();
@@ -30,7 +30,6 @@ export class View {
         notificationContainer.textContent = message;
         document.body.append(notificationContainer);
     }
-
 
     /**
      * Create error message and display it next to the associated form field.
@@ -43,13 +42,12 @@ export class View {
         this.deleteFormFieldError(formField);
 
         const errorElt = this.createElement('p', {
-            class: errorContainerClass
+            class: errorContainerClass,
         });
         errorElt.textContent = message;
 
         formField.parentElement.insertBefore(errorElt, formField.nextElementSibling);
     }
-
 
     /**
      * Delete the error associated to the form field.
@@ -84,7 +82,7 @@ export class View {
         let elements = [];
         let fetchResults = document.querySelectorAll(selector);
 
-        for (let i = 0 ; i < fetchResults.length ; i++) {
+        for (let i = 0; i < fetchResults.length; i++) {
             elements.push(fetchResults[i]);
         }
 

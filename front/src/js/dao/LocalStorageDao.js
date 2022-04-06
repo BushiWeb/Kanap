@@ -22,7 +22,6 @@ export class LocalStorageDao {
         return propertyValue;
     }
 
-
     /**
      * Save data to the localStorage. If the data is not a string, serializes the data first.
      * @param {string} propertyName - Name of the property to set.
@@ -31,7 +30,7 @@ export class LocalStorageDao {
     setData(propertyName, data) {
         if (data instanceof Object) {
             data = JSON.stringify(data);
-        } else if (! (typeof data === 'string')) {
+        } else if (!(typeof data === 'string')) {
             data = String(data);
         }
 

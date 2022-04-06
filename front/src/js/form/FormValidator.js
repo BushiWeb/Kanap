@@ -186,7 +186,7 @@ export class FormValidator {
      * The function doesn't check that the element is a text input element.
      * Validate if the content is a name or a city
      * @param {HTMLInputElement} formField - The input field to validate.
-     * @param {{name:boolean, city:boolean}} options - An object containing validations options. Override the value of the attributes.
+     * @param {{name:boolean, city:boolean}} options - An object containing validations options. These options allows for validation depending on the type of content, like name or city. Overrides the name attribute of the element. If both are given, name is chosen.
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
     static validateText(
@@ -282,6 +282,7 @@ export class FormValidator {
 
     /**
      * Validate that the value of an input is a name.
+     * A name must be a string of letters. This string can be splitted using spaces or dashes, but can't contain multiple dashes or spaces following each other, nor can it starts or ends with dashes or spaces.
      * @param {HTMLInputElement} formField - The field element to validate.
      * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
      */
@@ -293,6 +294,7 @@ export class FormValidator {
 
     /**
      * Validate that the value of an input is a city name.
+     * A city name must be a string of letters. This string can be splitted using spaces or dashes, but can't contain multiple dashes or spaces following each other, nor can it starts or ends with dashes or spaces.
      * @param {HTMLInputElement} formField - The field element to validate.
      * @return {boolean | string} Return true if the field is valid, a string containing the problem otherwise.
      */

@@ -1,7 +1,7 @@
 import { Product } from './Product';
 
 /**
- * Class representing a product from the API.
+ * Class representing a product in the cart.
  */
 export class CartProduct {
     /**

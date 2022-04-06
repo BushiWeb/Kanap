@@ -15,7 +15,8 @@ export class CartManager {
     }
 
     /**
-     *
+     * Link each cart product entity to the corresponding product entity.
+     * If the corresponding product doesn't exist, the cart product is deleted, the storage solution updated and an error message is returned.
      * @param {ProductManager} productManager - ProductManager instance to fetch product's informations.
      * @return {string[]} Return an array containing the names of the deleted products.
      */

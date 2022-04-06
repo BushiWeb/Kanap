@@ -1,11 +1,8 @@
 import { CartView } from '../view/CartView';
 import { ProductManagerFactory } from '../factories/ProductManagerFactory';
 import { CartManagerFactory } from '../factories/CartManagerFactory';
-import { CartManagerLocalStorage } from '../model/CartManagerLocalStorage';
 import { OrderManagerFactory } from '../factories/OrderManagerFactory';
-import { OrderManagerKanapApi } from '../model/OrderManagerKanapApi';
 import { FormValidator } from '../form/FormValidator';
-import { Order } from '../entity/Order';
 import { UrlManager } from '../routing/UrlManager';
 
 /**
@@ -15,7 +12,7 @@ import { UrlManager } from '../routing/UrlManager';
  */
 export class CartControler {
     /**
-     * Create the view and the model
+     * Create the view and the model.
      * @param {Object | string} config - Configuration object or string to use.
      */
     constructor(config) {
@@ -79,6 +76,7 @@ export class CartControler {
 
     /**
      * Event handler for the "update product's quantity" event.
+     * Validate the input value, display or hide error messages and apply the update.
      * @param {Event} event - The event object.
      */
     updateProductQuantityEventHandler(event) {
