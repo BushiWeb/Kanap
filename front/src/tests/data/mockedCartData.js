@@ -1,4 +1,7 @@
 import { MOCKED_API_DATA } from './mockedApiData';
+import { MOCKED_PRODUCT_ENTITY_DATA } from './mockedProductEntityData';
+import { Cart } from '../../js/entity/Cart';
+import { CartProduct } from '../../js/entity/CartProduct';
 
 export const MOCKED_CART_DATA = {
     cartData: [
@@ -45,4 +48,39 @@ export const MOCKED_CART_DATA = {
         9 * MOCKED_API_DATA[0].price +
         4 * MOCKED_API_DATA[3].price +
         2 * MOCKED_API_DATA[2].price,
+};
+
+export const MOCKED_CART_ENTITY = () => {
+    const returnEntity = new Cart();
+    returnEntity.products = [
+        new CartProduct(
+            MOCKED_CART_DATA.cartData[0].id,
+            MOCKED_CART_DATA.cartData[0].color,
+            MOCKED_CART_DATA.cartData[0].quantity,
+            MOCKED_CART_DATA.cartData[0].name,
+            MOCKED_PRODUCT_ENTITY_DATA[0]
+        ),
+        new CartProduct(
+            MOCKED_CART_DATA.cartData[1].id,
+            MOCKED_CART_DATA.cartData[1].color,
+            MOCKED_CART_DATA.cartData[1].quantity,
+            MOCKED_CART_DATA.cartData[1].name,
+            MOCKED_PRODUCT_ENTITY_DATA[0]
+        ),
+        new CartProduct(
+            MOCKED_CART_DATA.cartData[2].id,
+            MOCKED_CART_DATA.cartData[2].color,
+            MOCKED_CART_DATA.cartData[2].quantity,
+            MOCKED_CART_DATA.cartData[2].name,
+            MOCKED_PRODUCT_ENTITY_DATA[3]
+        ),
+        new CartProduct(
+            MOCKED_CART_DATA.cartData[3].id,
+            MOCKED_CART_DATA.cartData[3].color,
+            MOCKED_CART_DATA.cartData[3].quantity,
+            MOCKED_CART_DATA.cartData[3].name,
+            MOCKED_PRODUCT_ENTITY_DATA[2]
+        ),
+    ];
+    return returnEntity;
 };

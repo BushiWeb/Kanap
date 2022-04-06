@@ -46,7 +46,7 @@ export class ProductControler {
      * Get the product informations from the page, validate those data and add them to the cart.
      * @param {Event} event - The event object
      */
-    addToCartEventHandler(event) {
+    async addToCartEventHandler(event) {
         let colorElement = this.view.getColor();
         let quantityElement = this.view.getQuantity();
         let error = false;
@@ -78,14 +78,12 @@ export class ProductControler {
 
         const productId = this.urlManager.getParameter('id');
         let productName;
-        this.productManager
-            .getProduct(productId)
-            .then((data) => {
-                productName = data.name;
-            })
-            .catch((error) => {
-                error = true;
-            });
+        try {
+            let productEntity = await this.productManager.getProduct(productId);
+            productName = productEntity.name;
+        } catch {
+            error = true;
+        }
 
         if (error) {
             return;

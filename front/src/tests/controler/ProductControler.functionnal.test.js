@@ -5,14 +5,16 @@
 import '@testing-library/jest-dom';
 import { getByLabelText, getByText, queries } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-
 import { ProductControler } from '../../js/controler/ProductControler';
+import { ProductManagerKanapApi } from '../../js/model/ProductManagerKanapApi';
 import { CONFIG_TEST } from '../data/mocked-configuration';
 import { MOCKED_API_DATA } from '../data/mockedApiData';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
+import { MOCKED_CART_DATA } from '../data/mockedCartData';
+import { Product } from '../../js/entity/Product';
 
 describe('ProductControler Functionnal Test Suite', () => {
-    const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[0]._id;
+    const testUrl = 'http://localhost/product.html?id=' + MOCKED_API_DATA[2]._id;
     delete window.location;
     window.location = new URL(testUrl);
     let controlerTest;
@@ -79,13 +81,16 @@ describe('ProductControler Functionnal Test Suite', () => {
     });
 
     describe('initialize() Method Test Suite', () => {
+        beforeEach(() => {
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
+        });
+
         it("should display the product's informations", async () => {
             global.fetch.mockResolvedValue({
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true,
             });
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -114,8 +119,6 @@ describe('ProductControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true,
             });
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -125,8 +128,6 @@ describe('ProductControler Functionnal Test Suite', () => {
         it('should alert and print an error if an error occurs while fetching the data', async () => {
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -141,8 +142,6 @@ describe('ProductControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA[0]),
                 ok: true,
             });
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTestUrlError.initialize();
 
@@ -152,30 +151,13 @@ describe('ProductControler Functionnal Test Suite', () => {
     });
 
     describe('Add to cart Event Test Suite', () => {
-        const cartExample = [
-            {
-                id: '1',
-                color: 'blue',
-                quantity: 3,
-            },
-            {
-                id: '2',
-                color: 'pink',
-                quantity: 6,
-            },
-            {
-                id: '3',
-                color: 'red',
-                quantity: 2,
-            },
-        ];
+        const cartExample = MOCKED_CART_DATA.cartData.slice(0, 3);
 
         beforeEach(async () => {
             global.fetch.mockResolvedValue({
-                json: () => Promise.resolve(MOCKED_API_DATA[0]),
+                json: () => Promise.resolve(MOCKED_API_DATA[2]),
                 ok: true,
             });
-
             await controlerTest.initialize();
         });
 
@@ -188,7 +170,7 @@ describe('ProductControler Functionnal Test Suite', () => {
         it('should alert an error if the quantity is invalid', () => {
             userEvent.selectOptions(
                 getByLabelText(document.body, 'Color'),
-                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+                getByText(document.body, MOCKED_API_DATA[2].colors[0])
             );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '-3');
             userEvent.click(getByText(document.body, 'Add to cart'));
@@ -200,7 +182,7 @@ describe('ProductControler Functionnal Test Suite', () => {
 
             userEvent.selectOptions(
                 getByLabelText(document.body, 'Color'),
-                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+                getByText(document.body, MOCKED_API_DATA[2].colors[0])
             );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '3');
 
@@ -213,50 +195,55 @@ describe('ProductControler Functionnal Test Suite', () => {
 
         it('should add a new product to the cart', () => {
             localStorage.setItem('cart', JSON.stringify(cartExample));
-            const addedProduct = {
-                id: MOCKED_API_DATA[0]._id,
-                color: MOCKED_API_DATA[0].colors[0],
-                quantity: 10,
-            };
+            const addedProduct = MOCKED_CART_DATA.cartData[3];
 
             userEvent.selectOptions(
                 getByLabelText(document.body, 'Color'),
-                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+                getByText(document.body, MOCKED_API_DATA[2].colors[0])
             );
-            userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
-            userEvent.click(getByText(document.body, 'Add to cart'));
+            userEvent.type(getByLabelText(document.body, 'Quantity'), addedProduct.quantity.toString());
 
-            expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(addedProduct);
+            const buttonAddToCart = getByText(document.body, 'Add to cart');
+            const eventFreeButton = buttonAddToCart.cloneNode(true);
+            buttonAddToCart.parentNode.replaceChild(eventFreeButton, buttonAddToCart);
+            eventFreeButton.addEventListener('click', async (e) => {
+                await controlerTest.addToCartEventHandler(e);
+                expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(addedProduct);
 
-            const notificationContainer = document.getElementById('notification-container');
-            expect(notificationContainer).not.toBeNull();
+                const notificationContainer = document.getElementById('notification-container');
+                expect(notificationContainer).not.toBeNull();
+            });
+            userEvent.click(eventFreeButton);
         });
 
         it('should change the quantity of the same product in the cart', () => {
-            const doubleProductCartValue = cartExample.concat({
-                id: MOCKED_API_DATA[0]._id,
-                color: MOCKED_API_DATA[0].colors[0],
-                quantity: 2,
-            });
+            const doubleProductCartValue = cartExample.concat(MOCKED_CART_DATA.cartData[3]);
             localStorage.setItem('cart', JSON.stringify(doubleProductCartValue));
 
             const modifiedProduct = {
-                id: MOCKED_API_DATA[0]._id,
-                color: MOCKED_API_DATA[0].colors[0],
-                quantity: 12,
+                id: MOCKED_CART_DATA.cartData[3].id,
+                color: MOCKED_CART_DATA.cartData[3].color,
+                quantity: MOCKED_CART_DATA.cartData[3].quantity + 10,
+                name: MOCKED_CART_DATA.cartData[3].name,
             };
 
             userEvent.selectOptions(
                 getByLabelText(document.body, 'Color'),
-                getByText(document.body, MOCKED_API_DATA[0].colors[0])
+                getByText(document.body, MOCKED_API_DATA[2].colors[0])
             );
             userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
+
+            const buttonAddToCart = getByText(document.body, 'Add to cart');
+            const eventFreeButton = buttonAddToCart.cloneNode(true);
+            buttonAddToCart.parentNode.replaceChild(eventFreeButton, buttonAddToCart);
+            eventFreeButton.addEventListener('click', async (e) => {
+                await controlerTest.addToCartEventHandler(e);
+                expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(modifiedProduct);
+
+                const notificationContainer = document.getElementById('notification-container');
+                expect(notificationContainer).not.toBeNull();
+            });
             userEvent.click(getByText(document.body, 'Add to cart'));
-
-            expect(JSON.parse(localStorage.getItem('cart'))).toContainEqual(modifiedProduct);
-
-            const notificationContainer = document.getElementById('notification-container');
-            expect(notificationContainer).not.toBeNull();
         });
     });
 });
