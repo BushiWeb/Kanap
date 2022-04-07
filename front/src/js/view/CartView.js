@@ -50,7 +50,7 @@ export class CartView extends View {
             let colorElement = this.createElement('p');
             colorElement.textContent = cartProduct.color;
             let priceElement = this.createElement('p');
-            priceElement.textContent = cartProduct.product.price;
+            priceElement.textContent = cartProduct.product.price + ' €';
             descriptionWrapper.appendChild(nameElement);
             descriptionWrapper.appendChild(colorElement);
             descriptionWrapper.appendChild(priceElement);

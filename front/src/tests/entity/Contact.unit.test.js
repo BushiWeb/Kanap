@@ -1,13 +1,9 @@
 import { Contact } from '../../js/entity/Contact';
+import { MOCKED_ORDER_DATA } from '../data/mockedOrderData';
 
 describe('Contact Unit Test Suite', () => {
-    const contactInfos = {
-        lastName: 'Holmes',
-        firstName: 'Sherlock',
-        address: 'Baker Street',
-        city: 'London',
-        email: 'sherlock.holmes@detective.en',
-    };
+    const contactInfos = MOCKED_ORDER_DATA().contact;
+
     describe('Constructor Test Suite', () => {
         it('should create an instance of Contact with the right informations', () => {
             const contactEntity = new Contact(

@@ -5,14 +5,13 @@
 import '@testing-library/jest-dom';
 import { fireEvent } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-
 import { CartControler } from '../../js/controler/CartControler';
 import { CONFIG_TEST } from '../data/mocked-configuration';
 import { MOCKED_API_DATA } from '../data/mockedApiData';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
-import { MOCKED_CART_DATA } from '../data/mockedCartData';
+import { MOCKED_CART_DATA, MOCKED_CART_ENTITY } from '../data/mockedCartData';
+import { MOCKED_ORDER_DATA, MOCKED_ORDER_DATA_RETURNED } from '../data/mockedOrderData';
 import { Cart } from '../../js/entity/Cart';
-import { CartProduct } from '../../js/entity/CartProduct';
 
 describe('ProductControler Functionnal Test Suite', () => {
     let controlerTest;
@@ -189,7 +188,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(imageElement).toHaveAttribute('src', MOCKED_API_DATA[0].imageUrl);
             expect(imageElement).toHaveAttribute('alt', MOCKED_API_DATA[0].altTxt);
             expect(nameElement).toHaveTextContent(MOCKED_API_DATA[0].name);
-            expect(priceElement).toHaveTextContent(MOCKED_API_DATA[0].price);
+            expect(priceElement).toHaveTextContent(MOCKED_API_DATA[0].price + ' €');
             expect(colorElement).toHaveTextContent(MOCKED_API_DATA[0].colors[0]);
 
             expect(notificationContainerElt).not.toBeNull();
@@ -202,30 +201,7 @@ describe('ProductControler Functionnal Test Suite', () => {
 
     describe('updateTotals() Method Test Suite', () => {
         it('should update the total DOM elements with the values of the cart', () => {
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
+            const cartTest = MOCKED_CART_ENTITY();
             cartTest.updateTotals();
             controlerTest.cartManager.cart = cartTest;
 
@@ -244,30 +220,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
+            const cartTest = MOCKED_CART_ENTITY();
             cartTest.updateTotals();
             controlerTest.cartManager.cart = cartTest;
             controlerTest.cartManager.cartComplete = true;
@@ -295,103 +248,43 @@ describe('ProductControler Functionnal Test Suite', () => {
     });
 
     describe('updateProductQuantity() Method Test Suite', () => {
-        it('should delete the product from the cart and visualy, and update the totals, if the quantity is 0', async () => {
+        let cartTest, idToUpdate, colorToUpdate, totalPriceElt, totalQuantityElt;
+
+        beforeEach(async () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
+            cartTest = MOCKED_CART_ENTITY();
             cartTest.updateTotals();
+
             controlerTest.cartManager.cart = cartTest;
             controlerTest.cartManager.cartComplete = true;
-            const idToUpdate = cartTest.products[0].id;
-            const colorToUpdate = cartTest.products[0].color;
+
+            idToUpdate = cartTest.products[0].id;
+            colorToUpdate = cartTest.products[0].color;
+
             await controlerTest.initialize();
 
-            const articleElements = document.getElementsByTagName('article');
+            totalPriceElt = document.getElementById('totalPrice');
+            totalQuantityElt = document.getElementById('totalQuantity');
+        });
 
+        it('should delete the product from the cart and visualy, and update the totals, if the quantity is 0', async () => {
             const articleToDelete = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
-
             controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 0);
-
-            const totalPriceElt = document.getElementById('totalPrice');
-            const totalQuantityElt = document.getElementById('totalQuantity');
 
             expect(
                 controlerTest.cartManager.cart.products[0].id !== idToUpdate ||
                     controlerTest.cartManager.cart.products[0].color !== colorToUpdate
             ).toBeTruthy();
-
             expect(document.body).not.toContainElement(articleToDelete);
-
             expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
         });
 
         it("should update the product's quantity and update the totals if the quantity is greater than 0", async () => {
-            controlerTest.productManager.productsListComplete = true;
-            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
-
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
-            cartTest.updateTotals();
-            controlerTest.cartManager.cart = cartTest;
-            controlerTest.cartManager.cartComplete = true;
-            const idToUpdate = cartTest.products[0].id;
-            const colorToUpdate = cartTest.products[0].color;
-            await controlerTest.initialize();
-
             controlerTest.updateProductQuantity(idToUpdate, colorToUpdate, 1);
-
-            const totalPriceElt = document.getElementById('totalPrice');
-            const totalQuantityElt = document.getElementById('totalQuantity');
-
             expect(controlerTest.cartManager.cart.products[0].quantity === 1).toBeTruthy();
-
             expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
         });
@@ -405,19 +298,8 @@ describe('ProductControler Functionnal Test Suite', () => {
             this.href = url;
         };
 
-        const contactInfos = {
-            firstName: 'Kal',
-            lastName: 'El',
-            address: 'Fortress of solitude',
-            city: 'Arctic',
-            email: 'superman@justice-league.com',
-        };
-        const productsIds = [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id];
-        const returnedOrderData = {
-            contact: contactInfos,
-            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[1]],
-            orderId: '123',
-        };
+        const orderData = MOCKED_ORDER_DATA();
+        const returnedOrderData = MOCKED_ORDER_DATA_RETURNED();
 
         beforeEach(() => {
             delete window.location;
@@ -434,13 +316,13 @@ describe('ProductControler Functionnal Test Suite', () => {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ contact: contactInfos, products: productsIds }),
+                body: JSON.stringify({ contact: orderData.contact, products: orderData.products }),
             };
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(returnedOrderData),
                 ok: true,
             });
-            await controlerTest.submitOrder(contactInfos, productsIds);
+            await controlerTest.submitOrder(orderData.contact, orderData.products);
             expect(global.fetch).toHaveBeenCalled();
             expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000/api/products/order', fetchOptions);
         });
@@ -450,13 +332,13 @@ describe('ProductControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(returnedOrderData),
                 ok: true,
             });
-            await controlerTest.submitOrder(contactInfos, productsIds);
+            await controlerTest.submitOrder(orderData.contact, orderData.products);
             expect(window.location.href).toMatch(/.*\/confirmation\.html\?orderId=123/);
         });
 
         it('should display an error if the request fails', async () => {
             global.fetch.mockRejectedValueOnce(new Error());
-            await controlerTest.submitOrder(contactInfos, productsIds);
+            await controlerTest.submitOrder(orderData.contact, orderData.products);
             expect(alertMock).toHaveBeenCalled();
             expect(consoleMock).toHaveBeenCalled();
         });
@@ -467,7 +349,7 @@ describe('ProductControler Functionnal Test Suite', () => {
                 status: 400,
                 statusText: 'Error',
             });
-            await controlerTest.submitOrder(contactInfos, productsIds);
+            await controlerTest.submitOrder(orderData.contact, orderData.products);
             expect(alertMock).toHaveBeenCalled();
             expect(consoleMock).toHaveBeenCalled();
         });
@@ -478,30 +360,7 @@ describe('ProductControler Functionnal Test Suite', () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
+            const cartTest = MOCKED_CART_ENTITY();
             cartTest.updateTotals();
             controlerTest.cartManager.cart = cartTest;
             controlerTest.cartManager.cartComplete = true;
@@ -530,93 +389,38 @@ describe('ProductControler Functionnal Test Suite', () => {
     });
 
     describe('updateProductQuantity Event Test Suite', () => {
-        it('should add an error message if the value is invalid', async () => {
+        let cartTest, idToUpdate, colorToUpdate, articleToUpdate, quantityInput;
+
+        beforeEach(async () => {
             controlerTest.productManager.productsListComplete = true;
             controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
 
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
+            cartTest = MOCKED_CART_ENTITY();
             cartTest.updateTotals();
+
             controlerTest.cartManager.cart = cartTest;
             controlerTest.cartManager.cartComplete = true;
-            const idToUpdate = cartTest.products[0].id;
-            const colorToUpdate = cartTest.products[0].color;
+
+            idToUpdate = cartTest.products[0].id;
+            colorToUpdate = cartTest.products[0].color;
+
             await controlerTest.initialize();
 
-            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
-            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
+            articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
+            quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
+        });
 
+        it('should add an error message if the value is invalid', async () => {
             quantityInput.value = '-1';
             fireEvent['change'](quantityInput);
-
             expect(quantityInput.nextElementSibling).toHaveClass('error');
         });
 
         it('should remove the error if the value is valid', async () => {
-            controlerTest.productManager.productsListComplete = true;
-            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
-
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
-            cartTest.updateTotals();
-            controlerTest.cartManager.cart = cartTest;
-            controlerTest.cartManager.cartComplete = true;
-            const idToUpdate = cartTest.products[0].id;
-            const colorToUpdate = cartTest.products[0].color;
-            await controlerTest.initialize();
-
-            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
-            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
-
             quantityInput.value = '-1';
             fireEvent['change'](quantityInput);
             quantityInput.value = '1';
             fireEvent['change'](quantityInput);
-
             expect(
                 quantityInput.nextElementSibling === null ||
                     !quantityInput.nextElementSibling.classList.contains('error')
@@ -624,43 +428,6 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it("should update the product's quantity and update the totals if the quantity is greater than 0", async () => {
-            controlerTest.productManager.productsListComplete = true;
-            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
-
-            const cartTest = new Cart();
-            cartTest.products = [
-                new CartProduct(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].colors[0],
-                    12,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[0]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].colors[0],
-                    12,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[1]
-                ),
-                new CartProduct(
-                    MOCKED_API_DATA[2]._id,
-                    MOCKED_API_DATA[2].colors[0],
-                    12,
-                    MOCKED_API_DATA[2].name,
-                    MOCKED_PRODUCT_ENTITY_DATA[2]
-                ),
-            ];
-            cartTest.updateTotals();
-            controlerTest.cartManager.cart = cartTest;
-            controlerTest.cartManager.cartComplete = true;
-            const idToUpdate = cartTest.products[0].id;
-            const colorToUpdate = cartTest.products[0].color;
-            await controlerTest.initialize();
-
-            const articleToUpdate = document.querySelector(`[data-id="${idToUpdate}"][data-color="${colorToUpdate}"]`);
-            const quantityInput = articleToUpdate.getElementsByClassName('itemQuantity')[0];
-
             quantityInput.value = '1';
             fireEvent['change'](quantityInput);
 
@@ -668,7 +435,6 @@ describe('ProductControler Functionnal Test Suite', () => {
             const totalQuantityElt = document.getElementById('totalQuantity');
 
             expect(controlerTest.cartManager.cart.products[0].quantity === 1).toBeTruthy();
-
             expect(totalPriceElt.textContent).toBe(controlerTest.cartManager.cart.totalPrice.toString());
             expect(totalQuantityElt.textContent).toBe(controlerTest.cartManager.cart.totalQuantity.toString());
         });
@@ -682,27 +448,8 @@ describe('ProductControler Functionnal Test Suite', () => {
             this.href = url;
         };
 
-        const contactInfos = {
-            firstName: 'Kal',
-            lastName: 'El',
-            address: 'Fortress of solitude',
-            city: 'Arctic',
-            email: 'superman@justice-league.com',
-        };
-        const productsIds = [
-            MOCKED_CART_DATA.cartData[0].id,
-            MOCKED_CART_DATA.cartData[1].id,
-            MOCKED_CART_DATA.cartData[2].id,
-            MOCKED_CART_DATA.cartData[3].id,
-        ];
-        const returnedOrderData = {
-            contact: contactInfos,
-            products: [MOCKED_API_DATA[0], MOCKED_API_DATA[0], MOCKED_API_DATA[3], MOCKED_API_DATA[2]],
-            orderId: '123',
-        };
-
+        const orderData = MOCKED_ORDER_DATA();
         let firstNameInput, lastNameInput, emailInput, addressInput, cityInput, submitInput;
-
         const mockSubmitOrder = jest.spyOn(CartControler.prototype, 'submitOrder');
 
         beforeEach(async () => {
@@ -768,24 +515,24 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it('should call submitOrder()', async () => {
-            firstNameInput.value = contactInfos.firstName;
-            lastNameInput.value = contactInfos.lastName;
-            addressInput.value = contactInfos.address;
-            cityInput.value = contactInfos.city;
-            emailInput.value = contactInfos.email;
+            firstNameInput.value = orderData.contact.firstName;
+            lastNameInput.value = orderData.contact.lastName;
+            addressInput.value = orderData.contact.address;
+            cityInput.value = orderData.contact.city;
+            emailInput.value = orderData.contact.email;
 
             userEvent.click(submitInput);
 
             expect(mockSubmitOrder).toHaveBeenCalled();
-            expect(mockSubmitOrder).toHaveBeenCalledWith(contactInfos, productsIds);
+            expect(mockSubmitOrder).toHaveBeenCalledWith(orderData.contact, orderData.products);
         });
 
         it('should reset the cart', async () => {
-            firstNameInput.value = contactInfos.firstName;
-            lastNameInput.value = contactInfos.lastName;
-            addressInput.value = contactInfos.address;
-            cityInput.value = contactInfos.city;
-            emailInput.value = contactInfos.email;
+            firstNameInput.value = orderData.contact.firstName;
+            lastNameInput.value = orderData.contact.lastName;
+            addressInput.value = orderData.contact.address;
+            cityInput.value = orderData.contact.city;
+            emailInput.value = orderData.contact.email;
 
             userEvent.click(submitInput);
 
@@ -794,11 +541,11 @@ describe('ProductControler Functionnal Test Suite', () => {
         });
 
         it('should display a notification and return if the cart is empty', async () => {
-            firstNameInput.value = contactInfos.firstName;
-            lastNameInput.value = contactInfos.lastName;
-            addressInput.value = contactInfos.address;
-            cityInput.value = contactInfos.city;
-            emailInput.value = contactInfos.email;
+            firstNameInput.value = orderData.contact.firstName;
+            lastNameInput.value = orderData.contact.lastName;
+            addressInput.value = orderData.contact.address;
+            cityInput.value = orderData.contact.city;
+            emailInput.value = orderData.contact.email;
 
             controlerTest.cartManager.cart = new Cart();
 

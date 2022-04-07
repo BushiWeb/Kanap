@@ -281,9 +281,11 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
     describe('getProductsList() Method Test Suite', () => {
         const mockGetProduct = jest.spyOn(productManager, 'getProduct');
         const idsList = [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id];
+        let productsReturned;
 
         beforeEach(() => {
             mockGetProduct.mockReset();
+            productsReturned = [MOCKED_PRODUCT_ENTITY_DATA[0], MOCKED_PRODUCT_ENTITY_DATA[1]];
         });
 
         it('should call the getProduct() method', async () => {
@@ -294,52 +296,12 @@ describe('ProductManagerKanapApi Unit Test Suite', () => {
         });
 
         it('should return an array of products entities', async () => {
-            const productsReturned = [
-                new Product(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_API_DATA[0].price,
-                    MOCKED_API_DATA[0].description,
-                    MOCKED_API_DATA[0].imageUrl,
-                    MOCKED_API_DATA[0].altTxt,
-                    MOCKED_API_DATA[0].colors
-                ),
-                new Product(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_API_DATA[1].price,
-                    MOCKED_API_DATA[1].description,
-                    MOCKED_API_DATA[1].imageUrl,
-                    MOCKED_API_DATA[1].altTxt,
-                    MOCKED_API_DATA[1].colors
-                ),
-            ];
             mockGetProduct.mockResolvedValueOnce(productsReturned[0]).mockResolvedValueOnce(productsReturned[1]);
             const productsList = await productManager.getProductsList(idsList);
             expect(productsList).toEqual(productsReturned);
         });
 
         it('should return an array of products entities and error messages', async () => {
-            const productsReturned = [
-                new Product(
-                    MOCKED_API_DATA[0]._id,
-                    MOCKED_API_DATA[0].name,
-                    MOCKED_API_DATA[0].price,
-                    MOCKED_API_DATA[0].description,
-                    MOCKED_API_DATA[0].imageUrl,
-                    MOCKED_API_DATA[0].altTxt,
-                    MOCKED_API_DATA[0].colors
-                ),
-                new Product(
-                    MOCKED_API_DATA[1]._id,
-                    MOCKED_API_DATA[1].name,
-                    MOCKED_API_DATA[1].price,
-                    MOCKED_API_DATA[1].description,
-                    MOCKED_API_DATA[1].imageUrl,
-                    MOCKED_API_DATA[1].altTxt,
-                    MOCKED_API_DATA[1].colors
-                ),
-            ];
             const errorIdsList = [...idsList, '2'];
             mockGetProduct
                 .mockResolvedValueOnce(productsReturned[0])

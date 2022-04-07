@@ -7,7 +7,7 @@ import { ProductManagerKanapApi } from '../../js/model/ProductManagerKanapApi';
 import { CartProduct } from '../../js/entity/CartProduct';
 import { MOCKED_API_DATA } from '../data/mockedApiData';
 import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
-import { MOCKED_CART_DATA } from '../data/mockedCartData';
+import { MOCKED_CART_DATA, MOCKED_CART_ENTITY } from '../data/mockedCartData';
 import { CONFIG_TEST } from '../data/mocked-configuration';
 
 global.fetch = jest.fn();
@@ -50,26 +50,12 @@ describe('CartModel Unit Test Suite', () => {
         const productToDelete = new CartProduct('21', 'blue', 2, 'name1');
 
         beforeEach(() => {
+            let mockedCartProduct = MOCKED_CART_ENTITY().products;
             cartManager.cart.products = [
                 productToDelete,
-                new CartProduct(
-                    MOCKED_CART_DATA.cartData[0].id,
-                    MOCKED_CART_DATA.cartData[0].color,
-                    MOCKED_CART_DATA.cartData[0].quantity,
-                    MOCKED_CART_DATA.cartData[0].name
-                ),
-                new CartProduct(
-                    MOCKED_CART_DATA.cartData[1].id,
-                    MOCKED_CART_DATA.cartData[1].color,
-                    MOCKED_CART_DATA.cartData[1].quantity,
-                    MOCKED_CART_DATA.cartData[1].name
-                ),
-                new CartProduct(
-                    MOCKED_CART_DATA.cartData[2].id,
-                    MOCKED_CART_DATA.cartData[2].color,
-                    MOCKED_CART_DATA.cartData[2].quantity,
-                    MOCKED_CART_DATA.cartData[2].name
-                ),
+                mockedCartProduct[0],
+                mockedCartProduct[1],
+                mockedCartProduct[2],
             ];
             cartManager.cartComplete = true;
         });
@@ -87,28 +73,10 @@ describe('CartModel Unit Test Suite', () => {
         let productToUpdate;
 
         beforeEach(() => {
-            productToUpdate = new CartProduct(
-                MOCKED_CART_DATA.cartData[0].id,
-                MOCKED_CART_DATA.cartData[0].color,
-                MOCKED_CART_DATA.cartData[0].quantity,
-                MOCKED_CART_DATA.cartData[0].name
-            );
+            let mockedCartProduct = MOCKED_CART_ENTITY().products;
+            productToUpdate = mockedCartProduct[0];
 
-            cartManager.cart.products = [
-                productToUpdate,
-                new CartProduct(
-                    MOCKED_CART_DATA.cartData[1].id,
-                    MOCKED_CART_DATA.cartData[1].color,
-                    MOCKED_CART_DATA.cartData[1].quantity,
-                    MOCKED_CART_DATA.cartData[1].name
-                ),
-                new CartProduct(
-                    MOCKED_CART_DATA.cartData[2].id,
-                    MOCKED_CART_DATA.cartData[2].color,
-                    MOCKED_CART_DATA.cartData[2].quantity,
-                    MOCKED_CART_DATA.cartData[2].name
-                ),
-            ];
+            cartManager.cart.products = [productToUpdate, mockedCartProduct[1], mockedCartProduct[2]];
             cartManager.cartComplete = true;
         });
 

@@ -5,8 +5,8 @@
 import { ProductApiDao } from '../../js/dao/ProductApiDao';
 import { MOCKED_API_DATA } from '../data/mockedApiData';
 import { CONFIG_TEST, TEST_URL } from '../data/mocked-configuration';
-import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
 import { ConfigManager } from '../../js/config/ConfigManager';
+import { MOCKED_ORDER_DATA, MOCKED_ORDER_DATA_RETURNED } from '../data/mockedOrderData';
 
 describe('ProductApiDao Unit Test Suite', () => {
     global.fetch = jest.fn().mockImplementation();
@@ -160,21 +160,8 @@ describe('ProductApiDao Unit Test Suite', () => {
 
     describe('sendOrder() Method Test Suite', () => {
         const sendRequestMock = jest.spyOn(testApiDao, 'sendRequest');
-        const orderData = {
-            contact: {
-                firstName: 'Flam',
-                lastName: 'Captain',
-                address: 'Moon',
-                city: 'Space',
-                email: 'captainflam@hero.gal',
-            },
-            products: [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id],
-        };
-        const returnedOrderData = {
-            contact: orderData.contact,
-            products: [MOCKED_PRODUCT_ENTITY_DATA[0], MOCKED_PRODUCT_ENTITY_DATA[1]],
-            orderId: '123',
-        };
+        const orderData = MOCKED_ORDER_DATA();
+        const returnedOrderData = MOCKED_ORDER_DATA_RETURNED();
 
         beforeEach(() => {
             sendRequestMock.mockReset();

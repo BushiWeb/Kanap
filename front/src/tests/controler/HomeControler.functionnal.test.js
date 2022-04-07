@@ -21,6 +21,9 @@ describe('HomeControler Functionnal Test Suite', () => {
             const container = document.createElement('section');
             container.id = 'items';
             document.body.appendChild(container);
+
+            controlerTest.productManager.productsListComplete = false;
+            controlerTest.productManager.products = [];
         });
 
         it('should display the list of products, with the right number of cards', async () => {
@@ -41,8 +44,6 @@ describe('HomeControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok: true,
             });
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 
@@ -67,8 +68,6 @@ describe('HomeControler Functionnal Test Suite', () => {
                 json: () => Promise.resolve(MOCKED_API_DATA),
                 ok: true,
             });
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
             expect(controlerTest.productManager.products).toEqual(MOCKED_PRODUCT_ENTITY_DATA);
@@ -83,8 +82,6 @@ describe('HomeControler Functionnal Test Suite', () => {
 
             const error = new Error('Error while fetching');
             global.fetch.mockRejectedValue(error);
-            controlerTest.productManager.productsListComplete = false;
-            controlerTest.productManager.products = [];
 
             await controlerTest.initialize();
 

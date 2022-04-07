@@ -1,31 +1,17 @@
 import { ProductApiDao } from '../../js/dao/ProductApiDao';
 import { OrderManagerKanapApi } from '../../js/model/OrderManagerKanapApi';
-import { MOCKED_API_DATA } from '../data/mockedApiData';
-import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
 import { CONFIG_TEST } from '../data/mocked-configuration';
 import { Order } from '../../js/entity/Order';
 import { Contact } from '../../js/entity/Contact';
+import { MOCKED_ORDER_DATA, MOCKED_ORDER_DATA_RETURNED } from '../data/mockedOrderData';
 
 describe('OrderManagerKanapApi Unit Test Suite', () => {
     const orderManager = new OrderManagerKanapApi(CONFIG_TEST);
 
     describe('sendOrder() Method Test Suite', () => {
         const mockSendOrderDao = jest.spyOn(ProductApiDao.prototype, 'sendOrder');
-        const orderData = {
-            contact: {
-                firstName: 'Flam',
-                lastName: 'Captain',
-                address: 'Moon',
-                city: 'Space',
-                email: 'captainflam@hero.gal',
-            },
-            products: [MOCKED_API_DATA[0]._id, MOCKED_API_DATA[1]._id],
-        };
-        const returnedOrderData = {
-            contact: orderData.contact,
-            products: [MOCKED_PRODUCT_ENTITY_DATA[0], MOCKED_PRODUCT_ENTITY_DATA[1]],
-            orderId: '123',
-        };
+        const orderData = MOCKED_ORDER_DATA();
+        const returnedOrderData = MOCKED_ORDER_DATA_RETURNED();
         const updatedOrderEntity = new Order(
             new Contact(
                 returnedOrderData.contact.firstName,

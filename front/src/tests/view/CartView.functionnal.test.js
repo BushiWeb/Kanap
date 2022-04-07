@@ -188,7 +188,7 @@ describe('CartView Functionnal Test Suite', () => {
             expect(imageElement).toHaveAttribute('src', cartProductEntities[0]._product._imageSource);
             expect(imageElement).toHaveAttribute('alt', cartProductEntities[0]._product._imageAltText);
             expect(nameElement).toHaveTextContent(cartProductEntities[0]._product._name);
-            expect(priceElement).toHaveTextContent(cartProductEntities[0]._product._price);
+            expect(priceElement).toHaveTextContent(cartProductEntities[0]._product._price + ' €');
             expect(colorElement).toHaveTextContent(cartProductEntities[0]._color);
         });
 

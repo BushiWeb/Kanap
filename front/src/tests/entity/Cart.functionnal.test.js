@@ -1,54 +1,16 @@
 import { Cart } from '../../js/entity/Cart';
-import { CartProduct } from '../../js/entity/CartProduct';
-import { Product } from '../../js/entity/Product';
 import { MOCKED_API_DATA } from '../data/mockedApiData';
+import { MOCKED_CART_DATA, MOCKED_CART_ENTITY } from '../data/mockedCartData';
+import { MOCKED_PRODUCT_ENTITY_DATA } from '../data/mockedProductEntityData';
 
 describe('Cart Functionnal Test Suite', () => {
-    const testProducts = [
-        {
-            id: MOCKED_API_DATA[0]._id,
-            color: MOCKED_API_DATA[0].colors[0],
-            name: MOCKED_API_DATA[0].name,
-            quantity: 4,
-        },
-        {
-            id: MOCKED_API_DATA[1]._id,
-            color: MOCKED_API_DATA[1].colors[0],
-            name: MOCKED_API_DATA[1].name,
-            quantity: 4,
-        },
-    ];
-
-    const testCartProductEntities = [
-        new CartProduct(testProducts[0].id, testProducts[0].color, testProducts[0].quantity, testProducts[0].name),
-        new CartProduct(testProducts[1].id, testProducts[1].color, testProducts[1].quantity, testProducts[1].name),
-    ];
-
-    const testProductEntities = [
-        new Product(
-            MOCKED_API_DATA[0]._id,
-            MOCKED_API_DATA[0].name,
-            MOCKED_API_DATA[0].price,
-            MOCKED_API_DATA[0].description,
-            MOCKED_API_DATA[0].imageUrl,
-            MOCKED_API_DATA[0].altTxt,
-            MOCKED_API_DATA[0].colors
-        ),
-        new Product(
-            MOCKED_API_DATA[1]._id,
-            MOCKED_API_DATA[1].name,
-            MOCKED_API_DATA[1].price,
-            MOCKED_API_DATA[1].description,
-            MOCKED_API_DATA[1].imageUrl,
-            MOCKED_API_DATA[1].altTxt,
-            MOCKED_API_DATA[1].colors
-        ),
-    ];
+    const testProducts = MOCKED_CART_DATA.cartData.slice(0, 4);
+    const testCartProductEntities = MOCKED_CART_ENTITY().products;
+    const testProductEntities = MOCKED_PRODUCT_ENTITY_DATA;
 
     describe('Constructor Test Suite', () => {
         it('should create an instance of Cart with the right products', () => {
             const cartProductEntity = new Cart(testProducts);
-
             expect(cartProductEntity._products).toBe(testProducts);
         });
 
