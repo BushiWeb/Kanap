@@ -101,7 +101,7 @@ export class CartView extends View {
 
         let totalPrice = cart.totalPrice;
         let totalQuantity = cart.totalQuantity;
-        this.insertTotals(totalPrice === undefined ? 0 : totalPrice, totalQuantity === undefined ? 0 : totalQuantity);
+        this.insertTotals(totalPrice, totalQuantity);
     }
 
     /**

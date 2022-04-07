@@ -124,13 +124,7 @@ export class FormValidator {
      * @param {{min:number, max:number}} options - An object containing validations options like min and max. Applies even if the element doesn't have the corresponding attributes. Override the value of the attributes.
      * @return {boolean | string} Return true if field is valid, a string containing the problem otherwise.
      */
-    static validateNumber(
-        formField,
-        options = {
-            min: null,
-            max: null,
-        }
-    ) {
+    static validateNumber(formField, options = {}) {
         let minBound = null,
             maxBound = null;
 
@@ -243,17 +237,16 @@ export class FormValidator {
     static validateBoundaries(formField, min = null, max = null) {
         let minValidation = min !== null ? this.validateMin(formField, min) : true;
         let maxValidation = max !== null ? this.validateMax(formField, max) : true;
-        let errorMessage = '';
 
         if (typeof minValidation === 'string') {
-            errorMessage = minValidation;
+            return minValidation;
         }
 
         if (typeof maxValidation === 'string') {
-            errorMessage = errorMessage ? `La valeur doit être comprise entre ${min} et ${max}` : maxValidation;
+            return maxValidation;
         }
 
-        return errorMessage ? errorMessage : true;
+        return true;
     }
 
     /**

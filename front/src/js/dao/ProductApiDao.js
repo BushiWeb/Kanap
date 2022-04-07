@@ -74,6 +74,7 @@ export class ProductApiDao {
      */
     async sendOrder(orderData) {
         if (
+            orderData.contact === undefined ||
             orderData.contact.firstName === undefined ||
             orderData.contact.lastName === undefined ||
             orderData.contact.address === undefined ||

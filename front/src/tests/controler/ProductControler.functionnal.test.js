@@ -245,5 +245,28 @@ describe('ProductControler Functionnal Test Suite', () => {
             });
             userEvent.click(getByText(document.body, 'Add to cart'));
         });
+
+        it("should alert an error if the product can't be found", () => {
+            const mockGetProduct = jest.spyOn(controlerTest.productManager, 'getProduct');
+            mockGetProduct.mockImplementation(() => {
+                throw new Error();
+            });
+            localStorage.setItem('cart', JSON.stringify(cartExample));
+
+            userEvent.selectOptions(
+                getByLabelText(document.body, 'Color'),
+                getByText(document.body, MOCKED_API_DATA[2].colors[0])
+            );
+            userEvent.type(getByLabelText(document.body, 'Quantity'), '10');
+
+            const buttonAddToCart = getByText(document.body, 'Add to cart');
+            const eventFreeButton = buttonAddToCart.cloneNode(true);
+            buttonAddToCart.parentNode.replaceChild(eventFreeButton, buttonAddToCart);
+            eventFreeButton.addEventListener('click', async (e) => {
+                await controlerTest.addToCartEventHandler(e);
+                expect(alertMock).toHaveBeenCalled();
+            });
+            userEvent.click(getByText(document.body, 'Add to cart'));
+        });
     });
 });

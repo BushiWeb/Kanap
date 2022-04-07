@@ -88,13 +88,13 @@ describe('FormValidator Unit Test Suite', () => {
         });
 
         it('should return true if there are no boundaries', () => {
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, null, null);
+            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput);
             expect(boundariesValidarionResult).toBe(true);
         });
 
         it('should call the validateMin() method if there is a lower boundary', () => {
             validateMinMock.mockReturnValue(true);
-            FormValidator.validateBoundaries(numberInput, inputValue - 1, null);
+            FormValidator.validateBoundaries(numberInput, inputValue - 1);
             expect(validateMinMock).toHaveBeenCalled();
         });
 
@@ -106,7 +106,7 @@ describe('FormValidator Unit Test Suite', () => {
 
         it('should return true if the min validation returns true', () => {
             validateMinMock.mockReturnValue(true);
-            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1, null);
+            const boundariesValidarionResult = FormValidator.validateBoundaries(numberInput, inputValue - 1);
             expect(boundariesValidarionResult).toBe(true);
         });
 
@@ -136,6 +136,7 @@ describe('FormValidator Unit Test Suite', () => {
                 inputValue + 1
             );
             expect(typeof boundariesValidarionResult).toBe('string');
+            expect(boundariesValidarionResult).toBe('error');
         });
 
         it('should return an error message if the max validation fails', () => {
@@ -147,6 +148,7 @@ describe('FormValidator Unit Test Suite', () => {
                 inputValue - 1
             );
             expect(typeof boundariesValidarionResult).toBe('string');
+            expect(boundariesValidarionResult).toBe('error');
         });
     });
 
@@ -297,26 +299,26 @@ describe('FormValidator Unit Test Suite', () => {
 
         it('should call the validateBoundaries() method with the right parameters if there is a lower boundary on the element', () => {
             numberInput.min = inputValue;
-            FormValidator.validateNumber(numberInput, { min: null, max: null });
+            FormValidator.validateNumber(numberInput);
             expect(validateBoundariesMock).toHaveBeenCalled();
             expect(validateBoundariesMock).toHaveBeenCalledWith(numberInput, inputValue, null);
         });
 
         it('should call the validateBoundaries() method with the right parameters if there is an upper boundary on the element', () => {
             numberInput.max = inputValue;
-            FormValidator.validateNumber(numberInput, { min: null, max: null });
+            FormValidator.validateNumber(numberInput);
             expect(validateBoundariesMock).toHaveBeenCalled();
             expect(validateBoundariesMock).toHaveBeenCalledWith(numberInput, null, inputValue);
         });
 
         it('should call the validateBoundaries() method with the right parameters if there is a lower boundary in the options', () => {
-            FormValidator.validateNumber(numberInput, { min: inputValue, max: null });
+            FormValidator.validateNumber(numberInput, { min: inputValue });
             expect(validateBoundariesMock).toHaveBeenCalled();
             expect(validateBoundariesMock).toHaveBeenCalledWith(numberInput, inputValue, null);
         });
 
         it('should call the validateBoundaries() method with the right parameters if there is an upper boundary in the options', () => {
-            FormValidator.validateNumber(numberInput, { min: null, max: inputValue });
+            FormValidator.validateNumber(numberInput, { max: inputValue });
             expect(validateBoundariesMock).toHaveBeenCalled();
             expect(validateBoundariesMock).toHaveBeenCalledWith(numberInput, null, inputValue);
         });
@@ -672,6 +674,13 @@ describe('FormValidator Unit Test Suite', () => {
             validateInputMock.mockReturnValue('test');
             const validationResult = FormValidator.validateFormField(inputElt, inputOptions);
             expect(typeof validationResult).toBe('string');
+        });
+
+        it('should return true if the input is neither an input element nor a select element', () => {
+            const textAreaElement = document.createElement('textarea');
+            const validationResult = FormValidator.validateFormField(textAreaElement);
+            expect(typeof validationResult).toBe('boolean');
+            expect(validationResult).toBe(true);
         });
     });
 

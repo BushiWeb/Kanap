@@ -82,6 +82,7 @@ export class ProductControler {
             let productEntity = await this.productManager.getProduct(productId);
             productName = productEntity.name;
         } catch {
+            this.view.alert("Une erreur a eu lieue lors de l'ajout du produit au panier.");
             error = true;
         }
 

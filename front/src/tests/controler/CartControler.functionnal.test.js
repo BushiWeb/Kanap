@@ -170,7 +170,6 @@ describe('ProductControler Functionnal Test Suite', () => {
             );
             const priceElt = document.getElementById('totalPrice');
             const quantityElt = document.getElementById('totalQuantity');
-            const notificationContainerElt = document.getElementById('notification-container');
 
             expect(articleElements.length).toBe(MOCKED_CART_DATA.cartData.length - 2);
             expect(priceElt.textContent).toBe(MOCKED_CART_DATA.totalPrice.toString());
@@ -190,11 +189,35 @@ describe('ProductControler Functionnal Test Suite', () => {
             expect(nameElement).toHaveTextContent(MOCKED_API_DATA[0].name);
             expect(priceElement).toHaveTextContent(MOCKED_API_DATA[0].price + ' €');
             expect(colorElement).toHaveTextContent(MOCKED_API_DATA[0].colors[0]);
+        });
+
+        it('should display informations about missing products', async () => {
+            controlerTest.productManager.productsListComplete = true;
+            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+
+            await controlerTest.initialize();
+
+            const notificationContainerElt = document.getElementById('notification-container');
 
             expect(notificationContainerElt).not.toBeNull();
             expect(notificationContainerElt.textContent).toBe(
                 `Les produits false name, false name 2 n'existent pas/plus.`
             );
+            expect(localStorage.getItem('cart')).toBe(JSON.stringify(MOCKED_CART_DATA.cartData.slice(0, -2)));
+        });
+
+        it('should display informations about a single missing products', async () => {
+            let cartDataCopy = JSON.parse(JSON.stringify(MOCKED_CART_DATA.cartData));
+            localStorage.setItem('cart', JSON.stringify(cartDataCopy.splice(0, cartDataCopy.length - 1)));
+            controlerTest.productManager.productsListComplete = true;
+            controlerTest.productManager.products = MOCKED_PRODUCT_ENTITY_DATA;
+
+            await controlerTest.initialize();
+
+            const notificationContainerElt = document.getElementById('notification-container');
+
+            expect(notificationContainerElt).not.toBeNull();
+            expect(notificationContainerElt.textContent).toBe(`Le produit false name n'existe pas/plus.`);
             expect(localStorage.getItem('cart')).toBe(JSON.stringify(MOCKED_CART_DATA.cartData.slice(0, -2)));
         });
     });

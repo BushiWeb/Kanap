@@ -49,6 +49,20 @@ describe('ProductApiDao Unit Test Suite', () => {
             expect(global.fetch).toHaveBeenCalledWith(fullRequestUrl);
         });
 
+        it("should call the fetch() function with the specified route if the starting URL doesn't end with a /", async () => {
+            global.fetch.mockResolvedValueOnce({
+                json: () => Promise.resolve(['test']),
+                ok: true,
+            });
+            const requestRoute = 'test';
+            testApiDao.apiUrl = TEST_URL.substring(0, TEST_URL.length - 1);
+            const fullRequestUrl = TEST_URL + requestRoute;
+
+            const data = await testApiDao.sendRequest(requestRoute);
+            expect(global.fetch).toHaveBeenCalled();
+            expect(global.fetch).toHaveBeenCalledWith(fullRequestUrl);
+        });
+
         it('should call the fetch() function with the data if we use the post method', async () => {
             global.fetch.mockResolvedValueOnce({
                 json: () => Promise.resolve(['test']),
@@ -184,7 +198,7 @@ describe('ProductApiDao Unit Test Suite', () => {
 
         it("should throw an error if the data don't have the right format", async () => {
             let badData = JSON.parse(JSON.stringify(orderData));
-            delete badData.contact;
+            delete badData.contact.firstName;
             await expect(async () => {
                 await testApiDao.sendOrder(badData);
             }).rejects.toThrow();
