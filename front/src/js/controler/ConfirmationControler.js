@@ -26,7 +26,7 @@ export class ConfirmationControler {
         } catch (error) {
             console.error(error);
             this.view.alert(
-                'Un problème a eu lieu lors de la récupération des informations sur le produit. Veuillez nous excuser pour le dérangement.'
+                'Un problème a eu lieu lors de la récupération des informations sur la commande. Veuillez nous excuser pour le dérangement.'
             );
         }
     }
