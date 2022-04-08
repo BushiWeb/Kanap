@@ -282,7 +282,7 @@ export class FormValidator {
     static validateName(formField) {
         return formField.value.match(/^(?:[\p{L}]+[ -])*[\p{L}]+$/u) !== null
             ? true
-            : `La valeur doit être un prénom valide`;
+            : `La valeur doit être un nom valide`;
     }
 
     /**
