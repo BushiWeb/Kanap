@@ -1,3 +1,21 @@
+/***********/
+/*KEYFRAMES*/
+/***********/
+@keyframes notification-fade-in {
+	0% {
+		opacity: 0;
+		transform: translateY(calc(-110% - 2em));
+	}
+
+	15%, 100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+
+
+
 /*********/
 /*GENERAL*/
 /*********/
@@ -39,8 +57,8 @@ h2 {
 	--main-color: #3498db;
 	--secondary-color: #2c3e50;
 	--text-color: #3d4c68;
-	--footer-text-color: #a6b0b3; 
-	--footer-main-color: #3d424f; 
+	--footer-text-color: #a6b0b3;
+	--footer-main-color: #3d424f;
 	--footer-secondary-color: #2d2f3e;
 	/*background-color: var(--main-color);*/
 }
@@ -175,6 +193,30 @@ main {
 	white-space: normal;
 }
 
+/*messages*/
+.error {
+	margin: 0;
+	color: #fbbcbc;
+	font-size: 15px;
+	margin-left: 8px;
+}
+#notification-container {
+	background-color: var(--secondary-color);
+	padding: 12px 20px;
+	margin: 0;
+	font-size: 16px;
+	border-radius: 40px;
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	animation-name: notification-fade-in;
+	animation-duration: 3500ms;
+	animation-timing-function: ease-out;
+	animation-fill-mode: both;
+	animation-direction: alternate;
+	animation-iteration-count: 2;
+}
+
 
 
 
@@ -238,7 +280,7 @@ footer .footerSecondary {
 	}
 }
 
-@media (max-width: 575.98px) { 
+@media (max-width: 575.98px) {
 	.informations ul {
 		flex-direction: column;
 		align-items: center;

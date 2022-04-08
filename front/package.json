@@ -2,11 +2,11 @@
   "name": "kanap-frontend",
   "version": "1.0.0",
   "description": "",
-  "main": "html/index.html",
+  "main": "dist/html/index.html",
   "scripts": {
-    "testCommand": "Commande de test",
+    "testCommand": "echo Commande de test",
     "build": "webpack",
-    "test": "node_modules/.bin/jest"
+    "runTests": ".\\node_modules\\.bin\\jest"
   },
   "author": "",
   "license": "ISC",
